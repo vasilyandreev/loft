@@ -1,0 +1,34 @@
+<head>
+	<title>Loft</title>
+</head>
+
+<body>
+	<div class="container">
+		{{> loginButtons}}
+		{{#if currentUser}}
+			<header>
+				<form class="new-post">
+					<textarea name="text" placeholder="What's on your mind?"></textarea>
+					<input type="submit" value="Submit">
+				</form>
+			</header>
+		
+			<br>
+			<h1>Posts</h1>
+			{{#each posts}}
+				{{> post}}
+			{{/each}}
+		{{else}}
+			<p>Please sign in.</p>
+		{{/if}}
+	</div>
+</body>
+
+<template name="post">
+	<div class="post">
+		<p>{{userId}} ({{trophiesBy.length}})</p>
+		<p>{{text}}</p>
+		<button class="trophy-button">Give Trophy</button>
+		<br><br>
+	</div>
+</template>
