@@ -1,5 +1,11 @@
 <head>
 	<title>Loft</title>
+	<script src="jquery-2.1.1.min.js"></script>
+	<script> 
+		$(function(){
+			$("#login").load("login.html"); 
+		});
+	</script> 
 </head>
 
 <body>
@@ -19,14 +25,14 @@
 				{{> post}}
 			{{/each}}
 		{{else}}
-			<p>Please sign in.</p>
+			{{> login}}
 		{{/if}}
 	</div>
 </body>
 
 <template name="post">
 	<div class="post">
-		<p>{{userId}} ({{trophiesBy.length}})</p>
+		<p>{{name}} ({{trophiesBy.length}})</p>
 		<p>{{text}}</p>
 		<button class="trophy-button">Give Trophy</button>
 		<br><br>
