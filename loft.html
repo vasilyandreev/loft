@@ -34,7 +34,9 @@
 	<div class="post">
 		<p>{{name}} ({{trophiesBy.length}})</p>
 		<p>{{text}}</p>
-		<button class="trophy-button">Give Trophy</button>
+		{{#if canTrophy}}
+			<button class="trophy-button">Give Trophy</button>
+		{{/if}}
 		<br><br>
 	</div>
 </template>
