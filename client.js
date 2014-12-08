@@ -2,14 +2,14 @@
 if (Meteor.isClient) {
 	Meteor.subscribe("posts");
 	Meteor.subscribe("comments");
-	Session.set('loginError', "");
-	Session.set('registerError', "");
+	Session.set("loginError", "");
+	Session.set("registerError", "");
 	Meteor.call("canTrophy", function(err, result) {
-		Session.set('canTrophy', result);
+		Session.set("canTrophy", result);
 	});
 	Meteor.call("getPostsLeft", function(err, result) {
 		console.log("Posts left: " + result + " " + err);
-		Session.set('postsLeft', result);
+		Session.set("postsLeft", result);
 	});
 	Meteor.call("getDebugInfo", function(err, result) {
 		console.log(result);
@@ -17,13 +17,13 @@ if (Meteor.isClient) {
 
 	// BODY
 	Template.body.helpers({
-		'posts': function () {
+		"posts": function () {
 			return posts.find({}, {sort: {createdAt: -1}});
 		},
-		'canPost': function() {
+		"canPost": function() {
 			return Session.get("postsLeft") > 0;
 		},
-		'postsLeft': function() {
+		"postsLeft": function() {
 			return Session.get("postsLeft");
 		}
 	});
@@ -67,8 +67,8 @@ if (Meteor.isClient) {
 
 	// POST
 	Template.post.helpers({
-		'canTrophy': function() {
-			return Session.get('canTrophy');
+		"canTrophy": function() {
+			return Session.get("canTrophy");
 		},
 		"comments": function() {
 			return comments.find({postId: this._id}, {sort: {createdAt: 1}});
@@ -78,7 +78,7 @@ if (Meteor.isClient) {
 		"click .trophy-button": function () {
 			Meteor.call("addTrophy", this._id, function (err, result) {
 				if (result) {
-					Session.set('canTrophy', false);
+					Session.set("canTrophy", false);
 				}
 			});
 		}
@@ -86,11 +86,11 @@ if (Meteor.isClient) {
 
 	// LOGIN
 	Template.login.events({
-		'submit #login-form' : function(e, t){
+		"submit #login-form" : function(e, t){
 			e.preventDefault();
 			// retrieve the input field values
-			var email = t.find('#login-email').value;
-			var password = t.find('#login-password').value;
+			var email = t.find("#login-email").value;
+			var password = t.find("#login-password").value;
 
 			// TODO: Trim and validate your fields here.... 
 			
@@ -101,22 +101,22 @@ if (Meteor.isClient) {
 					// The user might not have been found, or their passwword
 					// could be incorrect. Inform the user that their
 					// login attempt has failed. 
-					Session.set('loginError', String(err));
+					Session.set("loginError", String(err));
 				} else {
 					// The user has been logged in.
-					Session.set('registerError', "");
-					Session.set('loginError', "");
+					Session.set("registerError", "");
+					Session.set("loginError", "");
 				}
 			});
 			return false; 
 		},
-		'submit #register-form' : function(e, t) {
+		"submit #register-form" : function(e, t) {
 			e.preventDefault();
-			var email = t.find('#account-email').value;
-			var password = t.find('#account-password').value;
+			var email = t.find("#account-email").value;
+			var password = t.find("#account-password").value;
 			var profile = {
-				firstName: t.find('#account-first-name').value,
-				lastName: t.find('#account-last-name').value,
+				firstName: t.find("#account-first-name").value,
+				lastName: t.find("#account-last-name").value,
 			};
 
 			// TODO: Trim and validate the input
@@ -124,12 +124,12 @@ if (Meteor.isClient) {
 			var options = { email: email, password: password, profile: profile };
 			Accounts.createUser(options, function(err) {
 				if (err) {
-					Session.set('registerError', String(err));
+					Session.set("registerError", String(err));
 				} else {
 					// Success. Account has been created and the user
 					// has logged in successfully. 
-					Session.set('registerError', "");
-					Session.set('loginError', "");
+					Session.set("registerError", "");
+					Session.set("loginError", "");
 				}
 			});
 			return false;
