@@ -19,6 +19,8 @@
 						<input type="submit" value="Submit">
 						<p>Posts left for this week: {{postsLeft}}</p>
 					</form>
+				{{else}}
+					<p>Ran out of posts for this week.</p>
 				{{/if}}
 			</header>
 		
@@ -36,7 +38,7 @@
 <template name="post">
 	<div class="post">
 		<p>{{name}} ({{trophiesBy.length}})</p>
-		<p>{{text}}</p>
+		<p>{{{safeText}}}</p>
 		{{#if canTrophy}}
 			<button class="trophy-button">Give Trophy</button>
 		{{/if}}
@@ -48,11 +50,12 @@
 	    <input type="text" name="text" placeholder="Leave a comment..." />
 	  </form>
 		<br><br>
+		<hr>
 	</div>
 </template>
 
 <template name="comment">
 	<div class="comment">
-		<p><b>{{name}}:</b> {{text}}</p>
+		<p><b>{{name}}:</b> {{{safeText}}}</p>
 	</div>
 </template>

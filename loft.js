@@ -27,13 +27,41 @@ function getStartOfWeek() {
 	return startOfWeek;
 }
 
+// Return number of posts the user can post this week.
+function getPostsLeft() {
+	if (!Meteor.userId()) {
+		return 0;
+	}
+	var startOfWeek = getStartOfWeek();
+	var postsMade = posts.find({
+		userId: Meteor.userId(),
+		createdAt: { $gt: startOfWeek.getTime() }
+	}).count();
+	return POSTS_PER_WEEK - postsMade;
+}
+
+// Return true iff the user can give a trophy today.
+function canTrophy() {
+	if (!Meteor.userId()) {
+		return false;
+	}
+	var startOfToday = getStartOfToday();
+	return Meteor.user().loft.lastTrophyTime < startOfToday.getTime();
+}
+
+
 Meteor.methods({
+	canTrophy: canTrophy,
+	getPostsLeft: getPostsLeft,
 	// Create a new post with the given text.
 	addPost: function (text) {
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not authorized.");
 		}
-		// TODO: check to see if we can actually post (have posts left)
+		if (getPostsLeft() <= 0) {
+			throw new Meteor.Error("Can't make any more posts this week.");
+		}
+
 		var profile = Meteor.user().profile;
 		posts.insert({
 			userId: Meteor.userId(),
@@ -48,6 +76,7 @@ Meteor.methods({
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not authorized.");
 		}
+		
 		var profile = Meteor.user().profile;
 		comments.insert({
 			postId: postId,
@@ -56,26 +85,6 @@ Meteor.methods({
 			text: text,
 			createdAt: Date.now()
 		});
-	},
-	// Return true iff this user can give a trophy right now.
-	canTrophy: function () {
-		if (!Meteor.userId()) {
-			return false;
-		}
-		var startOfToday = getStartOfToday();
-		return Meteor.user().loft.lastTrophyTime < startOfToday.getTime();
-	},
-	// Return number of posts the user has left this week.
-	getPostsLeft: function() {
-		if (!Meteor.userId()) {
-			return 0;
-		}
-		var startOfWeek = getStartOfWeek();
-		var postsMade = posts.find({
-			userId: Meteor.userId(),
-			createdAt: { $gt: startOfWeek.getTime() }
-		}).count();
-		return POSTS_PER_WEEK - postsMade;
 	},
 	// Get debug trophy info.
 	getDebugInfo: function () {
@@ -95,7 +104,9 @@ Meteor.methods({
 		if (Meteor.userId() == post.userId) {
 			throw new Meteor.Error("Can't give a trophy to yourself.");
 		}
-		// TODO: check canTrophy()
+		if (!canTrophy()) {
+			throw new Meteor.Error("Can't give any more trophies today.");
+		}
 		posts.update(postId, { $addToSet: { trophiesBy: Meteor.userId() } });
 		Meteor.users.update(Meteor.userId(), { $set: { loft: { lastTrophyTime: Date.now() } } });
 		return true;

@@ -1,7 +1,5 @@
-// This code only runs on the client
-if (Meteor.isClient) {
-	Meteor.subscribe("posts");
-	Meteor.subscribe("comments");
+// Call init when we open the website and also when we login.
+function init() {
 	Session.set("loginError", "");
 	Session.set("registerError", "");
 	Meteor.call("canTrophy", function(err, result) {
@@ -14,6 +12,21 @@ if (Meteor.isClient) {
 	Meteor.call("getDebugInfo", function(err, result) {
 		console.log(result);
 	});
+}
+
+// Return cleaned and safe version of the given string.
+function escapeHtml(str) {
+	var div = document.createElement('div');
+	div.appendChild(document.createTextNode(str));
+	console.log(div.innerHTML.replace("\n", "<br>"));
+	return div.innerHTML.replace(/\n/g, "<br>");
+}
+
+// This code only runs on the client
+if (Meteor.isClient) {
+	Meteor.subscribe("posts");
+	Meteor.subscribe("comments");
+	init();
 
 	// BODY
 	Template.body.helpers({
@@ -67,8 +80,11 @@ if (Meteor.isClient) {
 
 	// POST
 	Template.post.helpers({
+		"safeText": function() {
+			return escapeHtml(this.text);
+		},
 		"canTrophy": function() {
-			return Session.get("canTrophy");
+			return this.userId != Meteor.userId() && Session.get("canTrophy");
 		},
 		"comments": function() {
 			return comments.find({postId: this._id}, {sort: {createdAt: 1}});
@@ -81,6 +97,13 @@ if (Meteor.isClient) {
 					Session.set("canTrophy", false);
 				}
 			});
+		}
+	});
+
+	// COMMENT
+	Template.comment.helpers({
+		"safeText": function() {
+			return escapeHtml(this.text);
 		}
 	});
 
@@ -104,8 +127,7 @@ if (Meteor.isClient) {
 					Session.set("loginError", String(err));
 				} else {
 					// The user has been logged in.
-					Session.set("registerError", "");
-					Session.set("loginError", "");
+					init();
 				}
 			});
 			return false; 
@@ -128,8 +150,7 @@ if (Meteor.isClient) {
 				} else {
 					// Success. Account has been created and the user
 					// has logged in successfully. 
-					Session.set("registerError", "");
-					Session.set("loginError", "");
+					init();
 				}
 			});
 			return false;
