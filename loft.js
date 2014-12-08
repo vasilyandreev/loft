@@ -1,5 +1,6 @@
 POSTS_PER_WEEK = 3
 posts = new Mongo.Collection("posts");
+comments = new Mongo.Collection("comments");
 
 // Returns Date corresponding to the time when "today" started.
 // Note: we define end of a day at 3am Pacific (5am Central).
@@ -32,6 +33,7 @@ Meteor.methods({
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not authorized.");
 		}
+		// TODO: check to see if we can actually post (have posts left)
 		var profile = Meteor.user().profile;
 		posts.insert({
 			userId: Meteor.userId(),
@@ -39,6 +41,20 @@ Meteor.methods({
 			text: text,
 			createdAt: Date.now(),
 			trophiesBy: [] // list of userIds who have given this post a trophy
+		});
+	},
+	// Create a new comment for the given post with the given text.
+	addComment: function (postId, text) {
+		if (!Meteor.userId()) {
+			throw new Meteor.Error("Not authorized.");
+		}
+		var profile = Meteor.user().profile;
+		comments.insert({
+			postId: postId,
+			userId: Meteor.userId(),
+			name: profile.firstName + " " + profile.lastName,
+			text: text,
+			createdAt: Date.now()
 		});
 	},
 	// Return true iff this user can give a trophy right now.

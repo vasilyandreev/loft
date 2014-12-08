@@ -1,6 +1,7 @@
 // This code only runs on the client
 if (Meteor.isClient) {
 	Meteor.subscribe("posts");
+	Meteor.subscribe("comments");
 	Session.set('loginError', "");
 	Session.set('registerError', "");
 	Meteor.call("canTrophy", function(err, result) {
@@ -28,19 +29,36 @@ if (Meteor.isClient) {
 	});
 	Template.body.events({
 		"submit .new-post": function (event) {
-			console.log("submit .new-post");
 			console.log(event);
 
 			var text = event.target.text.value;
 			Meteor.call("addPost", text, function(err, result) {
 				if (!err) {
-					// Clear form
-					event.target.text.value = "";
 					Session.set("postsLeft", Session.get("postsLeft") - 1);
 				} else {
 					// TODO: show error
 				}
 			});
+
+			// Clear form
+			event.target.text.value = "";
+
+			// Prevent default form submit
+			return false;
+		},
+		"submit .new-comment": function (event) {
+			console.log(event);
+
+			var text = event.target.text.value;
+			Meteor.call("addComment", this._id, text, function(err, result) {
+				if (!err) {
+				} else {
+					// TODO: show error
+				}
+			});
+
+			// Clear form
+			event.target.text.value = "";
 
 			// Prevent default form submit
 			return false;
@@ -51,6 +69,9 @@ if (Meteor.isClient) {
 	Template.post.helpers({
 		'canTrophy': function() {
 			return Session.get('canTrophy');
+		},
+		"comments": function() {
+			return comments.find({postId: this._id}, {sort: {createdAt: 1}});
 		}
 	});
 	Template.post.events({

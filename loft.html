@@ -40,6 +40,19 @@
 		{{#if canTrophy}}
 			<button class="trophy-button">Give Trophy</button>
 		{{/if}}
+		<p>Comments:</p>
+		{{#each comments}}
+			{{> comment}}
+		{{/each}}
+		<form class="new-comment">
+	    <input type="text" name="text" placeholder="Leave a comment..." />
+	  </form>
 		<br><br>
+	</div>
+</template>
+
+<template name="comment">
+	<div class="comment">
+		<p><b>{{name}}:</b> {{text}}</p>
 	</div>
 </template>

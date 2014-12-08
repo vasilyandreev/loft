@@ -1,8 +1,11 @@
 if (Meteor.isServer) {
 	Meteor.publish("posts", function () {
 		return posts.find({
-			userId: { $ne: this.userId }
+			//userId: { $ne: this.userId }
 		});
+	});
+	Meteor.publish("comments", function () {
+		return comments.find({});
 	});
 	Meteor.startup(function () {
 		// code to run on server at startup
