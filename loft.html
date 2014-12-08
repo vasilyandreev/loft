@@ -13,10 +13,13 @@
 		{{> loginButtons}}
 		{{#if currentUser}}
 			<header>
-				<form class="new-post">
-					<textarea name="text" placeholder="What's on your mind?"></textarea>
-					<input type="submit" value="Submit">
-				</form>
+				{{#if canPost}}
+					<form class="new-post">
+						<textarea name="text" placeholder="What's on your mind?"></textarea>
+						<input type="submit" value="Submit">
+						<p>Posts left for this week: {{postsLeft}}</p>
+					</form>
+				{{/if}}
 			</header>
 		
 			<br>

@@ -6,14 +6,24 @@ if (Meteor.isClient) {
 	Meteor.call("canTrophy", function(err, result) {
 		Session.set('canTrophy', result);
 	});
-	Meteor.call("getDebugTrophy", function(err, result) {
+	Meteor.call("getPostsLeft", function(err, result) {
+		console.log("Posts left: " + result + " " + err);
+		Session.set('postsLeft', result);
+	});
+	Meteor.call("getDebugInfo", function(err, result) {
 		console.log(result);
 	});
 
 	// BODY
 	Template.body.helpers({
-		posts: function () {
+		'posts': function () {
 			return posts.find({}, {sort: {createdAt: -1}});
+		},
+		'canPost': function() {
+			return Session.get("postsLeft") > 0;
+		},
+		'postsLeft': function() {
+			return Session.get("postsLeft");
 		}
 	});
 	Template.body.events({
@@ -22,10 +32,15 @@ if (Meteor.isClient) {
 			console.log(event);
 
 			var text = event.target.text.value;
-			Meteor.call("addPost", text);
-
-			// Clear form
-			event.target.text.value = "";
+			Meteor.call("addPost", text, function(err, result) {
+				if (!err) {
+					// Clear form
+					event.target.text.value = "";
+					Session.set("postsLeft", Session.get("postsLeft") - 1);
+				} else {
+					// TODO: show error
+				}
+			});
 
 			// Prevent default form submit
 			return false;
@@ -34,9 +49,9 @@ if (Meteor.isClient) {
 
 	// POST
 	Template.post.helpers({
-		'canTrophy' : function() {
+		'canTrophy': function() {
 			return Session.get('canTrophy');
-		},
+		}
 	});
 	Template.post.events({
 		"click .trophy-button": function () {
