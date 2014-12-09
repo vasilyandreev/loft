@@ -7,9 +7,6 @@ if (Meteor.isServer) {
 	Meteor.publish("comments", function () {
 		return comments.find({});
 	});
-	Meteor.startup(function () {
-		// code to run on server at startup
-	});
 
 	// Called when a user is created.
 	Accounts.onCreateUser(function(options, user) {
@@ -17,7 +14,7 @@ if (Meteor.isServer) {
 		if (options.profile) {
 			user.profile = options.profile;
 		}
-		user["loft"] = { lastTrophyTime: 0 };
+		user.loft = { lastTrophyTime: 0 };
 		return user;
 	});
 }
