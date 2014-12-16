@@ -38,7 +38,7 @@ Router.route('/', function () {
 	if (Meteor.userId()) {
 		this.render('home');
 	} else {
-	  this.render('login');
+		this.render('login');
 	}
 });
 

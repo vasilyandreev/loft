@@ -13,24 +13,22 @@
 <template name="home">
 	<div class="container">
 		{{> loginButtons}}
-		{{#if currentUser}}
-			<header>
-				{{#if canPost}}
-					<form class="new-post">
-						<textarea name="text" placeholder="What's on your mind?"></textarea>
-						<input type="submit" value="Submit">
-						<p>Posts left for this week: {{postsLeft}}</p>
-					</form>
-				{{else}}
-					<p>Ran out of posts for this week.</p>
-				{{/if}}
-			</header>
-		
-			<br>
-			<h1>Posts</h1>
-			{{#each posts}}
-				{{> post}}
-			{{/each}}
-		{{/if}}
+		<header>
+			{{#if canPost}}
+				<form class="new-post">
+					<textarea name="text" placeholder="What's on your mind?"></textarea>
+					<input type="submit" value="Submit">
+					<p>Posts left for this week: {{postsLeft}}</p>
+				</form>
+			{{else}}
+				<p>Ran out of posts for this week.</p>
+			{{/if}}
+		</header>
+	
+		<br>
+		<h1>Posts</h1>
+		{{#each posts}}
+			{{> post}}
+		{{/each}}
 	</div>
 </template>
