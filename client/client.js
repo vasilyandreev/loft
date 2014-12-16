@@ -3,11 +3,11 @@ function init() {
 	Session.set("loginError", "");
 	Session.set("registerError", "");
 
-	Meteor.call("canTrophy", function(err, result) {
+	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
-			Session.set("canTrophy", result);
+			Session.set("canLove", result);
 		} else {
-			console.log("canTrophy error: " + err);
+			console.log("canLove error: " + err);
 		}
 	});
 	Meteor.call("getPostsLeft", function(err, result) {
@@ -36,7 +36,6 @@ function escapeHtml(str) {
 // Router setup.
 Router.route('/', function () {
 	if (Meteor.userId()) {
-		console.log("home");
 		this.render('home');
 	} else {
 	  this.render('login');
@@ -103,8 +102,8 @@ Template.post.helpers({
 	"safeText": function() {
 		return escapeHtml(this.text);
 	},
-	"canTrophy": function() {
-		return this.userId != Meteor.userId() && Session.get("canTrophy");
+	"canLove": function() {
+		return this.userId != Meteor.userId() && Session.get("canLove");
 	},
 	"comments": function() {
 		return comments.find({postId: this._id}, {sort: {createdAt: 1}});
@@ -112,12 +111,12 @@ Template.post.helpers({
 });
 
 Template.post.events({
-	"click .trophy-button": function () {
-		Meteor.call("addTrophy", this._id, function (err, result) {
+	"click .love-button": function () {
+		Meteor.call("lovePost", this._id, function (err, result) {
 			if (err == undefined) {
-				Session.set("canTrophy", false);
+				Session.set("canLove", false);
 			} else {
-				console.log("addTrophy error: " + err);
+				console.log("lovePost error: " + err);
 			}
 		});
 	}
@@ -165,6 +164,7 @@ Template.login.events({
 		var profile = {
 			firstName: target.find("#account-first-name").value,
 			lastName: target.find("#account-last-name").value,
+			lastLoveTime: 0,
 		};
 
 		// TODO: Trim and validate the input

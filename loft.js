@@ -9,7 +9,7 @@ function getStartOfToday() {
 	startOfToday.setUTCMilliseconds(0);
 	startOfToday.setUTCSeconds(0);
 	startOfToday.setUTCMinutes(0);
-	// 11am UTC is 3am Pacific, which is when we reset trophies.
+	// 11am UTC is 3am Pacific, which is when we reset loves.
 	if (startOfToday.getUTCHours() < 11) {
 		startOfToday.setUTCDate(startOfToday.getUTCDate() - 1);
 	}
@@ -40,17 +40,17 @@ function getPostsLeft() {
 	return POSTS_PER_WEEK - postsMade;
 }
 
-// Return true iff the user can give a trophy today.
-function canTrophy() {
+// Return true iff the user can give love a post today.
+function canLove() {
 	if (!Meteor.userId()) {
 		return false;
 	}
 	var startOfToday = getStartOfToday();
-	return Meteor.user().loft.lastTrophyTime < startOfToday.getTime();
+	return Meteor.user().profile.lastLoveTime < startOfToday.getTime();
 }
 
 Meteor.methods({
-	canTrophy: canTrophy,
+	canLove: canLove,
 	getPostsLeft: getPostsLeft,
 	// Create a new comment for the given post with the given text.
 	addComment: function (postId, text) {
@@ -82,11 +82,11 @@ Meteor.methods({
 			name: profile.firstName + " " + profile.lastName,
 			text: text,
 			createdAt: Date.now(),
-			trophiesBy: [] // list of userIds who have given this post a trophy
+			lovedBy: [] // list of userIds who have loved this post
 		});
 	},
-	// Add a trophy for the given post.
-	addTrophy: function (postId) {
+	// Love the given post.
+	lovePost: function (postId) {
 		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not authorized.");
@@ -95,20 +95,20 @@ Meteor.methods({
 			throw new Meteor.Error("No post with this id.");
 		}
 		if (Meteor.userId() == post.userId) {
-			throw new Meteor.Error("Can't give a trophy to yourself.");
+			throw new Meteor.Error("Can't love your own post.");
 		}
-		if (!canTrophy()) {
-			throw new Meteor.Error("Can't give any more trophies today.");
+		if (!canLove()) {
+			throw new Meteor.Error("Can't love another post today.");
 		}
-		posts.update(postId, { $addToSet: { trophiesBy: Meteor.userId() } });
-		Meteor.users.update(Meteor.userId(), { $set: { loft: { lastTrophyTime: Date.now() } } });
+		posts.update(postId, { $addToSet: { lovedBy: Meteor.userId() } });
+		Meteor.users.update(Meteor.userId(), { $set: { profile: { lastLoveTime: Date.now() } } });
 	},
-	// Get debug trophy info.
+	// Get debug info.
 	getDebugInfo: function () {
-		var lastTrophyDate = new Date(Meteor.user().loft.lastTrophyTime);
+		var lastLoveTime = new Date(Meteor.user().profile.lastLoveTime);
 		var startOfToday = getStartOfToday();
 		var startOfWeek = getStartOfWeek();
-		return "LastTrophyDate: " + lastTrophyDate.toUTCString() + " (" + lastTrophyDate.getTime() + ")\n " +
+		return "LastLoveTime: " + lastLoveTime.toUTCString() + " (" + lastLoveTime.getTime() + ")\n " +
 			"StartOfToday: " + startOfToday.toUTCString() + " (" + startOfToday.getTime() + ")\n " +
 			"StartOfWeek: " + startOfWeek.toUTCString() + " (" + startOfWeek.getTime() + ")\n ";
 	}

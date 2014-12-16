@@ -14,7 +14,7 @@ if (Meteor.isServer) {
 		if (options.profile) {
 			user.profile = options.profile;
 		}
-		user.loft = { lastTrophyTime: 0 };
+		user.loft = { };
 		return user;
 	});
 }

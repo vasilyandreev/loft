@@ -1,9 +1,9 @@
 <template name="post">
 	<div class="post">
-		<p>{{name}} ({{trophiesBy.length}})</p>
+		<p>{{name}} ({{lovedBy.length}})</p>
 		<p>{{{safeText}}}</p>
-		{{#if canTrophy}}
-			<button class="trophy-button">Give Trophy</button>
+		{{#if canLove}}
+			<button class="love-button">Love</button>
 		{{/if}}
 		<p>Comments:</p>
 		{{#each comments}}
