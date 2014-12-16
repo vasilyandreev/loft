@@ -130,7 +130,11 @@ Template.story.helpers({
 				text = "Welcome to Loft.";
 				break;
 			case STORY_TYPE.COMMENT:
-				text = escapeHtml(getFullName(this.byUserId) + " commented on your post.");
+				if (this.postOwnerId == Meteor.userId()) {
+					text = getFullName(this.byUserId) + " commented on your post.";
+				} else {
+					text = getFullName(this.byUserId) + " also commented on " + getFullName(this.postOwnerId) + "’s post.";
+				}
 				break;
 			default:
 				text = "Error: unknown story type."

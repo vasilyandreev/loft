@@ -73,16 +73,21 @@ Meteor.methods({
 			text: text,
 			createdAt: Date.now()
 		});
-		if (post.userId != Meteor.userId()) {
-			stories.insert({
-				type: STORY_TYPE.COMMENT,
-				forUserId: post.userId,
-				byUserId: Meteor.userId(),
-				postId: postId,
-				createdAt: Date.now(),
-				new: true,
-			});
-		}
+		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
+
+		post.commenters.forEach(function(commenterId) {
+			if (commenterId != Meteor.userId()) {
+				stories.insert({
+					type: STORY_TYPE.COMMENT,
+					forUserId: commenterId,
+					byUserId: Meteor.userId(),
+					postId: postId,
+					postOwnerId: post.userId,
+					createdAt: Date.now(),
+					new: true,
+				});
+			}
+		});
 	},
 	// Create a new post with the given text.
 	addPost: function (text) {
@@ -97,7 +102,10 @@ Meteor.methods({
 			userId: Meteor.userId(),
 			text: text,
 			createdAt: Date.now(),
-			lovedBy: [] // list of userIds who have loved this post
+			lovedBy: [],  // list of userIds who have loved this post
+			// Immediately add the post owner to commenters, so they get a notification
+			// when someone comments on their post.
+			commenters: [Meteor.userId()]  // list of userIds who have commented on this post
 		});
 	},
 	// Love the given post.
