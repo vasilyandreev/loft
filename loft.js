@@ -1,4 +1,5 @@
 POSTS_PER_WEEK = 3
+stories = new Mongo.Collection("stories");
 posts = new Mongo.Collection("posts");
 comments = new Mongo.Collection("comments");
 
@@ -54,8 +55,12 @@ Meteor.methods({
 	getPostsLeft: getPostsLeft,
 	// Create a new comment for the given post with the given text.
 	addComment: function (postId, text) {
+		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not authorized.");
+		}
+		if (!post) {
+			throw new Meteor.Error("No post with this id.");
 		}
 		
 		var profile = Meteor.user().profile;
@@ -65,6 +70,12 @@ Meteor.methods({
 			name: profile.firstName + " " + profile.lastName,
 			text: text,
 			createdAt: Date.now()
+		});
+		stories.insert({
+			userId: post.userId,
+			postId: postId,
+			text: profile.firstName + " " + profile.lastName + " commented on your post.",
+			createdAt: Date.now(),
 		});
 	},
 	// Create a new post with the given text.

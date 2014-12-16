@@ -11,24 +11,40 @@
 </body>
 
 <template name="home">
-	<div class="container">
-		{{> loginButtons}}
-		<header>
-			{{#if canPost}}
-				<form class="new-post">
-					<textarea name="text" placeholder="What's on your mind?"></textarea>
-					<input type="submit" value="Submit">
-					<p>Posts left for this week: {{postsLeft}}</p>
-				</form>
-			{{else}}
-				<p>Ran out of posts for this week.</p>
-			{{/if}}
-		</header>
-	
-		<br>
-		<h1>Posts</h1>
-		{{#each posts}}
-			{{> post}}
-		{{/each}}
-	</div>
+{{> loginButtons}}
+<table class="b-home-table">
+	<col class="b-stories-column">
+	<col class="b-posts-column">
+	<tr>
+		<td class="b-stories-column">
+			<div class="container">
+				<h1>Stories ({{stories.count}})</h1>
+				{{#each stories}}
+					{{> story}}
+				{{/each}}
+			</div>
+		</td>
+		<td class="b-posts-column">
+			<div class="container">
+				<header>
+					{{#if canPost}}
+						<form class="new-post">
+							<textarea name="text" placeholder="What's on your mind?"></textarea>
+							<input type="submit" value="Submit">
+							<p>Posts left for this week: {{postsLeft}}</p>
+						</form>
+					{{else}}
+						<p>Ran out of posts for this week.</p>
+					{{/if}}
+				</header>
+			
+				<br>
+				<h1>Posts</h1>
+				{{#each posts}}
+					{{> post}}
+				{{/each}}
+			</div>
+		</td>
+	</tr>
+</table>
 </template>

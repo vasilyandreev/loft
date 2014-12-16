@@ -49,6 +49,20 @@ form {
 	position: relative;
 }
 
+.b-home-table {
+	width: 100%;
+}
+
+.b-stories-column {
+	width: 30%;
+	vertical-align: top;
+}
+
+.b-posts-column {
+	width: 70%;
+	vertical-align: top;
+}
+
 .new-post textarea {
 	box-sizing: border-box;
 	padding: 0.2em;

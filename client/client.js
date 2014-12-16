@@ -42,6 +42,7 @@ Router.route('/', function () {
 	}
 });
 
+Meteor.subscribe("stories");
 Meteor.subscribe("posts");
 Meteor.subscribe("comments");
 init();
@@ -49,6 +50,9 @@ init();
 
 // HOME
 Template.home.helpers({
+	"stories": function () {
+		return stories.find({}, {sort: {createdAt: -1}});
+	},
 	"posts": function () {
 		return posts.find({}, {sort: {createdAt: -1}});
 	},
@@ -94,6 +98,14 @@ Template.home.events({
 		// Prevent default form submit
 		return false;
 	}
+});
+
+
+// STORY
+Template.story.helpers({
+	"safeText": function() {
+		return escapeHtml(this.text);
+	},
 });
 
 
