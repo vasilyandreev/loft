@@ -1,4 +1,7 @@
 if (Meteor.isServer) {
+	Meteor.publish("userProfiles", function () {
+		return Meteor.users.find({});
+	});
 	Meteor.publish("stories", function () {
 		return stories.find({
 			userId: this.userId
@@ -12,6 +15,8 @@ if (Meteor.isServer) {
 	Meteor.publish("comments", function () {
 		return comments.find({});
 	});
+	// Don't allow users to update their profiles.
+	Meteor.users.deny({update: function () { return true; }});
 
 	// Called when a user is created.
 	Accounts.onCreateUser(function(options, user) {
@@ -22,8 +27,10 @@ if (Meteor.isServer) {
 		user.loft = { };
 		// Add initial story.
 		stories.insert({
+			type: STORY_TYPE.ADMIN,
 			userId: user._id,
-			text: "Welcome to Loft.",
+			// TODO: adminId: 0,
+			// TODO: postId: 0,
 			createdAt: Date.now(),
 		});
 		return user;

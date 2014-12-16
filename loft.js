@@ -1,4 +1,8 @@
 POSTS_PER_WEEK = 3
+STORY_TYPE = {
+	ADMIN: "admin",  // was created by an admin
+	COMMENT: "comment",  // was created by a comment
+};
 stories = new Mongo.Collection("stories");
 posts = new Mongo.Collection("posts");
 comments = new Mongo.Collection("comments");
@@ -63,20 +67,21 @@ Meteor.methods({
 			throw new Meteor.Error("No post with this id.");
 		}
 		
-		var profile = Meteor.user().profile;
 		comments.insert({
 			postId: postId,
 			userId: Meteor.userId(),
-			name: profile.firstName + " " + profile.lastName,
 			text: text,
 			createdAt: Date.now()
 		});
-		stories.insert({
-			userId: post.userId,
-			postId: postId,
-			text: profile.firstName + " " + profile.lastName + " commented on your post.",
-			createdAt: Date.now(),
-		});
+		if (post.userId != Meteor.userId()) {
+			stories.insert({
+				type: STORY_TYPE.COMMENT,
+				userId: post.userId,
+				commenterId: Meteor.userId(),
+				postId: postId,
+				createdAt: Date.now(),
+			});
+		}
 	},
 	// Create a new post with the given text.
 	addPost: function (text) {
@@ -87,10 +92,8 @@ Meteor.methods({
 			throw new Meteor.Error("Can't make any more posts this week.");
 		}
 
-		var profile = Meteor.user().profile;
 		posts.insert({
 			userId: Meteor.userId(),
-			name: profile.firstName + " " + profile.lastName,
 			text: text,
 			createdAt: Date.now(),
 			lovedBy: [] // list of userIds who have loved this post

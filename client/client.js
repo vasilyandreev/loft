@@ -33,6 +33,12 @@ function escapeHtml(str) {
 	return div.innerHTML.replace(/\n/g, "<br>");
 }
 
+// Return the full name of a user.
+function getFullName(userId) {
+	var user = Meteor.users.findOne(userId);
+	return user.profile.firstName + " " + user.profile.lastName;
+}
+
 // Router setup.
 Router.route('/', function () {
 	if (Meteor.userId()) {
@@ -42,9 +48,13 @@ Router.route('/', function () {
 	}
 });
 
-Meteor.subscribe("stories");
-Meteor.subscribe("posts");
-Meteor.subscribe("comments");
+Tracker.autorun(function () {
+	Meteor.subscribe("userProfiles");
+	Meteor.subscribe("stories");
+	Meteor.subscribe("posts");
+	Meteor.subscribe("comments");
+});
+
 init();
 
 
@@ -104,7 +114,18 @@ Template.home.events({
 // STORY
 Template.story.helpers({
 	"safeText": function() {
-		return escapeHtml(this.text);
+		var text = "";
+		switch(this.type) {
+			case STORY_TYPE.ADMIN:
+				text = "Welcome to Loft.";
+				break;
+			case STORY_TYPE.COMMENT:
+				text = escapeHtml(getFullName(this.commenterId) + " commented on your post.");
+				break;
+			default:
+				text = "Error: unknown story type."
+		}
+		return escapeHtml(text);
 	},
 });
 
@@ -113,6 +134,9 @@ Template.story.helpers({
 Template.post.helpers({
 	"safeText": function() {
 		return escapeHtml(this.text);
+	},
+	"name": function() {
+		return getFullName(this.userId);
 	},
 	"canLove": function() {
 		return this.userId != Meteor.userId() && Session.get("canLove");
@@ -139,6 +163,9 @@ Template.post.events({
 Template.comment.helpers({
 	"safeText": function() {
 		return escapeHtml(this.text);
+	},
+	"name": function() {
+		return getFullName(this.userId);
 	}
 });
 
