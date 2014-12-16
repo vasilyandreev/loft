@@ -76,10 +76,11 @@ Meteor.methods({
 		if (post.userId != Meteor.userId()) {
 			stories.insert({
 				type: STORY_TYPE.COMMENT,
-				userId: post.userId,
-				commenterId: Meteor.userId(),
+				forUserId: post.userId,
+				byUserId: Meteor.userId(),
 				postId: postId,
 				createdAt: Date.now(),
+				new: true,
 			});
 		}
 	},

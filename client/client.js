@@ -60,9 +60,6 @@ init();
 
 // HOME
 Template.home.helpers({
-	"stories": function () {
-		return stories.find({}, {sort: {createdAt: -1}});
-	},
 	"posts": function () {
 		return posts.find({}, {sort: {createdAt: -1}});
 	},
@@ -111,6 +108,19 @@ Template.home.events({
 });
 
 
+// STORIES
+Template.stories.helpers({
+	"newStories": function () {
+		// Filter out stories that are created by this user as a workaround the
+		// Meteor bug where the story flashes for a second when the user comments/loves.
+		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: true}]}, {sort: {createdAt: -1}});
+	},
+	"oldStories": function () {
+		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: false}]}, {sort: {createdAt: -1}});
+	},
+});
+
+
 // STORY
 Template.story.helpers({
 	"safeText": function() {
@@ -120,7 +130,7 @@ Template.story.helpers({
 				text = "Welcome to Loft.";
 				break;
 			case STORY_TYPE.COMMENT:
-				text = escapeHtml(getFullName(this.commenterId) + " commented on your post.");
+				text = escapeHtml(getFullName(this.byUserId) + " commented on your post.");
 				break;
 			default:
 				text = "Error: unknown story type."
@@ -219,4 +229,3 @@ Template.login.events({
 		return false;
 	}
 });
-

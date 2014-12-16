@@ -4,7 +4,7 @@ if (Meteor.isServer) {
 	});
 	Meteor.publish("stories", function () {
 		return stories.find({
-			userId: this.userId
+			forUserId: this.userId
 		});
 	});
 	Meteor.publish("posts", function () {
@@ -28,10 +28,11 @@ if (Meteor.isServer) {
 		// Add initial story.
 		stories.insert({
 			type: STORY_TYPE.ADMIN,
-			userId: user._id,
-			// TODO: adminId: 0,
+			forUserId: user._id,
+			// TODO: byUserId: 0,
 			// TODO: postId: 0,
 			createdAt: Date.now(),
+			new: true,
 		});
 		return user;
 	});
