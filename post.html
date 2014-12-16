@@ -1,0 +1,18 @@
+<template name="post">
+	<div class="post">
+		<p>{{name}} ({{trophiesBy.length}})</p>
+		<p>{{{safeText}}}</p>
+		{{#if canTrophy}}
+			<button class="trophy-button">Give Trophy</button>
+		{{/if}}
+		<p>Comments:</p>
+		{{#each comments}}
+			{{> comment}}
+		{{/each}}
+		<form class="new-comment">
+	    <input type="text" name="text" placeholder="Leave a comment..." />
+	  </form>
+		<br><br>
+		<hr>
+	</div>
+</template>

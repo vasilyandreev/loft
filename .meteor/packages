@@ -7,4 +7,5 @@ meteor-platform
 accounts-ui
 accounts-base
 accounts-password
+iron:router
 
