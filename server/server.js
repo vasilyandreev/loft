@@ -33,6 +33,7 @@ if (Meteor.isServer) {
 			// TODO: postId: 0,
 			createdAt: Date.now(),
 			new: true,
+			read: false,
 		});
 		return user;
 	});

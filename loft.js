@@ -85,6 +85,7 @@ Meteor.methods({
 					postOwnerId: post.userId,
 					createdAt: Date.now(),
 					new: true,
+					read: false,
 				});
 			}
 		});
@@ -137,6 +138,13 @@ Meteor.methods({
 			throw new Meteor.Error("Not authorized.");
 		}
 		stories.update({forUserId: Meteor.userId()}, {$set: {new: false}}, {multi: true});
+	},
+	// Mark the story as read.
+	markStoryRead: function(storyId) {
+		if (!Meteor.userId()) {
+			throw new Meteor.Error("Not authorized.");
+		}
+		stories.update(storyId, {$set: {read: true}});
 	},
 	// Get debug info.
 	getDebugInfo: function () {

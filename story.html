@@ -1,5 +1,5 @@
 <template name="story">
 	<div class="b-story">
-		<p><a class="story-link" href="#">{{{safeText}}}</a></p>
+		<p class={{#if read}}read-story{{/if}}><a class="story-link" href="#">{{{safeText}}}</a></p>
 	</div>
 </template>

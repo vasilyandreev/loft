@@ -162,6 +162,11 @@ Template.story.helpers({
 });
 Template.story.events({
 	"click .story-link": function () {
+		Meteor.call("markStoryRead", this._id, function(err, result) {
+			if (err != undefined) {
+				console.log("Error setPostRead: " + err);
+			}
+		});
 		Session.set("currentPost", this.postId);
 		return false;
 	}

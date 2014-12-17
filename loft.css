@@ -71,6 +71,10 @@ form {
 	font-size: 1em;
 }
 
+.read-story {
+	background: gray;
+}
+
 ul {
 	margin: 0;
 	padding: 0;
