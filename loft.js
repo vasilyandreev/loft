@@ -128,7 +128,8 @@ Meteor.methods({
 		}
 
 		posts.update(postId, {$addToSet: {lovedBy: Meteor.userId()}});
-		Meteor.users.update(Meteor.userId(), {$set: {profile: {lastLoveTime: Date.now()}}});
+		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
+		Meteor.users.update(Meteor.userId(), {$set: {"profile.lastLoveTime": Date.now()}});
 	},
 	// Mark all stories as old.
 	markAllStoriesOld: function () {
