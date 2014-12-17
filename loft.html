@@ -30,23 +30,29 @@
 		</td>
 		<td class="b-posts-column">
 			<div class="container">
-				<header>
-					{{#if canPost}}
-						<form class="new-post">
-							<textarea name="text" placeholder="What's on your mind?"></textarea>
-							<input type="submit" value="Submit">
-							<p>Posts left for this week: {{postsLeft}}</p>
-						</form>
-					{{else}}
-						<p>Ran out of posts for this week.</p>
-					{{/if}}
-				</header>
-			
-				<br>
-				<h1>Posts</h1>
-				{{#each posts}}
-					{{> post}}
-				{{/each}}
+				{{#if currentPost}}
+					{{#with currentPost}}
+						{{> post}}
+					{{/with}}
+				{{else}}
+					<header>
+						{{#if canPost}}
+							<form class="new-post">
+								<textarea name="text" placeholder="What's on your mind?"></textarea>
+								<input type="submit" value="Submit">
+								<p>Posts left for this week: {{postsLeft}}</p>
+							</form>
+						{{else}}
+							<p>Ran out of posts for this week.</p>
+						{{/if}}
+					</header>
+				
+					<br>
+					<h1>Posts</h1>
+					{{#each posts}}
+						{{> post}}
+					{{/each}}
+				{{/if}}
 			</div>
 		</td>
 	</tr>

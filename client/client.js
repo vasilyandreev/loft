@@ -2,7 +2,8 @@
 function init() {
 	Session.set("loginError", "");
 	Session.set("registerError", "");
-	Session.set("showStories", false);
+	Session.set("showStories", false);  // True iff we are showing stories section
+	Session.set("currentPost", "");  // Id of the post we have selected on the right
 
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
@@ -70,6 +71,9 @@ Template.home.helpers({
 	"posts": function () {
 		return posts.find({}, {sort: {createdAt: -1}});
 	},
+	"currentPost": function () {
+		return posts.findOne({"_id": Session.get("currentPost")});
+	},
 	"canPost": function() {
 		return Session.get("postsLeft") > 0;
 	},
@@ -87,6 +91,7 @@ Template.home.events({
 					console.log("markAllStoriesOld error: " + err);
 				}
 			});
+			Session.set("currentPost", this.postId);
 		}
 	},
 	"submit .new-post": function (event) {
@@ -155,7 +160,12 @@ Template.story.helpers({
 		return escapeHtml(text);
 	},
 });
-
+Template.story.events({
+	"click .story-link": function () {
+		Session.set("currentPost", this.postId);
+		return false;
+	}
+});
 
 // POST
 Template.post.helpers({
