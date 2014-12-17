@@ -40,7 +40,7 @@ function getPostsLeft() {
 	var startOfWeek = getStartOfWeek();
 	var postsMade = posts.find({
 		userId: Meteor.userId(),
-		createdAt: { $gt: startOfWeek.getTime() }
+		createdAt: {$gt: startOfWeek.getTime()}
 	}).count();
 	return POSTS_PER_WEEK - postsMade;
 }
@@ -123,8 +123,15 @@ Meteor.methods({
 		if (!canLove()) {
 			throw new Meteor.Error("Can't love another post today.");
 		}
-		posts.update(postId, { $addToSet: { lovedBy: Meteor.userId() } });
-		Meteor.users.update(Meteor.userId(), { $set: { profile: { lastLoveTime: Date.now() } } });
+		posts.update(postId, {$addToSet: {lovedBy: Meteor.userId()}});
+		Meteor.users.update(Meteor.userId(), {$set: {profile: {lastLoveTime: Date.now()}}});
+	},
+	// Mark all stories as old.
+	markAllStoriesOld: function () {
+		if (!Meteor.userId()) {
+			throw new Meteor.Error("Not authorized.");
+		}
+		stories.update({forUserId: Meteor.userId()}, {$set: {new: false}}, {multi: true});
 	},
 	// Get debug info.
 	getDebugInfo: function () {

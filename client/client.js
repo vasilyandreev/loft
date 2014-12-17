@@ -2,6 +2,7 @@
 function init() {
 	Session.set("loginError", "");
 	Session.set("registerError", "");
+	Session.set("showStories", false);
 
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
@@ -60,6 +61,12 @@ init();
 
 // HOME
 Template.home.helpers({
+	"newStories": function () {
+		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: true}]}, {sort: {createdAt: -1}});
+	},
+	"showStories": function () {
+		return Session.get("showStories");
+	},
 	"posts": function () {
 		return posts.find({}, {sort: {createdAt: -1}});
 	},
@@ -72,9 +79,17 @@ Template.home.helpers({
 });
 
 Template.home.events({
+	"click #story-button": function (event) {
+		Session.set("showStories", !Session.get("showStories"));
+		if (!Session.get("showStories")) {
+			Meteor.call("markAllStoriesOld", function (result, err) {
+				if (err != undefined) {
+					console.log("markAllStoriesOld error: " + err);
+				}
+			});
+		}
+	},
 	"submit .new-post": function (event) {
-		console.log(event);
-
 		Meteor.call("addPost", event.target.text.value, function(err, result) {
 			if (err == undefined) {
 				Session.set("postsLeft", Session.get("postsLeft") - 1);
@@ -90,8 +105,6 @@ Template.home.events({
 		return false;
 	},
 	"submit .new-comment": function (event) {
-		console.log(event);
-
 		Meteor.call("addComment", this._id, event.target.text.value, function(err, result) {
 			if (err == undefined) {
 			} else {

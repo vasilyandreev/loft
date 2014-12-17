@@ -11,13 +11,22 @@
 </body>
 
 <template name="home">
-{{> loginButtons}}
 <table class="b-home-table">
 	<col class="b-stories-column">
 	<col class="b-posts-column">
 	<tr>
 		<td class="b-stories-column">
-			{{> stories}}
+			<h1>LOFT <button id="story-button">{{newStories.count}}</button></h1>
+		</td>
+		<td class="b-posts-column">
+			{{> loginButtons}}
+		</td>
+	</tr>
+	<tr>
+		<td class="b-stories-column">
+			{{#if showStories}}
+				{{> stories}}
+			{{/if}}
 		</td>
 		<td class="b-posts-column">
 			<div class="container">
