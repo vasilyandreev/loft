@@ -45,7 +45,7 @@ function getPostsLeft() {
 	return POSTS_PER_WEEK - postsMade;
 }
 
-// Return true iff the user can give love a post today.
+// Return true iff the user can love a post today.
 function canLove() {
 	if (!Meteor.userId()) {
 		return false;
@@ -54,6 +54,7 @@ function canLove() {
 	return Meteor.user().profile.lastLoveTime < startOfToday.getTime();
 }
 
+
 Meteor.methods({
 	canLove: canLove,
 	getPostsLeft: getPostsLeft,
@@ -61,7 +62,7 @@ Meteor.methods({
 	addComment: function (postId, text) {
 		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
-			throw new Meteor.Error("Not authorized.");
+			throw new Meteor.Error("Not logged in.");
 		}
 		if (!post) {
 			throw new Meteor.Error("No post with this id.");
@@ -93,7 +94,7 @@ Meteor.methods({
 	// Create a new post with the given text.
 	addPost: function (text) {
 		if (!Meteor.userId()) {
-			throw new Meteor.Error("Not authorized.");
+			throw new Meteor.Error("Not logged in.");
 		}
 		if (getPostsLeft() <= 0) {
 			throw new Meteor.Error("Can't make any more posts this week.");
@@ -113,7 +114,7 @@ Meteor.methods({
 	lovePost: function (postId) {
 		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
-			throw new Meteor.Error("Not authorized.");
+			throw new Meteor.Error("Not logged in.");
 		}
 		if (!post) {
 			throw new Meteor.Error("No post with this id.");
@@ -135,14 +136,21 @@ Meteor.methods({
 	// Mark all stories as old.
 	markAllStoriesOld: function () {
 		if (!Meteor.userId()) {
-			throw new Meteor.Error("Not authorized.");
+			throw new Meteor.Error("Not logged in.");
 		}
 		stories.update({forUserId: Meteor.userId()}, {$set: {new: false}}, {multi: true});
 	},
 	// Mark the story as read.
 	markStoryRead: function(storyId) {
+		var story = stories.findOne(storyId);
 		if (!Meteor.userId()) {
-			throw new Meteor.Error("Not authorized.");
+			throw new Meteor.Error("Not logged in.");
+		}
+		if (!story) {
+			throw new Meteor.Error("No story with this id.");
+		}
+		if (story.forUserId != Meteor.userId()) {
+			throw new Meteor.Error("Not your story to change.");
 		}
 		stories.update(storyId, {$set: {read: true}});
 	},
