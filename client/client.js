@@ -166,7 +166,10 @@ Template.post.helpers({
 		return getFullName(this.userId);
 	},
 	"canLove": function() {
-		return this.userId != Meteor.userId() && Session.get("canLove");
+		return this.userId != Meteor.userId() &&
+			Session.get("canLove") &&
+			this.lovedBy.indexOf(Meteor.userId()) == -1;
+
 	},
 	"comments": function() {
 		return comments.find({postId: this._id}, {sort: {createdAt: 1}});

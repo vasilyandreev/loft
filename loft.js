@@ -123,6 +123,10 @@ Meteor.methods({
 		if (!canLove()) {
 			throw new Meteor.Error("Can't love another post today.");
 		}
+		if (post.lovedBy.indexOf(Meteor.userId()) >= 0) {
+			throw new Meteor.Error("Can't love a post more than once.");
+		}
+
 		posts.update(postId, {$addToSet: {lovedBy: Meteor.userId()}});
 		Meteor.users.update(Meteor.userId(), {$set: {profile: {lastLoveTime: Date.now()}}});
 	},
