@@ -7,10 +7,10 @@ if (Meteor.isServer) {
 			forUserId: this.userId
 		});
 	});
-	Meteor.publish("posts", function () {
+	Meteor.publish("posts", function (count) {
 		return posts.find({
 			//userId: { $ne: this.userId }
-		});
+		}, {limit: count, sort: {createdAt: -1}});
 	});
 	Meteor.publish("comments", function () {
 		return comments.find({});

@@ -52,6 +52,9 @@
 					{{#each posts}}
 						{{> post}}
 					{{/each}}
+					{{#if showLoadMore}}
+						<p><a id="load-more" href="#">Load More</a></p>
+					{{/if}}
 				{{/if}}
 			</div>
 		</td>

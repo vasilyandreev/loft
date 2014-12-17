@@ -2,6 +2,7 @@
 function init() {
 	Session.set("loginError", "");
 	Session.set("registerError", "");
+	Session.set("postsCount", 4);  // number of posts to show
 	Session.set("showStories", false);  // True iff we are showing stories section
 	Session.set("currentPost", "");  // Id of the post we have selected on the right
 
@@ -53,7 +54,7 @@ Router.route('/', function () {
 Tracker.autorun(function () {
 	Meteor.subscribe("userProfiles");
 	Meteor.subscribe("stories");
-	Meteor.subscribe("posts");
+	Meteor.subscribe("posts", Session.get("postsCount"));
 	Meteor.subscribe("comments");
 });
 
@@ -70,6 +71,10 @@ Template.home.helpers({
 	},
 	"posts": function () {
 		return posts.find({}, {sort: {createdAt: -1}});
+	},
+	"showLoadMore": function () {
+		// TODO
+		return true;
 	},
 	"currentPost": function () {
 		return posts.findOne({"_id": Session.get("currentPost")});
@@ -93,6 +98,10 @@ Template.home.events({
 			});
 			Session.set("currentPost", this.postId);
 		}
+	},
+	"click #load-more": function (event) {
+		Session.set("postsCount", Session.get("postsCount") + 4);
+		Meteor.subscribe("posts", Session.get("postsCount"));
 	},
 	"submit .new-post": function (event) {
 		Meteor.call("addPost", event.target.text.value, function(err, result) {
