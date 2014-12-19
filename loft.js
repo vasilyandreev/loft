@@ -2,6 +2,7 @@ POSTS_PER_WEEK = 3
 STORY_TYPE = {
 	ADMIN: "admin",  // was created by an admin
 	COMMENT: "comment",  // was created by a comment
+	LOVE: "love",  // was created by loving post
 };
 stories = new Mongo.Collection("stories");
 posts = new Mongo.Collection("posts");
@@ -132,6 +133,17 @@ Meteor.methods({
 		posts.update(postId, {$addToSet: {lovedBy: Meteor.userId()}});
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 		Meteor.users.update(Meteor.userId(), {$set: {"profile.lastLoveTime": Date.now()}});
+				
+		stories.insert({
+			type: STORY_TYPE.LOVE,
+			forUserId: post.userId,
+			byUserId: Meteor.userId(),
+			postId: postId,
+			postOwnerId: post.userId,
+			createdAt: Date.now(),
+			new: true,
+			read: false,
+		});
 	},
 	// Mark all stories as old.
 	markAllStoriesOld: function () {

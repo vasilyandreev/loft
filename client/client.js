@@ -95,13 +95,12 @@ Template.home.events({
 			$(".b-stories").animate({"margin-right": "0%"}, {queue: false});
 			$(".b-posts-spacer").hide({effect: "scale", direction: "horizontal", queue: false});
 		} else {
-			Session.set("showStories", true);
 			Meteor.call("markAllStoriesOld", function (result, err) {
 				if (err != undefined) {
 					console.log("markAllStoriesOld error: " + err);
 				}
 			});
-			Session.set("currentPost", this.postId);
+			Session.set("currentPost", undefined);
 			$(".b-stories").animate({"left": "-35%"}, {queue: false, complete: function() {
 				Session.set("showStories", false);
 			}});
@@ -173,8 +172,13 @@ Template.story.helpers({
 					text = getFullName(this.byUserId) + " also commented on " + getFullName(this.postOwnerId) + "’s post.";
 				}
 				break;
+			case STORY_TYPE.LOVE:
+				text = getFullName(this.byUserId) + " loved your post.";
+				break;
 			default:
-				text = "Error: unknown story type."
+				text = "Error: unknown story type.";
+
+
 		}
 		return escapeHtml(text);
 	},
