@@ -89,14 +89,24 @@ Template.home.helpers({
 
 Template.home.events({
 	"click #story-button": function (event) {
-		Session.set("showStories", !Session.get("showStories"));
 		if (!Session.get("showStories")) {
+			Session.set("showStories", true);
+			$(".b-stories").animate({"left": "0%"}, {queue: false});
+			$(".b-stories").animate({"margin-right": "0%"}, {queue: false});
+			$(".b-posts-spacer").hide({effect: "scale", direction: "horizontal", queue: false});
+		} else {
+			Session.set("showStories", true);
 			Meteor.call("markAllStoriesOld", function (result, err) {
 				if (err != undefined) {
 					console.log("markAllStoriesOld error: " + err);
 				}
 			});
 			Session.set("currentPost", this.postId);
+			$(".b-stories").animate({"left": "-35%"}, {queue: false, complete: function() {
+				Session.set("showStories", false);
+			}});
+			$(".b-stories").animate({"margin-right": "-35%"}, {queue: false});
+			$(".b-posts-spacer").show({effect: "scale", direction: "horizontal", queue: false});
 		}
 	},
 	"click #load-more": function (event) {

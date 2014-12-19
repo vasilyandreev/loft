@@ -11,53 +11,42 @@
 </body>
 
 <template name="home">
-<table class="b-home-table">
-	<col class="b-stories-column">
-	<col class="b-posts-column">
-	<tr>
-		<td class="b-stories-column">
-			<h1>LOFT <button id="story-button">{{newStories.count}}</button></h1>
-		</td>
-		<td class="b-posts-column">
-			{{> loginButtons}}
-		</td>
-	</tr>
-	<tr>
-		<td class="b-stories-column">
-			{{#if showStories}}
-				{{> stories}}
+<header>
+	<span id="loft-logo">LOFT&nbsp;&nbsp;&nbsp;</span><button id="story-button">{{newStories.count}}</button>
+</header>
+<div class="b-stories">
+	{{#if showStories}}
+		{{> stories}}
+	{{/if}}
+</div>
+<div class="b-posts-spacer">&nbsp;</div>
+<div class="b-posts">
+	{{#if currentPost}}
+		{{#with currentPost}}
+			{{> post}}
+		{{/with}}
+	{{else}}
+		<header>
+			{{#if canPost}}
+				<form class="new-post">
+					<textarea name="text" placeholder="What's on your mind?"></textarea>
+					<input type="submit" value="Submit">
+					<p>Posts left for this week: {{postsLeft}}</p>
+				</form>
+			{{else}}
+				<p>Ran out of posts for this week.</p>
 			{{/if}}
-		</td>
-		<td class="b-posts-column">
-			<div class="container">
-				{{#if currentPost}}
-					{{#with currentPost}}
-						{{> post}}
-					{{/with}}
-				{{else}}
-					<header>
-						{{#if canPost}}
-							<form class="new-post">
-								<textarea name="text" placeholder="What's on your mind?"></textarea>
-								<input type="submit" value="Submit">
-								<p>Posts left for this week: {{postsLeft}}</p>
-							</form>
-						{{else}}
-							<p>Ran out of posts for this week.</p>
-						{{/if}}
-					</header>
-				
-					<br>
-					<h1>Posts</h1>
-					{{#each posts}}
-						{{> post}}
-					{{/each}}
-					{{#if showLoadMore}}
-						<p><a id="load-more" href="#">Load More</a></p>
-					{{/if}}
-				{{/if}}
-			</div>
-		</td>
-	</tr>
-</table>
+		</header>
+	
+		<br>
+		<h1>Posts</h1>
+		{{#each posts}}
+			{{> post}}
+		{{/each}}
+		{{#if showLoadMore}}
+			<p><a id="load-more" href="#">Load More</a></p>
+		{{/if}}
+	{{/if}}
+</div>
+<div class="b-posts-spacer">&nbsp;</div>
 </template>
