@@ -168,6 +168,7 @@ Meteor.methods({
 	},
 	// Get debug info.
 	getDebugInfo: function () {
+		if (!Meteor.userId()) return "";
 		var lastLoveTime = new Date(Meteor.user().profile.lastLoveTime);
 		var startOfToday = getStartOfToday();
 		var startOfWeek = getStartOfWeek();

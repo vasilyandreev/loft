@@ -1,3 +1,10 @@
+PAGES = {
+	WELCOME: "welcome",
+	LOGIN: "login",
+	REGISTER: "register",
+	HOME: "home",
+};
+
 // Call init when we open the website and also when we login.
 function init() {
 	Session.set("loginError", "");
@@ -5,8 +12,7 @@ function init() {
 	Session.set("postsCount", 4);  // number of posts to show
 	Session.set("showStories", false);  // True iff we are showing stories section
 	Session.set("currentPost", "");  // Id of the post we have selected on the right
-	Session.set("loginScreen", false);
-	Session.set("showRegisterScreen", false);
+	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
 
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
@@ -38,25 +44,24 @@ function escapeHtml(str) {
 	return div.innerHTML.replace(/\n/g, "<br>");
 }
 
-
-
 // Return the full name of a user.
 function getFullName(userId) {
 	var user = Meteor.users.findOne(userId);
 	return user.profile.firstName + " " + user.profile.lastName;
 }
 
+// Change currentPage to the given value and perform a history.pushState to
+// support browser back/forward.
+function goToLoftPage(page) {
+	var obj = {currentPage: page};
+	console.log("Pushing history: " + JSON.stringify(obj));
+	history.pushState(obj, "", window.location.href);
+	Session.set("currentPage", page);
+}
+
 // Router setup.
 Router.route('/', function () {
-	if (Meteor.userId()) {
-		this.render("home");
-	} else if (Session.get("loginScreen")) {
-		this.render("login");
-	} else if (Session.get("showRegisterScreen")) {
-		this.render("register");
-	} else {
-		this.render("welcome");
-	}
+	this.render(Session.get("currentPage"));
 });
 
 Tracker.autorun(function () {
@@ -66,18 +71,26 @@ Tracker.autorun(function () {
 	Meteor.subscribe("comments");
 });
 
+$(window).on("popstate", function(e) {
+	var state = e.originalEvent.state;
+	console.log("Popstate: " + JSON.stringify(state));
+	if (state == null) return;
+	if (state.initial) {
+		init();
+	} else if (state.currentPage) {
+		Session.set("currentPage", state.currentPage);
+	}
+});
+
 init();
 
-// WELCOME!!
-
+// WELCOME
 Template.welcome.events({
 	"click #login": function (event) {
-		Session.set("loginScreen", true);
-		console.log("clicked on login");
+		goToLoftPage(PAGES.LOGIN);
 	},
 	"click #join-us-button": function (event) {
-		Session.set("showRegisterScreen", true);
-		console.log("clicked on join-us-button");
+		goToLoftPage(PAGES.REGISTER);
 	}
 });
 
@@ -109,8 +122,9 @@ Template.home.helpers({
 });
 
 Template.home.events({
-	"click #log-out": function (event) {
+	"click #loft-logout": function (event) {
 		Meteor.logout();
+		goToLoftPage(PAGES.WELCOME);
 	},
 	"click #story-button": function (event) {
 		if (!Session.get("showStories")) {
@@ -208,6 +222,7 @@ Template.story.helpers({
 		return escapeHtml(text);
 	},
 });
+
 Template.story.events({
 	"click .story-link": function () {
 		Meteor.call("markStoryRead", this._id, function(err, result) {
@@ -219,6 +234,7 @@ Template.story.events({
 		return false;
 	}
 });
+
 
 // POST
 Template.post.helpers({
@@ -284,6 +300,7 @@ Template.login.events({
 		Meteor.loginWithPassword(email, password, function(err){
 			if (err == undefined) {
 				init();
+				goToLoftPage(PAGES.HOME);
 			} else {
 				Session.set("loginError", String(err));
 			}
@@ -305,6 +322,7 @@ Template.login.events({
 		Accounts.createUser(options, function(err) {
 			if (err == undefined) {
 				init();
+				goToLoftPage(PAGES.HOME);
 			} else {
 				Session.set("registerError", String(err));
 			}

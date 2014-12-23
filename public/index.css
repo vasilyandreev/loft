@@ -21,6 +21,10 @@ header {
 	padding: 5px;
 }
 
+#loft-logout-span {
+	float: right;
+}
+
 #loft-logo {
 	font-size: 2em;
 }
