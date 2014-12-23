@@ -11,7 +11,7 @@ function init() {
 	Session.set("registerError", "");
 	Session.set("postsCount", 4);  // number of posts to show
 	Session.set("showStories", false);  // True iff we are showing stories section
-	Session.set("currentPost", "");  // Id of the post we have selected on the right
+	Session.set("currentPost", undefined);  // Id of the post we have selected on the right
 	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
 
 	Meteor.call("canLove", function(err, result) {
@@ -59,6 +59,13 @@ function goToLoftPage(page) {
 	Session.set("currentPage", page);
 }
 
+// Return all user's stories that are new (or not).
+function findStories(areNew) {
+	// Filter out stories that are created by this user as a workaround the
+	// Meteor bug where the story flashes for a second when the user comments/loves.
+	return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: areNew}]}, {sort: {createdAt: -1}});
+}
+
 // Router setup.
 Router.route('/', function () {
 	this.render(Session.get("currentPage"));
@@ -98,7 +105,7 @@ Template.welcome.events({
 // HOME
 Template.home.helpers({
 	"newStories": function () {
-		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: true}]}, {sort: {createdAt: -1}});
+		return findStories(true);
 	},
 	"showStories": function () {
 		return Session.get("showStories");
@@ -111,7 +118,7 @@ Template.home.helpers({
 		return true;
 	},
 	"currentPost": function () {
-		return posts.findOne({"_id": Session.get("currentPost")});
+		return Session.get("currentPost");
 	},
 	"canPost": function() {
 		return Session.get("postsLeft") > 0;
@@ -148,7 +155,6 @@ Template.home.events({
 	},
 	"click #load-more": function (event) {
 		Session.set("postsCount", Session.get("postsCount") + 4);
-		Meteor.subscribe("posts", Session.get("postsCount"));
 	},
 	"submit .new-post": function (event) {
 		Meteor.call("addPost", event.target.text.value, function(err, result) {
@@ -186,12 +192,10 @@ Template.home.events({
 // STORIES
 Template.stories.helpers({
 	"newStories": function () {
-		// Filter out stories that are created by this user as a workaround the
-		// Meteor bug where the story flashes for a second when the user comments/loves.
-		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: true}]}, {sort: {createdAt: -1}});
+		return findStories(true);
 	},
 	"oldStories": function () {
-		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: false}]}, {sort: {createdAt: -1}});
+		return findStories(false);
 	},
 });
 
@@ -216,8 +220,6 @@ Template.story.helpers({
 				break;
 			default:
 				text = "Error: unknown story type.";
-
-
 		}
 		return escapeHtml(text);
 	},
@@ -225,12 +227,25 @@ Template.story.helpers({
 
 Template.story.events({
 	"click .story-link": function () {
-		Meteor.call("markStoryRead", this._id, function(err, result) {
-			if (err != undefined) {
-				console.log("Error setPostRead: " + err);
-			}
-		});
-		Session.set("currentPost", this.postId);
+		if (!this.read) {
+			Meteor.call("markStoryRead", this._id, function(err, result) {
+				if (err != undefined) {
+					console.log("Error setPostRead: " + err);
+				}
+			});
+		}
+		var post = posts.findOne({"_id": this.postId});
+		if (post != undefined) {
+			Session.set("currentPost", post);
+		} else {
+			Meteor.call("getPost", this.postId, function(err, result) {
+				if (err != undefined) {
+					console.log("Error getPost: " + err);
+				} else {
+					Session.set("currentPost", result);
+				}
+			});
+		}
 		return false;
 	}
 });
