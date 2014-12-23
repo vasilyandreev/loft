@@ -1,0 +1,135 @@
+/* CSS declarations go here */
+body {
+	font-family: sans-serif;
+	background-color: rgb(255,255,255)
+
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	padding: 0;
+	margin: 0;
+
+	font-size: 14px;
+}
+
+header {
+	background: #d2edf4;
+	font-size: 2em;
+	padding: 5px;
+}
+
+#loft-logo {
+	font-size: 2em;
+}
+
+.b-posts {
+	float: right;
+	width: 65%;
+	background: green;
+}
+
+.b-stories {
+	position: relative;
+	left: -35%;
+	float: left;
+	background: blue;
+	width: 35%;
+	margin-right: -35%;
+}
+
+.b-posts-spacer {
+	float: right;
+	background-color: #315481;
+	width: 17.5%;
+}
+
+#story-button {
+	position: relative;
+	top: -1px;
+	color: #000000;
+	background: #cc0000;
+	font-size: 1em;
+	vertical-align: middle;
+	text-decoration: none;
+	border-style: none;
+	height: 1.8em;
+	width: 1.8em;
+}
+
+#story-button:hover {
+	background: #ff0000;
+	text-decoration: none;
+}
+
+.new-post textarea {
+	box-sizing: border-box;
+	padding: 0.2em;
+	width: 100%;
+	height: 6.4em;
+	font-size: 1em;
+}
+
+.read-story {
+	background: gray;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	background: white;
+}
+
+.delete {
+	float: right;
+	font-weight: bold;
+	background: none;
+	font-size: 1em;
+	border: none;
+	position: relative;
+}
+
+li {
+	position: relative;
+	list-style: none;
+	padding: 15px;
+	border-bottom: #eee solid 1px;
+}
+
+li .text {
+	margin-left: 10px;
+}
+
+li.checked {
+	color: #888;
+}
+
+li.checked .text {
+	text-decoration: line-through;
+}
+
+li.private {
+	background: #eee;
+	border-color: #ddd;
+}
+
+header .hide-completed {
+	float: right;
+}
+
+.toggle-private {
+	margin-left: 5px;
+}
+
+@media (max-width: 600px) {
+	li {
+		padding: 12px 15px;
+	}
+
+	.search {
+		width: 150px;
+		clear: both;
+	}
+}

@@ -1,0 +1,49 @@
+#body-text h1 {
+    text-align: center;
+    font-size: 3em;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+}
+
+#body-text {
+   left:25%;
+   width:50%;
+   height:50%;
+   top: 5%;
+   position:absolute;
+   text-align:center;
+   font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    text-align:center;
+    line-height: 27px;
+    font-size: 1.3em;
+}
+
+#login {
+    float: right;
+    margin: 1.75em;
+    background-color: rgb(255,255,255);
+    border-style: none;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    text-align:center;
+    font-size: 1em;
+}
+
+#join-us-button {
+    text-align: center;
+    background-color: rgb(255,255,255);
+    border-style: none;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 1.5em;
+    left: 0;
+    bottom: 1px;
+    border-width: 0 0 1px;
+    border-style: solid;
+    margin: 1.5em;
+}

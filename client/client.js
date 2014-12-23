@@ -5,6 +5,8 @@ function init() {
 	Session.set("postsCount", 4);  // number of posts to show
 	Session.set("showStories", false);  // True iff we are showing stories section
 	Session.set("currentPost", "");  // Id of the post we have selected on the right
+	Session.set("loginScreen", false);
+	Session.set("showRegisterScreen", false);
 
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
@@ -36,6 +38,8 @@ function escapeHtml(str) {
 	return div.innerHTML.replace(/\n/g, "<br>");
 }
 
+
+
 // Return the full name of a user.
 function getFullName(userId) {
 	var user = Meteor.users.findOne(userId);
@@ -45,9 +49,13 @@ function getFullName(userId) {
 // Router setup.
 Router.route('/', function () {
 	if (Meteor.userId()) {
-		this.render('home');
+		this.render("home");
+	} else if (Session.get("loginScreen")) {
+		this.render("login");
+	} else if (Session.get("showRegisterScreen")) {
+		this.render("register");
 	} else {
-		this.render('login');
+		this.render("welcome");
 	}
 });
 
@@ -59,6 +67,19 @@ Tracker.autorun(function () {
 });
 
 init();
+
+// WELCOME!!
+
+Template.welcome.events({
+	"click #login": function (event) {
+		Session.set("loginScreen", true);
+		console.log("clicked on login");
+	},
+	"click #join-us-button": function (event) {
+		Session.set("showRegisterScreen", true);
+		console.log("clicked on join-us-button");
+	}
+});
 
 
 // HOME
@@ -88,6 +109,9 @@ Template.home.helpers({
 });
 
 Template.home.events({
+	"click #log-out": function (event) {
+		Meteor.logout();
+	},
 	"click #story-button": function (event) {
 		if (!Session.get("showStories")) {
 			Session.set("showStories", true);
@@ -141,6 +165,7 @@ Template.home.events({
 		// Prevent default form submit
 		return false;
 	}
+	
 });
 
 

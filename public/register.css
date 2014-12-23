@@ -1,0 +1,51 @@
+.register {
+	left:25%;
+   width:50%;
+   height:50%;
+   top: 5%;
+   position:absolute;
+   text-align:center;
+   font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    text-align:center;
+    font-size: 1.3em;
+}
+
+.register{
+	display: inline-block;
+}
+.steps {
+   position:absolute;
+   left:90%;
+   width:10em;
+   height:1.5em;
+   top: 90%;
+   text-align:center;
+   font-family: 'Open Sans';
+   font-style: normal;
+   font-weight: 300;
+   text-align:center;
+   font-size: 1.3em;
+
+}
+
+#account-first-name {
+	width: 20em;
+}
+
+#account-last-name{
+	width: 20em;
+}
+
+#account-email{
+	width: 20em;
+}
+
+#account-password{
+	width: 20em;
+}
+
+#create-an-account {
+	width: 20em;
+}

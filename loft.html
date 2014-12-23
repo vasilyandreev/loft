@@ -1,18 +1,9 @@
-<head>
-	<title>Loft</title>
-	<script> 
-		$(function(){
-			$("#login").load("login.html"); 
-		});
-	</script>
-</head>
-
-<body>
-</body>
 
 <template name="home">
+	
 <header>
 	<span id="loft-logo">LOFT&nbsp;&nbsp;&nbsp;</span><button id="story-button">{{newStories.count}}</button>
+	<button id="log-out"> Log-out </button>
 </header>
 <div class="b-stories">
 	{{#if showStories}}
