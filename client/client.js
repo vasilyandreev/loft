@@ -11,7 +11,8 @@ function init() {
 	Session.set("registerError", "");
 	Session.set("postsCount", 4);  // number of posts to show
 	Session.set("showStories", false);  // True iff we are showing stories section
-	Session.set("currentPost", undefined);  // Id of the post we have selected on the right
+	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
+	Session.set("selectedStory", undefined);  // Id of the story we have selected
 	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
 
 	Meteor.call("canLove", function(err, result) {
@@ -117,8 +118,8 @@ Template.home.helpers({
 		// TODO
 		return true;
 	},
-	"currentPost": function () {
-		return Session.get("currentPost");
+	"selectedPost": function () {
+		return Session.get("selectedPost");
 	},
 	"canPost": function() {
 		return Session.get("postsLeft") > 0;
@@ -145,7 +146,13 @@ Template.home.events({
 					console.log("markAllStoriesOld error: " + err);
 				}
 			});
-			Session.set("currentPost", undefined);
+			if (Session.get("selectedPost") !== undefined) {
+				$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
+					Session.set("selectedPost", undefined);
+					Session.set("selectedStory", undefined);
+					$(".b-posts").animate({"opacity": "1"}, {queue: false});
+				}});
+			}
 			$(".b-stories").animate({"left": "-35%"}, {queue: false, complete: function() {
 				Session.set("showStories", false);
 			}});
@@ -223,10 +230,26 @@ Template.story.helpers({
 		}
 		return escapeHtml(text);
 	},
+	"class": function() {
+		if (this._id == Session.get("selectedStory")) {
+			return "selected-story";
+		} else if (this.read) {
+			return "read-story";
+		}
+		return "";
+	}
 });
 
 Template.story.events({
 	"click .story-link": function () {
+		// Clicking on the already selected story?
+		if (this._id == Session.get("selectedStory")) {
+			console.log("Selecting same story.");
+			return;
+		}
+		Session.set("selectedStory", this._id);
+
+		// Mark as read.
 		if (!this.read) {
 			Meteor.call("markStoryRead", this._id, function(err, result) {
 				if (err != undefined) {
@@ -234,18 +257,30 @@ Template.story.events({
 				}
 			});
 		}
-		var post = posts.findOne({"_id": this.postId});
-		if (post != undefined) {
-			Session.set("currentPost", post);
-		} else {
-			Meteor.call("getPost", this.postId, function(err, result) {
-				if (err != undefined) {
-					console.log("Error getPost: " + err);
-				} else {
-					Session.set("currentPost", result);
-				}
-			});
+
+		var fadeIn = function() {
+			$(".b-posts").animate({"opacity": "1"}, {queue: false});
 		}
+
+		// TODO: ideally, if we don't have this post and need to fetch it from the
+		// server, we need to do it while we are animating.
+		var postId = this.postId;
+		// Set selectedPost to a temp stub, so that the story gets highlighted.
+		$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
+			var post = posts.findOne({"_id": postId});
+			if (post != undefined) {
+				Session.set("selectedPost", post);
+				fadeIn();
+			} else {
+				Meteor.call("getPost", postId, function(err, result) {
+					if (err != undefined) {
+						console.log("Error getPost: " + err);
+					}
+					Session.set("selectedPost", result);
+					fadeIn();
+				});
+			}
+		}});
 		return false;
 	}
 });
