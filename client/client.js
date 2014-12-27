@@ -1,12 +1,19 @@
+PAGES = {
+	WELCOME: "welcome",
+	LOGIN: "login",
+	REGISTER: "register",
+	HOME: "home",
+};
+
 // Call init when we open the website and also when we login.
 function init() {
 	Session.set("loginError", "");
 	Session.set("registerError", "");
 	Session.set("postsCount", 4);  // number of posts to show
 	Session.set("showStories", false);  // True iff we are showing stories section
-	Session.set("currentPost", "");  // Id of the post we have selected on the right
-	Session.set("loginScreen", false);
-	Session.set("showRegisterScreen", false);
+	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
+	Session.set("selectedStory", undefined);  // Id of the story we have selected
+	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
 
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
@@ -38,25 +45,31 @@ function escapeHtml(str) {
 	return div.innerHTML.replace(/\n/g, "<br>");
 }
 
-
-
 // Return the full name of a user.
 function getFullName(userId) {
 	var user = Meteor.users.findOne(userId);
 	return user.profile.firstName + " " + user.profile.lastName;
 }
 
+// Change currentPage to the given value and perform a history.pushState to
+// support browser back/forward.
+function goToLoftPage(page) {
+	var obj = {currentPage: page};
+	console.log("Pushing history: " + JSON.stringify(obj));
+	history.pushState(obj, "", window.location.href);
+	Session.set("currentPage", page);
+}
+
+// Return all user's stories that are new (or not).
+function findStories(areNew) {
+	// Filter out stories that are created by this user as a workaround the
+	// Meteor bug where the story flashes for a second when the user comments/loves.
+	return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: areNew}]}, {sort: {createdAt: -1}});
+}
+
 // Router setup.
 Router.route('/', function () {
-	if (Meteor.userId()) {
-		this.render("home");
-	} else if (Session.get("loginScreen")) {
-		this.render("login");
-	} else if (Session.get("showRegisterScreen")) {
-		this.render("register");
-	} else {
-		this.render("welcome");
-	}
+	this.render(Session.get("currentPage"));
 });
 
 Tracker.autorun(function () {
@@ -66,18 +79,26 @@ Tracker.autorun(function () {
 	Meteor.subscribe("comments");
 });
 
+$(window).on("popstate", function(e) {
+	var state = e.originalEvent.state;
+	console.log("Popstate: " + JSON.stringify(state));
+	if (state == null) return;
+	if (state.initial) {
+		init();
+	} else if (state.currentPage) {
+		Session.set("currentPage", state.currentPage);
+	}
+});
+
 init();
 
-// WELCOME!!
-
+// WELCOME
 Template.welcome.events({
 	"click #login": function (event) {
-		Session.set("loginScreen", true);
-		console.log("clicked on login");
+		goToLoftPage(PAGES.LOGIN);
 	},
 	"click #join-us-button": function (event) {
-		Session.set("showRegisterScreen", true);
-		console.log("clicked on join-us-button");
+		goToLoftPage(PAGES.REGISTER);
 	}
 });
 
@@ -85,7 +106,7 @@ Template.welcome.events({
 // HOME
 Template.home.helpers({
 	"newStories": function () {
-		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: true}]}, {sort: {createdAt: -1}});
+		return findStories(true);
 	},
 	"showStories": function () {
 		return Session.get("showStories");
@@ -97,8 +118,8 @@ Template.home.helpers({
 		// TODO
 		return true;
 	},
-	"currentPost": function () {
-		return posts.findOne({"_id": Session.get("currentPost")});
+	"selectedPost": function () {
+		return Session.get("selectedPost");
 	},
 	"canPost": function() {
 		return Session.get("postsLeft") > 0;
@@ -109,8 +130,9 @@ Template.home.helpers({
 });
 
 Template.home.events({
-	"click #log-out": function (event) {
+	"click #loft-logout": function (event) {
 		Meteor.logout();
+		goToLoftPage(PAGES.WELCOME);
 	},
 	"click #story-button": function (event) {
 		if (!Session.get("showStories")) {
@@ -124,7 +146,13 @@ Template.home.events({
 					console.log("markAllStoriesOld error: " + err);
 				}
 			});
-			Session.set("currentPost", undefined);
+			if (Session.get("selectedPost") !== undefined) {
+				$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
+					Session.set("selectedPost", undefined);
+					Session.set("selectedStory", undefined);
+					$(".b-posts").animate({"opacity": "1"}, {queue: false});
+				}});
+			}
 			$(".b-stories").animate({"left": "-35%"}, {queue: false, complete: function() {
 				Session.set("showStories", false);
 			}});
@@ -134,7 +162,6 @@ Template.home.events({
 	},
 	"click #load-more": function (event) {
 		Session.set("postsCount", Session.get("postsCount") + 4);
-		Meteor.subscribe("posts", Session.get("postsCount"));
 	},
 	"submit .new-post": function (event) {
 		Meteor.call("addPost", event.target.text.value, function(err, result) {
@@ -172,12 +199,10 @@ Template.home.events({
 // STORIES
 Template.stories.helpers({
 	"newStories": function () {
-		// Filter out stories that are created by this user as a workaround the
-		// Meteor bug where the story flashes for a second when the user comments/loves.
-		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: true}]}, {sort: {createdAt: -1}});
+		return findStories(true);
 	},
 	"oldStories": function () {
-		return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: false}]}, {sort: {createdAt: -1}});
+		return findStories(false);
 	},
 });
 
@@ -202,23 +227,64 @@ Template.story.helpers({
 				break;
 			default:
 				text = "Error: unknown story type.";
-
-
 		}
 		return escapeHtml(text);
 	},
+	"class": function() {
+		if (this._id == Session.get("selectedStory")) {
+			return "selected-story";
+		} else if (this.read) {
+			return "read-story";
+		}
+		return "";
+	}
 });
+
 Template.story.events({
 	"click .story-link": function () {
-		Meteor.call("markStoryRead", this._id, function(err, result) {
-			if (err != undefined) {
-				console.log("Error setPostRead: " + err);
+		// Clicking on the already selected story?
+		if (this._id == Session.get("selectedStory")) {
+			console.log("Selecting same story.");
+			return;
+		}
+		Session.set("selectedStory", this._id);
+
+		// Mark as read.
+		if (!this.read) {
+			Meteor.call("markStoryRead", this._id, function(err, result) {
+				if (err != undefined) {
+					console.log("Error setPostRead: " + err);
+				}
+			});
+		}
+
+		var fadeIn = function() {
+			$(".b-posts").animate({"opacity": "1"}, {queue: false});
+		}
+
+		// TODO: ideally, if we don't have this post and need to fetch it from the
+		// server, we need to do it while we are animating.
+		var postId = this.postId;
+		// Set selectedPost to a temp stub, so that the story gets highlighted.
+		$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
+			var post = posts.findOne({"_id": postId});
+			if (post != undefined) {
+				Session.set("selectedPost", post);
+				fadeIn();
+			} else {
+				Meteor.call("getPost", postId, function(err, result) {
+					if (err != undefined) {
+						console.log("Error getPost: " + err);
+					}
+					Session.set("selectedPost", result);
+					fadeIn();
+				});
 			}
-		});
-		Session.set("currentPost", this.postId);
+		}});
 		return false;
 	}
 });
+
 
 // POST
 Template.post.helpers({
@@ -284,6 +350,7 @@ Template.login.events({
 		Meteor.loginWithPassword(email, password, function(err){
 			if (err == undefined) {
 				init();
+				goToLoftPage(PAGES.HOME);
 			} else {
 				Session.set("loginError", String(err));
 			}
@@ -305,6 +372,7 @@ Template.login.events({
 		Accounts.createUser(options, function(err) {
 			if (err == undefined) {
 				init();
+				goToLoftPage(PAGES.HOME);
 			} else {
 				Session.set("registerError", String(err));
 			}

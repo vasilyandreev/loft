@@ -1,7 +1,6 @@
 /* CSS declarations go here */
 body {
 	font-family: sans-serif;
-	background-color: rgb(255,255,255)
 
 	position: absolute;
 	top: 0;
@@ -16,9 +15,13 @@ body {
 }
 
 header {
-	background: #d2edf4;
+	background: #ddddff;
 	font-size: 2em;
 	padding: 5px;
+}
+
+#loft-logout-span {
+	float: right;
 }
 
 #loft-logo {
@@ -28,21 +31,21 @@ header {
 .b-posts {
 	float: right;
 	width: 65%;
-	background: green;
+	background: #ddffdd;
 }
 
 .b-stories {
 	position: relative;
 	left: -35%;
 	float: left;
-	background: blue;
+	background: #ffdddd;
 	width: 35%;
 	margin-right: -35%;
 }
 
 .b-posts-spacer {
 	float: right;
-	background-color: #315481;
+	background-color: #f0f0f0;
 	width: 17.5%;
 }
 
@@ -73,7 +76,11 @@ header {
 }
 
 .read-story {
-	background: gray;
+	background: #cccccc;
+}
+
+.selected-story {
+	background: #cccc00;
 }
 
 ul {

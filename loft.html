@@ -1,9 +1,7 @@
-
 <template name="home">
-	
 <header>
-	<span id="loft-logo">Loft&nbsp;&nbsp;&nbsp;</span><button id="story-button">{{newStories.count}}</button>
-	<button id="log-out"> Log-out </button>
+	<span id="loft-logo">LOFT&nbsp;&nbsp;&nbsp;</span><button id="story-button">{{newStories.count}}</button>
+	<span id="loft-logout-span"><a id="loft-logout" href="#">Logout</a></span>
 </header>
 <div class="b-stories">
 	{{#if showStories}}
@@ -12,12 +10,12 @@
 </div>
 <div class="b-posts-spacer">&nbsp;</div>
 <div class="b-posts">
-	{{#if currentPost}}
-		{{#with currentPost}}
+	{{#if selectedPost}}
+		{{#with selectedPost}}
 			{{> post}}
 		{{/with}}
 	{{else}}
-		<header>
+		<div>
 			{{#if canPost}}
 				<form class="new-post">
 					<textarea name="text" placeholder="What's on your mind?"></textarea>
@@ -27,7 +25,7 @@
 			{{else}}
 				<p>Ran out of posts for this week.</p>
 			{{/if}}
-		</header>
+		</div>
 	
 		<br>
 		<h1>Posts</h1>

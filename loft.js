@@ -168,11 +168,20 @@ Meteor.methods({
 	},
 	// Get debug info.
 	getDebugInfo: function () {
+		if (!Meteor.userId()) return "";
 		var lastLoveTime = new Date(Meteor.user().profile.lastLoveTime);
 		var startOfToday = getStartOfToday();
 		var startOfWeek = getStartOfWeek();
 		return "LastLoveTime: " + lastLoveTime.toUTCString() + " (" + lastLoveTime.getTime() + ")\n " +
 			"StartOfToday: " + startOfToday.toUTCString() + " (" + startOfToday.getTime() + ")\n " +
 			"StartOfWeek: " + startOfWeek.toUTCString() + " (" + startOfWeek.getTime() + ")\n ";
+	},
+	// Return post with the given id. Used to fetch the selected post if it's not
+	// already loaded on the client.
+	getPost: function (postId) {
+		if (!Meteor.userId()) {
+			throw new Meteor.Error("Not logged in.");
+		}
+		return posts.findOne({"_id": postId});
 	}
 });
