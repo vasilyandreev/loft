@@ -79,15 +79,17 @@ Tracker.autorun(function () {
 	Meteor.subscribe("comments");
 });
 
-$(window).on("popstate", function(e) {
-	var state = e.originalEvent.state;
-	console.log("Popstate: " + JSON.stringify(state));
-	if (state == null) return;
-	if (state.initial) {
-		init();
-	} else if (state.currentPage) {
-		Session.set("currentPage", state.currentPage);
-	}
+$(document).ready(function() {
+	$(window).on("popstate", function(e) {
+		var state = e.originalEvent.state;
+		console.log("Popstate: " + JSON.stringify(state));
+		if (state == null) return;
+		if (state.initial) {
+			init();
+		} else if (state.currentPage) {
+			Session.set("currentPage", state.currentPage);
+		}
+	});
 });
 
 init();
@@ -153,17 +155,20 @@ Template.home.events({
 					$(".b-posts").animate({"opacity": "1"}, {queue: false});
 				}});
 			}
-			$(".b-stories").animate({"left": "-35%"}, {queue: false, complete: function() {
+			$(".b-stories").animate({"left": "-40%"}, {queue: false, complete: function() {
 				Session.set("showStories", false);
 			}});
-			$(".b-stories").animate({"margin-right": "-35%"}, {queue: false});
+			$(".b-stories").animate({"margin-right": "-40%"}, {queue: false});
 			$(".b-posts-spacer").show({effect: "scale", direction: "horizontal", queue: false});
 		}
 	},
 	"click #load-more": function (event) {
 		Session.set("postsCount", Session.get("postsCount") + 4);
 	},
-	"submit .new-post": function (event) {
+	"focus #post-input": function (event) {
+		$("#post-input").autosize().trigger("autosize.resize");
+	},
+	"submit #new-post": function (event) {
 		Meteor.call("addPost", event.target.text.value, function(err, result) {
 			if (err == undefined) {
 				Session.set("postsLeft", Session.get("postsLeft") - 1);
@@ -174,6 +179,7 @@ Template.home.events({
 
 		// Clear form
 		event.target.text.value = "";
+		$("#post-input").trigger("autosize.resize");
 
 		// Prevent default form submit
 		return false;
@@ -192,9 +198,7 @@ Template.home.events({
 		// Prevent default form submit
 		return false;
 	}
-	
 });
-
 
 // STORIES
 Template.stories.helpers({
