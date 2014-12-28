@@ -17,10 +17,12 @@
 	{{else}}
 		<div>
 			{{#if canPost}}
-				<form class="new-post">
-					<textarea name="text" placeholder="What's on your mind?"></textarea>
-					<input type="submit" value="Submit">
-					<p>Posts left for this week: {{postsLeft}}</p>
+				<form id="new-post">
+					<textarea id="post-input" name="text" placeholder="What's on your mind?"></textarea>
+					<span>
+						<input type="submit" value="Post">&nbsp;&nbsp;&nbsp;
+						Posts left for this week: {{postsLeft}}
+					</span>
 				</form>
 			{{else}}
 				<p>Ran out of posts for this week.</p>
