@@ -3,6 +3,7 @@ PAGES = {
 	LOGIN: "login",
 	REGISTER: "register",
 	HOME: "home",
+	WAY: "way",
 };
 
 // Call init when we open the website and also when we login.
@@ -99,7 +100,7 @@ Template.welcome.events({
 	},
 	"click #join-us-button": function (event) {
 		goToLoftPage(PAGES.REGISTER);
-	}
+	},
 });
 
 
@@ -372,7 +373,7 @@ Template.login.events({
 		Accounts.createUser(options, function(err) {
 			if (err == undefined) {
 				init();
-				goToLoftPage(PAGES.HOME);
+				goToLoftPage(PAGES.WAY);
 			} else {
 				Session.set("registerError", String(err));
 			}

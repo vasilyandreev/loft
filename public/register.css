@@ -1,51 +1,101 @@
-.register {
-	left:25%;
-   width:50%;
-   height:50%;
-   top: 5%;
-   position:absolute;
-   text-align:center;
-   font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 300;
-    text-align:center;
-    font-size: 1.3em;
+.register h1 {
+	font-size: 3em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
 }
 
-.register{
-	display: inline-block;
+.register {
+	left:25%;
+	width:50%;
+	height:50%;
+	top: 5%;
+	position:absolute;
+	text-align:center;
+
 }
+
+.register form {
+	width: 80%;
+	margin: 0 auto;
+}
+
+
+.register ul {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align:center;
+	font-size: 1.5em;
+	padding: 0;
+}
+
+.register li {
+	border-bottom: none;
+	text-align: left;
+}
+
+
+
 .steps {
-   position:absolute;
-   left:90%;
-   width:10em;
-   height:1.5em;
-   top: 90%;
-   text-align:center;
-   font-family: 'Open Sans';
-   font-style: normal;
-   font-weight: 300;
-   text-align:center;
-   font-size: 1.3em;
+	position:absolute;
+	left:90%;
+	width:10em;
+	height:1.5em;
+	top: 90%;
+	text-align:center;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align:center;
+	font-size: 1.3em;
 
 }
 
 #account-first-name {
-	width: 20em;
+	width: 15em;
+	margin: 1.0em;
 }
 
-#account-last-name{
-	width: 20em;
+#account-last-name {
+	width: 15em;
+	margin: 1.0em;
 }
 
-#account-email{
-	width: 20em;
+#account-email {
+	width: 15em;
+	margin: 1.0em;
 }
 
-#account-password{
-	width: 20em;
+#account-password {
+	width: 15em;
+	margin: 1.0em;
 }
 
-#create-an-account {
-	width: 20em;
+#create-account {
+	width: 5em;
+	margin: 1.0em;
+	text-align: center;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	background: #ffffff;
+	background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -ms-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -o-linear-gradient(top, #ffffff, #ffffff);
+	background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+	-webkit-border-radius: 6;
+	-moz-border-radius: 6;
+	border-radius: 6px;
+	color: #000000;
+	font-size: 23px;
+	padding: 10px 20px 10px 20px;
+	border: solid #000000 2px;
+	text-decoration: none;
+}
+
+#create-account:hover {
+	background: #fafafa;
+	text-decoration: none;
 }

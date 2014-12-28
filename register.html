@@ -1,31 +1,16 @@
 <template name="register">
 	<div class="register">
-		<h1> Loft </h1>
-		<p>Register:</p>
+		<h1> Loft. </h1>
+		<h2> Come see what's going on inside. </h2>
 		<form id="register-form" action="action">
-			 <ul>
-				<li><span> First name </span><input type="text" id="account-first-name" placeholder="So we know what to call you."/></li>
-				<li><span> Last name </span><input type="text" id="account-last-name" placeholder="Last Name"/></li>
-				<li><span> E-mail</span><input type="email" id="account-email" placeholder="Email"/></li>
-				<li><span> Password</span><input type="password" id="account-password" placeholder="Password"/></li>
-				<li><span> Submit</span><input type="submit" id="create-account" value="Create an Account" /></li>
+
+			<ul>
+				<li><label> First name: </label><span><input type="text" id="account-first-name" placeholder=""/></span></li>
+				<li><label><span> Last name: </span><input type="text" id="account-last-name" placeholder=""/></label></li>
+				<li><label><span> E-mail: </span><input type="email" id="account-email" placeholder=""/></label></li>
+				<li><label><span> Password: </span><input type="password" id="account-password" placeholder=""/></label></li>
+				<label><span></span> <input type="submit" id="create-account" value="Enter"/></label>
 			</ul> 
-			<!-- <div>
-				<h1>Contact Form :</h1>
-				<ul>
-				<li><label><span>Your name</span><input id="name" type="text" name="name" /></label></li>
-
-				<li><label><span>Email Address</span><input id="email" type="text" name="email" /></label></li>
-
-				<li><label><span>Subject</span><input id="subject" type="text" name="subject" /></label></li>
-
-				<li><label><span>Message</span><textarea id="feedback" name="feedback"></textarea>
-					<input type="button" value="Submit Form" />
-				</label></li>
-			</ul>
-
-			</div> -->
-
 		</form>
 		<p>{{registerError}}</p>
 	</div>
@@ -33,5 +18,6 @@
 		<ul>
 			<div class="steps"><p> 1/3 </p> </div>
 		</ul>
-		</div>
+	</div>
 </template>
+

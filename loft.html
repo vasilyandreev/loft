@@ -1,7 +1,7 @@
 <template name="home">
 <header>
-	<span id="loft-logo">LOFT&nbsp;&nbsp;&nbsp;</span><button id="story-button">{{newStories.count}}</button>
-	<span id="loft-logout-span"><a id="loft-logout" href="#">Logout</a></span>
+	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="story-button">{{newStories.count}}</button>
+	<span id="loft-logout-span"><a id="loft-logout" href="#">LOGOUT</a></span>
 </header>
 <div class="b-stories">
 	{{#if showStories}}
@@ -28,7 +28,6 @@
 		</div>
 	
 		<br>
-		<h1>Posts</h1>
 		{{#each posts}}
 			{{> post}}
 		{{/each}}

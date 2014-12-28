@@ -15,7 +15,7 @@ body {
 }
 
 header {
-	background: #ddddff;
+	background: rgb(255,255,255);
 	font-size: 2em;
 	padding: 5px;
 }
@@ -24,28 +24,44 @@ header {
 	float: right;
 }
 
+#loft-logout {
+	text-decoration: none;
+	color: #000000;
+	margin: 1.5em;
+	border-style: none;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align:center;
+	font-size: .4em;
+}
+
 #loft-logo {
 	font-size: 2em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	vertical-align: middle;
 }
 
 .b-posts {
 	float: right;
 	width: 65%;
-	background: #ddffdd;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
 }
 
 .b-stories {
 	position: relative;
 	left: -35%;
 	float: left;
-	background: #ffdddd;
 	width: 35%;
 	margin-right: -35%;
 }
 
 .b-posts-spacer {
 	float: right;
-	background-color: #f0f0f0;
 	width: 17.5%;
 }
 
@@ -53,17 +69,17 @@ header {
 	position: relative;
 	top: -1px;
 	color: #000000;
-	background: #cc0000;
+	background: rgb(255,255,255);
 	font-size: 1em;
 	vertical-align: middle;
 	text-decoration: none;
-	border-style: none;
+	border-style: solid;
 	height: 1.8em;
 	width: 1.8em;
 }
 
 #story-button:hover {
-	background: #ff0000;
+	background: rgb(255,255,255);
 	text-decoration: none;
 }
 
@@ -86,7 +102,6 @@ header {
 ul {
 	margin: 0;
 	padding: 0;
-	background: white;
 }
 
 .delete {
