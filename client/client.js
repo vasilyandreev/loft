@@ -4,6 +4,7 @@ PAGES = {
 	REGISTER: "register",
 	HOME: "home",
 	WAY: "way",
+	QUOTE: "quote",
 };
 
 // Call init when we open the website and also when we login.
@@ -101,10 +102,23 @@ Template.welcome.events({
 		goToLoftPage(PAGES.LOGIN);
 	},
 	"click #join-us-button": function (event) {
-		goToLoftPage(PAGES.WAY);
+		goToLoftPage(PAGES.REGISTER);
 	},
 });
 
+// WAY 
+Template.way.events({
+	"click #way-button": function (event) {
+		goToLoftPage(PAGES.QUOTE);
+	},
+})
+
+Template.quote.helpers({
+	firstName: function() {
+		Session.get(profile.firstName);
+		return firstName;
+	}
+})
 
 // HOME
 Template.home.helpers({
@@ -303,7 +317,6 @@ Template.post.helpers({
 		return this.userId != Meteor.userId() &&
 			Session.get("canLove") &&
 			this.lovedBy.indexOf(Meteor.userId()) == -1;
-
 	},
 	"comments": function() {
 		return comments.find({postId: this._id}, {sort: {createdAt: 1}});
@@ -361,10 +374,10 @@ Template.login.events({
 			}
 		});
 		return false; 
-			},
-		
-  })
+	},
+})
 
+// REGISTER
 Template.register.events({
 	"submit #register-form" : function(event, target) {
 		var email = target.find("#account-email").value;
@@ -375,8 +388,6 @@ Template.register.events({
 			lastLoveTime: 0,
 		};
 
-		console.log("Form");
-
 		// TODO: Trim and validate the input
 
 		var options = { email: email, password: password, profile: profile };
@@ -384,12 +395,10 @@ Template.register.events({
 			if (err == undefined) {
 				init();
 				goToLoftPage(PAGES.WAY);
-				console.log("Form submitted");
 			} else {
 				Session.set("registerError", String(err));
-				console.log("Form not submitted.");
 			}
 		});
 		return false;
-	}
+	},
 });
