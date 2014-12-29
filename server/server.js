@@ -2,8 +2,8 @@ if (Meteor.isServer) {
 	Meteor.publish("userProfiles", function () {
 		return Meteor.users.find({});
 	});
-	Meteor.publish("stories", function () {
-		return stories.find({
+	Meteor.publish("updates", function () {
+		return updates.find({
 			forUserId: this.userId
 		});
 	});
@@ -24,9 +24,9 @@ if (Meteor.isServer) {
 			user.profile = options.profile;
 		}
 		user.loft = { };
-		// Add initial story.
-		stories.insert({
-			type: STORY_TYPE.ADMIN,
+		// Add initial update.
+		updates.insert({
+			type: UPDATE_TYPE.ADMIN,
 			forUserId: user._id,
 			// TODO: byUserId: 0,
 			// TODO: postId: 0,

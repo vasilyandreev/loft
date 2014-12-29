@@ -44,7 +44,7 @@ header {
 	vertical-align: middle;
 }
 
-#story-button {
+#update-button {
 	display: inline-block;
 	font-size: 2em;
 	color: #000000;
@@ -56,7 +56,7 @@ header {
 	width: 1.7em;
 }
 
-#story-button:hover {
+#update-button:hover {
 	background: rgb(255,255,255);
 	text-decoration: none;
 }
@@ -101,7 +101,7 @@ header {
 	font-weight: 400;
 }
 
-.b-stories {
+.b-updates {
 	position: relative;
 	left: -40%;
 	float: left;
@@ -114,11 +114,11 @@ header {
 	width: 20%;
 }
 
-.read-story {
+.read-update {
 	background: #cccccc;
 }
 
-.selected-story {
+.selected-update {
 	background: #cccc00;
 }
 

@@ -1,11 +1,11 @@
 <template name="home">
 <header>
-	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="story-button">{{newStories.count}}</button>
+	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="update-button">{{newUpdates.count}}</button>
 	<span id="loft-logout-span"><a id="loft-logout" href="#">LOGOUT</a></span>
 </header>
-<div class="b-stories">
-	{{#if showStories}}
-		{{> stories}}
+<div class="b-updates">
+	{{#if showUpdates}}
+		{{> updates}}
 	{{/if}}
 </div>
 <div class="b-posts-spacer">&nbsp;</div>

@@ -11,9 +11,9 @@ function init() {
 	Session.set("loginError", "");
 	Session.set("registerError", "");
 	Session.set("postsCount", 4);  // number of posts to show
-	Session.set("showStories", false);  // True iff we are showing stories section
+	Session.set("showUpdates", false);  // True iff we are showing updates section
 	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
-	Session.set("selectedStory", undefined);  // Id of the story we have selected
+	Session.set("selectedUpdate", undefined);  // Id of the update we have selected
 	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
 
 	Meteor.call("canLove", function(err, result) {
@@ -61,11 +61,11 @@ function goToLoftPage(page) {
 	Session.set("currentPage", page);
 }
 
-// Return all user's stories that are new (or not).
-function findStories(areNew) {
-	// Filter out stories that are created by this user as a workaround the
-	// Meteor bug where the story flashes for a second when the user comments/loves.
-	return stories.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: areNew}]}, {sort: {createdAt: -1}});
+// Return all user's updates that are new (or not).
+function findUpdates(areNew) {
+	// Filter out updates that are created by this user as a workaround the
+	// Meteor bug where the update flashes for a second when the user comments/loves.
+	return updates.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: areNew}]}, {sort: {createdAt: -1}});
 }
 
 // Router setup.
@@ -75,7 +75,7 @@ Router.route('/', function () {
 
 Tracker.autorun(function () {
 	Meteor.subscribe("userProfiles");
-	Meteor.subscribe("stories");
+	Meteor.subscribe("updates");
 	Meteor.subscribe("posts", Session.get("postsCount"));
 	Meteor.subscribe("comments");
 });
@@ -108,11 +108,11 @@ Template.welcome.events({
 
 // HOME
 Template.home.helpers({
-	"newStories": function () {
-		return findStories(true);
+	"newUpdates": function () {
+		return findUpdates(true);
 	},
-	"showStories": function () {
-		return Session.get("showStories");
+	"showUpdates": function () {
+		return Session.get("showUpdates");
 	},
 	"posts": function () {
 		return posts.find({}, {sort: {createdAt: -1}});
@@ -137,29 +137,29 @@ Template.home.events({
 		Meteor.logout();
 		goToLoftPage(PAGES.WELCOME);
 	},
-	"click #story-button": function (event) {
-		if (!Session.get("showStories")) {
-			Session.set("showStories", true);
-			$(".b-stories").animate({"left": "0%"}, {queue: false});
-			$(".b-stories").animate({"margin-right": "0%"}, {queue: false});
+	"click #update-button": function (event) {
+		if (!Session.get("showUpdates")) {
+			Session.set("showUpdates", true);
+			$(".b-updates").animate({"left": "0%"}, {queue: false});
+			$(".b-updates").animate({"margin-right": "0%"}, {queue: false});
 			$(".b-posts-spacer").hide({effect: "scale", direction: "horizontal", queue: false});
 		} else {
-			Meteor.call("markAllStoriesOld", function (result, err) {
-				if (err != undefined) {
-					console.log("markAllStoriesOld error: " + err);
-				}
-			});
 			if (Session.get("selectedPost") !== undefined) {
 				$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
 					Session.set("selectedPost", undefined);
-					Session.set("selectedStory", undefined);
+					Session.set("selectedUpdate", undefined);
 					$(".b-posts").animate({"opacity": "1"}, {queue: false});
 				}});
 			}
-			$(".b-stories").animate({"left": "-40%"}, {queue: false, complete: function() {
-				Session.set("showStories", false);
+			$(".b-updates").animate({"left": "-40%"}, {queue: false, complete: function() {
+				Session.set("showUpdates", false);
+				Meteor.call("markAllUpdatesOld", function (result, err) {
+					if (err != undefined) {
+						console.log("markAllUpdatesOld error: " + err);
+					}
+				});
 			}});
-			$(".b-stories").animate({"margin-right": "-40%"}, {queue: false});
+			$(".b-updates").animate({"margin-right": "-40%"}, {queue: false});
 			$(".b-posts-spacer").show({effect: "scale", direction: "horizontal", queue: false});
 		}
 	},
@@ -201,62 +201,64 @@ Template.home.events({
 	}
 });
 
-// STORIES
-Template.stories.helpers({
-	"newStories": function () {
-		return findStories(true);
+// UPDATES
+Template.updates.helpers({
+	"newUpdates": function () {
+		return findUpdates(true);
 	},
-	"oldStories": function () {
-		return findStories(false);
+	"oldUpdates": function () {
+		return findUpdates(false);
 	},
 });
 
 
-// STORY
-Template.story.helpers({
+// UPDATE
+Template.update.helpers({
 	"safeText": function() {
 		var text = "";
 		switch(this.type) {
-			case STORY_TYPE.ADMIN:
+			case UPDATE_TYPE.ADMIN:
 				text = "Welcome to Loft.";
 				break;
-			case STORY_TYPE.COMMENT:
+			case UPDATE_TYPE.COMMENT:
 				if (this.postOwnerId == Meteor.userId()) {
 					text = getFullName(this.byUserId) + " commented on your post.";
+				} if (this.byUserId == this.postOwnerId) {
+					text = getFullName(this.byUserId) + " commented on their post.";
 				} else {
 					text = getFullName(this.byUserId) + " also commented on " + getFullName(this.postOwnerId) + "’s post.";
 				}
 				break;
-			case STORY_TYPE.LOVE:
+			case UPDATE_TYPE.LOVE:
 				text = getFullName(this.byUserId) + " loved your post.";
 				break;
 			default:
-				text = "Error: unknown story type.";
+				text = "Error: unknown update type.";
 		}
 		return escapeHtml(text);
 	},
 	"class": function() {
-		if (this._id == Session.get("selectedStory")) {
-			return "selected-story";
+		if (this._id == Session.get("selectedUpdate")) {
+			return "selected-update";
 		} else if (this.read) {
-			return "read-story";
+			return "read-update";
 		}
 		return "";
 	}
 });
 
-Template.story.events({
-	"click .story-link": function () {
-		// Clicking on the already selected story?
-		if (this._id == Session.get("selectedStory")) {
-			console.log("Selecting same story.");
+Template.update.events({
+	"click .update-link": function () {
+		// Clicking on the already selected update?
+		if (this._id == Session.get("selectedUpdate")) {
+			console.log("Selecting same update.");
 			return;
 		}
-		Session.set("selectedStory", this._id);
+		Session.set("selectedUpdate", this._id);
 
 		// Mark as read.
 		if (!this.read) {
-			Meteor.call("markStoryRead", this._id, function(err, result) {
+			Meteor.call("markUpdateRead", this._id, function(err, result) {
 				if (err != undefined) {
 					console.log("Error setPostRead: " + err);
 				}
@@ -270,7 +272,7 @@ Template.story.events({
 		// TODO: ideally, if we don't have this post and need to fetch it from the
 		// server, we need to do it while we are animating.
 		var postId = this.postId;
-		// Set selectedPost to a temp stub, so that the story gets highlighted.
+		// Set selectedPost to a temp stub, so that the update gets highlighted.
 		$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
 			var post = posts.findOne({"_id": postId});
 			if (post != undefined) {
@@ -375,8 +377,6 @@ Template.register.events({
 			lastLoveTime: 0,
 		};
 
-		console.log("Form");
-
 		// TODO: Trim and validate the input
 
 		var options = { email: email, password: password, profile: profile };
@@ -384,10 +384,8 @@ Template.register.events({
 			if (err == undefined) {
 				init();
 				goToLoftPage(PAGES.WAY);
-				console.log("Form submitted");
 			} else {
 				Session.set("registerError", String(err));
-				console.log("Form not submitted.");
 			}
 		});
 		return false;
