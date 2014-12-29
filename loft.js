@@ -1,10 +1,10 @@
 POSTS_PER_WEEK = 3
-STORY_TYPE = {
+UPDATE_TYPE = {
 	ADMIN: "admin",  // was created by an admin
 	COMMENT: "comment",  // was created by a comment
 	LOVE: "love",  // was created by loving post
 };
-stories = new Mongo.Collection("stories");
+updates = new Mongo.Collection("updates");
 posts = new Mongo.Collection("posts");
 comments = new Mongo.Collection("comments");
 
@@ -79,8 +79,8 @@ Meteor.methods({
 
 		post.commenters.forEach(function(commenterId) {
 			if (commenterId != Meteor.userId()) {
-				stories.insert({
-					type: STORY_TYPE.COMMENT,
+				updates.insert({
+					type: UPDATE_TYPE.COMMENT,
 					forUserId: commenterId,
 					byUserId: Meteor.userId(),
 					postId: postId,
@@ -134,8 +134,8 @@ Meteor.methods({
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 		Meteor.users.update(Meteor.userId(), {$set: {"profile.lastLoveTime": Date.now()}});
 				
-		stories.insert({
-			type: STORY_TYPE.LOVE,
+		updates.insert({
+			type: UPDATE_TYPE.LOVE,
 			forUserId: post.userId,
 			byUserId: Meteor.userId(),
 			postId: postId,
@@ -145,26 +145,26 @@ Meteor.methods({
 			read: false,
 		});
 	},
-	// Mark all stories as old.
-	markAllStoriesOld: function () {
+	// Mark all updates as old.
+	markAllUpdatesOld: function () {
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
-		stories.update({forUserId: Meteor.userId()}, {$set: {new: false}}, {multi: true});
+		updates.update({forUserId: Meteor.userId()}, {$set: {new: false}}, {multi: true});
 	},
-	// Mark the story as read.
-	markStoryRead: function(storyId) {
-		var story = stories.findOne(storyId);
+	// Mark the update as read.
+	markUpdateRead: function(updateId) {
+		var update = updates.findOne(updateId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
-		if (!story) {
-			throw new Meteor.Error("No story with this id.");
+		if (!update) {
+			throw new Meteor.Error("No update with this id.");
 		}
-		if (story.forUserId != Meteor.userId()) {
-			throw new Meteor.Error("Not your story to change.");
+		if (update.forUserId != Meteor.userId()) {
+			throw new Meteor.Error("Not your update to change.");
 		}
-		stories.update(storyId, {$set: {read: true}});
+		updates.update(updateId, {$set: {read: true}});
 	},
 	// Get debug info.
 	getDebugInfo: function () {
