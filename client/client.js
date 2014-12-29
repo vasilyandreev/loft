@@ -101,7 +101,7 @@ Template.welcome.events({
 		goToLoftPage(PAGES.LOGIN);
 	},
 	"click #join-us-button": function (event) {
-		goToLoftPage(PAGES.REGISTER);
+		goToLoftPage(PAGES.WAY);
 	},
 });
 
@@ -361,7 +361,11 @@ Template.login.events({
 			}
 		});
 		return false; 
-	},
+			},
+		
+  })
+
+Template.register.events({
 	"submit #register-form" : function(event, target) {
 		var email = target.find("#account-email").value;
 		var password = target.find("#account-password").value;
@@ -371,6 +375,8 @@ Template.login.events({
 			lastLoveTime: 0,
 		};
 
+		console.log("Form");
+
 		// TODO: Trim and validate the input
 
 		var options = { email: email, password: password, profile: profile };
@@ -378,8 +384,10 @@ Template.login.events({
 			if (err == undefined) {
 				init();
 				goToLoftPage(PAGES.WAY);
+				console.log("Form submitted");
 			} else {
 				Session.set("registerError", String(err));
+				console.log("Form not submitted.");
 			}
 		});
 		return false;

@@ -1,0 +1,29 @@
+.way-body h1 {
+	text-align: center;
+	font-size: 1.5em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	margin: .1em 0 .5em 0;
+}
+
+.way-body {
+	left:25%;
+	width:50%;
+	height:50%;
+	top: 10%;
+	position:absolute;
+	text-align: center;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	src: local('Open Sans Light'), local('OpenSans-Light'), url(http://fonts.gstatic.com/s/opensans/v10/DXI1ORHCpsQm3Vp6mXoaTSYtBUPDK3WL7KRKS_3q7OE.woff2) format('woff2');
+	unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+	text-align:center;
+	font-size: 2.00em;
+}
+
+.way-body p {
+	text-align: center;
+	font-size: .75em;
+}
