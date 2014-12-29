@@ -167,6 +167,10 @@ Template.home.events({
 		Session.set("postsCount", Session.get("postsCount") + 4);
 	},
 	"focus #post-input": function (event) {
+		// Set max-height so that it's set in pixels. Workaround for this bug:
+		// https://github.com/jackmoore/autosize/issues/191
+		var maxHeight = parseFloat($("#post-input").css("max-height")) / 100.0;
+		$("#post-input").css("max-height", $("#new-post-form").height() * maxHeight);
 		$("#post-input").autosize().trigger("autosize.resize");
 	},
 	"submit #new-post": function (event) {

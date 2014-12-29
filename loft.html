@@ -1,4 +1,17 @@
 <template name="home">
+
+<!--Absolute elements-->
+<!--<div id="darken"></div>
+<div id="post-input-div">
+	<form id="new-post-form">
+		<textarea id="post-input" name="text" placeholder="What's on your mind?"></textarea>
+		<div id="post-input-div-footer">
+			<input type="submit" value="Post">&nbsp;&nbsp;&nbsp;
+			Posts left for this week: {{postsLeft}}
+		</div>
+	</form>
+</div>-->
+
 <header>
 	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="update-button">{{newUpdates.count}}</button>
 	<span id="loft-logout-span"><a id="loft-logout" href="#">LOGOUT</a></span>
@@ -17,13 +30,10 @@
 	{{else}}
 		<div>
 			{{#if canPost}}
-				<form id="new-post">
-					<textarea id="post-input" name="text" placeholder="What's on your mind?"></textarea>
-					<span>
-						<input type="submit" value="Post">&nbsp;&nbsp;&nbsp;
-						Posts left for this week: {{postsLeft}}
-					</span>
-				</form>
+				<a href="#" id="post-prompt">
+					<div id="post-prompt-text">&nbsp;What's on your mind?</div>
+					<div id="post-prompt-line"></div>
+				</a>
 			{{else}}
 				<p>Ran out of posts for this week.</p>
 			{{/if}}
