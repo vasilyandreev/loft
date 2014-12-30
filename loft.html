@@ -1,16 +1,15 @@
 <template name="home">
 
-<!--Absolute elements-->
-<!--<div id="darken"></div>
-<div id="post-input-div">
-	<form id="new-post-form">
-		<textarea id="post-input" name="text" placeholder="What's on your mind?"></textarea>
-		<div id="post-input-div-footer">
-			<input type="submit" value="Post">&nbsp;&nbsp;&nbsp;
-			Posts left for this week: {{postsLeft}}
-		</div>
-	</form>
-</div>-->
+<!-- Absolute elements -->
+<!-- Rectangle used to darken the whole screen when composing a post. -->
+<div id="darken"></div>
+<div id="post-popup" class="post-popup-div">
+	<textarea class="post-input-textarea" placeholder="What's on your mind?"></textarea>
+	<div class="post-popup-footer">
+		<a id="submit-post" href="#">SUBMIT</a>&nbsp;&nbsp;&nbsp;
+		Posts left for this week: {{postsLeft}}
+	</div>
+</div>
 
 <header>
 	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="update-button">{{newUpdates.count}}</button>
@@ -30,15 +29,13 @@
 	{{else}}
 		<div>
 			{{#if canPost}}
-				<a href="#" id="post-prompt">
-					<div id="post-prompt-text">&nbsp;What's on your mind?</div>
-					<div id="post-prompt-line"></div>
-				</a>
+				<div id="post-prompt" class="post-prompt-div">
+					<textarea class="post-input-textarea" placeholder="What's on your mind?"></textarea>
+				</div>
 			{{else}}
 				<p>Ran out of posts for this week.</p>
 			{{/if}}
 		</div>
-	
 		<br>
 		{{#each posts}}
 			{{> post}}
