@@ -183,5 +183,15 @@ Meteor.methods({
 			throw new Meteor.Error("Not logged in.");
 		}
 		return posts.findOne({"_id": postId});
-	}
+	},
+	// Get the text of the post draft.
+	getPostDraftText: function() {
+		if (!Meteor.userId()) return "";
+		return Meteor.user().postDraftText;
+	},
+	// Set the text of the post draft.
+	setPostDraftText: function(text) {
+		if (!Meteor.userId()) return "";
+		Meteor.users.update(Meteor.userId(), {$set: {postDraftText: text}});
+	},
 });

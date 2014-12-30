@@ -1,3 +1,5 @@
+// How often we save the post draft when the user is editing it.
+SAVE_POST_DRAFT_PERIOD = 5000;  // in milliseconds
 PAGES = {
 	WELCOME: "welcome",
 	LOGIN: "login",
@@ -39,6 +41,13 @@ function init() {
 			console.log("getDebugInfo: " + err);
 		}
 	});
+	Meteor.call("getPostDraftText", function(err, result) {
+		if (err == undefined) {
+			Session.set("postDraftText", result);
+		} else {
+			console.log("getPostDraftText: " + err);
+		}
+	});
 }
 
 // Convert em value to px.
@@ -76,6 +85,16 @@ function findUpdates(areNew) {
 	return updates.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: areNew}]}, {sort: {createdAt: -1}});
 }
 
+// Save the post draft text.
+function savePostDraft() {
+	var textarea = $("#post-popup .post-input-textarea");
+	Meteor.call("setPostDraftText", textarea.val(), function(result, error) {
+		if (error != undefined) {
+			console.log("savePostDraft error: " + error);
+		}
+	});
+}
+
 // Router setup.
 Router.route('/', function () {
 	this.render(Session.get("currentPage"));
@@ -89,6 +108,8 @@ Tracker.autorun(function () {
 });
 
 $(window).load(function() {
+	window.savePostDraftHandle = undefined;
+
 	$(window).on("popstate", function(e) {
 		var state = e.originalEvent.state;
 		console.log("Popstate: " + JSON.stringify(state));
@@ -150,6 +171,9 @@ Template.home.helpers({
 	},
 	"postsLeft": function() {
 		return Session.get("postsLeft");
+	},
+	"postDraftText": function() {
+		return Session.get("postDraftText");
 	}
 });
 
@@ -198,6 +222,7 @@ function showPostPopup() {
 		var maxHeight = parseFloat(textarea.css("max-height")) / 100.0;
 		textarea.css("max-height", div.height() * maxHeight);
 		textarea.autosize({append: ""}).trigger("autosize.resize");
+		window.savePostDraftHandle = Meteor.setInterval(savePostDraft, SAVE_POST_DRAFT_PERIOD);
 	}});
 
 	// Animate other stuff.
@@ -233,11 +258,13 @@ function hidePostPopup() {
 		fontSize: promptTextarea.css("font-size"),
 		height: promptTextarea.css("height"),
 	}, {duration: duration, queue: false, complete: function() {
+		savePostDraft();
 		div.removeAttr("style");
 		textarea.removeAttr("style");
 		promptDiv.css("visibility", "visible");
 		promptTextarea.val(textarea.val());
 		Session.set("showingPostPopup", false);
+		Meteor.clearInterval(window.savePostDraftHandle);
 	}});
 
 	// Animate other stuff.
