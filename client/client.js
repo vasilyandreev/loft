@@ -167,14 +167,14 @@ function showPostPopup() {
 	var divFinalParams = {
 		left: div.position().left,
 		top: div.position().top,
-		width: div.width(),
-		height: div.height(),
+		width: div.css("width"),
+		height: div.css("height"),
 	};
 	div.css({
 		left: promptDiv.position().left,
 		top: promptDiv.position().top,
-		width: promptDiv.width(),
-		height: promptDiv.height(),
+		width: promptDiv.css("width"),
+		height: promptDiv.css("height"),
 	});
 	div.animate(divFinalParams, {duration: duration, queue: false});
 	div.css("visibility", "visible");
@@ -183,19 +183,21 @@ function showPostPopup() {
 	var textareaFinalParams = {
 		fontSize: textarea.css("font-size"),
 		height: textarea.css("height"),
+		maxHeight: textarea.css("max-height"),
 	};
 	textarea.val(promptTextarea.val());
 	textarea.focus();
 	textarea.css({
 		fontSize: promptTextarea.css("font-size"),
 		height: promptTextarea.css("height"),
+		maxHeight: promptTextarea.css("max-height"),
 	});
 	textarea.animate(textareaFinalParams, {duration: duration, queue: false, complete: function() {
 		// Set max-height so that it's set in pixels. Workaround for this bug:
 		// https://github.com/jackmoore/autosize/issues/191
-		var maxHeight = parseFloat(promptTextarea.css("max-height")) / 100.0;
+		var maxHeight = parseFloat(textarea.css("max-height")) / 100.0;
 		textarea.css("max-height", div.height() * maxHeight);
-		textarea.autosize().trigger("autosize.resize");
+		textarea.autosize({append: ""}).trigger("autosize.resize");
 	}});
 
 	// Animate other stuff.

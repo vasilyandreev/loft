@@ -6,14 +6,14 @@
 <div id="post-popup" class="post-popup-div">
 	<textarea class="post-input-textarea" placeholder="What's on your mind?"></textarea>
 	<div class="post-popup-footer">
-		<a id="submit-post" href="#">SUBMIT</a>&nbsp;&nbsp;&nbsp;
 		Posts left for this week: {{postsLeft}}
+		<a id="submit-post" class="standard-link" href="#">SUBMIT</a>
 	</div>
 </div>
 
 <header>
 	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="update-button">{{newUpdates.count}}</button>
-	<span id="loft-logout-span"><a id="loft-logout" href="#">LOGOUT</a></span>
+	<span id="loft-logout-span"><a id="loft-logout" class="standard-link" href="#">LOGOUT</a></span>
 </header>
 <div class="b-updates">
 	{{#if showUpdates}}
