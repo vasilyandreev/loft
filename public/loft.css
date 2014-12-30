@@ -10,7 +10,7 @@
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
-	text-align:center;
+	text-align: center;
 	font-size: 1em;
 }
 
@@ -31,46 +31,83 @@
 	vertical-align: middle;
 	text-decoration: none;
 	border-style: solid;
+	outline: 0;
 	height: 1.7em;
 	width: 1.7em;
 }
 
 #update-button:hover {
-	background: rgb(255,255,255);
+	background: white;
 	text-decoration: none;
 }
 
-#new-post {
+.post-popup-div {
+	position: fixed;
+	visibility: hidden;
+	left: 30%;
+	top: 15%;
+	width: 40%;
+	height: 65%;
+	z-index: 2;
+	background-color: white;
 	padding: 1em;
 }
 
-#post-input {
-	/*background-color: #fff;
+.post-popup-footer {
+	display: none;
+	position: absolute;
+	bottom: 0px;
+}
+
+.post-prompt-div {
+	padding: 1em;
+}
+
+.post-input-textarea {
 	background-image: linear-gradient(#ccccff .1em, transparent .1em);
-	border-width: 2px;
-	border-color: #0000ff;
-	outline: 0;*/
-	margin: 0em 0em 1em 0em;
-	/*background-position: 0em -0.1em;
+	border: none;
+	outline: 0;
+	background-position: 0em -0.1em;
 	background-size: 100% 1.5em;
-	background-attachment: local;*/
-	font-size: 1em;
-	/*line-height: 150%;*/
+	background-attachment: local;
+	line-height: 150%;
 	width: 100%;
+	height: 1.5em;
+	max-height: 90%;
 	resize: none;
 	overflow: hidden;
+	font-size: 2em;
 	-webkit-box-sizing: border-box;
 		 -moz-box-sizing: border-box;
 					box-sizing: border-box;
-	-webkit-transition: height 0.2s;
+	/* This code makes the box resize smoothly when more lines are added. We
+	 * don't need it, and unfortunately there is also a bug where these lines
+	 * break the jQuery animation of 'height' field.*/
+	/*-webkit-transition: height 0.2s;
 		 -moz-transition: height 0.2s;
-					transition: height 0.2s;
+					transition: height 0.2s;*/
 }
-/*
-#post-input:focus {
-	background-image: linear-gradient(#aaaaff .1em, transparent .1em);
+
+#post-popup .post-input-textarea {
+	font-size: 1em;
+	height: 2em;
 }
-*/
+
+#darken {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	background-color: black;
+	-webkit-filter: opacity(0.8);
+	   -moz-filter: opacity(0.8);
+	     -o-filter: opacity(0.8);
+	    -ms-filter: opacity(0.8);
+	        filter: opacity(0.8);
+}
 
 .b-posts {
 	float: right;

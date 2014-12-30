@@ -1,4 +1,16 @@
 <template name="home">
+
+<!-- Absolute elements -->
+<!-- Rectangle used to darken the whole screen when composing a post. -->
+<div id="darken"></div>
+<div id="post-popup" class="post-popup-div">
+	<textarea class="post-input-textarea" placeholder="What's on your mind?"></textarea>
+	<div class="post-popup-footer">
+		<a id="submit-post" href="#">SUBMIT</a>&nbsp;&nbsp;&nbsp;
+		Posts left for this week: {{postsLeft}}
+	</div>
+</div>
+
 <header>
 	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="update-button">{{newUpdates.count}}</button>
 	<span id="loft-logout-span"><a id="loft-logout" href="#">LOGOUT</a></span>
@@ -17,18 +29,13 @@
 	{{else}}
 		<div>
 			{{#if canPost}}
-				<form id="new-post">
-					<textarea id="post-input" name="text" placeholder="What's on your mind?"></textarea>
-					<span>
-						<input type="submit" value="Post">&nbsp;&nbsp;&nbsp;
-						Posts left for this week: {{postsLeft}}
-					</span>
-				</form>
+				<div id="post-prompt" class="post-prompt-div">
+					<textarea class="post-input-textarea" placeholder="What's on your mind?"></textarea>
+				</div>
 			{{else}}
 				<p>Ran out of posts for this week.</p>
 			{{/if}}
 		</div>
-	
 		<br>
 		{{#each posts}}
 			{{> post}}
