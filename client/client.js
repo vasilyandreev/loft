@@ -1,5 +1,7 @@
 // How often we save the post draft when the user is editing it.
 SAVE_POST_DRAFT_PERIOD = 5000;  // in milliseconds
+// Number used to make all animations slower.
+ANIMATION_FACTOR = 1;
 PAGES = {
 	WELCOME: "welcome",
 	LOGIN: "login",
@@ -185,7 +187,7 @@ function showPostPopup() {
 	if (Session.get("showingPostPopup")) return;
 	Session.set("showingPostPopup", true);
 
-	var duration = 1000;
+	var duration = 1000 * ANIMATION_FACTOR;
 	var promptDiv = $("#post-prompt");
 	var promptTextarea = promptDiv.find(".post-input-textarea");
 	var div = $("#post-popup");
@@ -238,7 +240,7 @@ function showPostPopup() {
 function hidePostPopup() {
 	if (!Session.get("showingPostPopup")) return;
 
-	var duration = 1000;
+	var duration = 1000 * ANIMATION_FACTOR;
 	var promptDiv = $("#post-prompt");
 	var promptTextarea = promptDiv.find(".post-input-textarea");
 	var div = $("#post-popup");
@@ -280,7 +282,7 @@ function hidePostPopup() {
 };
 
 // Flash the background color of the new post. But we only want to do it once:
-// 1) The new post popup is gone.
+// 1) The new post popup is gone, and
 // 2) We have the new post object.
 function flashNewPost(popupGone, newPost) {
 	window.popupGone |= popupGone;
@@ -294,10 +296,10 @@ function flashNewPost(popupGone, newPost) {
 	Session.set("posts", posts);
 	Tracker.flush();
 
-	var postDiv = $("#" + window.newPost._id);
-	postDiv.animate({"backgroundColor": "#ddddff"}, {queue: false, duration: 1000, complete: function() {
-		postDiv.animate({"backgroundColor": "transparent"}, {queue: false, duration: 1000});
-	}});
+	var postDiv = $("#" + window.newPost._id).hide();
+	window.setTimeout(function() {
+		postDiv.show(1500 * ANIMATION_FACTOR);
+	}, 300);
 	window.newPost = undefined;
 	window.popupGone = false;
 }
