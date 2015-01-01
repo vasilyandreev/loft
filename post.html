@@ -1,5 +1,5 @@
 <template name="post">
-	<div class="post">
+	<div class="post" id="{{_id}}">
 		<p>{{name}} ({{lovedBy.length}})</p>
 		<p>{{{safeText}}}</p>
 		{{#if canLove}}

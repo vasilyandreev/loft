@@ -103,12 +103,16 @@ Router.route('/', function () {
 Tracker.autorun(function () {
 	Meteor.subscribe("userProfiles");
 	Meteor.subscribe("updates");
-	Meteor.subscribe("posts", Session.get("postsCount"));
+	Meteor.subscribe("posts", Session.get("postsCount"), function() {
+		Session.set("posts", posts.find({}, {sort: {createdAt: -1}, reactive: false}).fetch());
+	});
 	Meteor.subscribe("comments");
 });
 
 $(window).load(function() {
 	window.savePostDraftHandle = undefined;
+	window.popupGone = false;
+	window.newPost = undefined;
 
 	$(window).on("popstate", function(e) {
 		var state = e.originalEvent.state;
@@ -157,7 +161,7 @@ Template.home.helpers({
 		return Session.get("showUpdates");
 	},
 	"posts": function () {
-		return posts.find({}, {sort: {createdAt: -1}});
+		return Session.get("posts");
 	},
 	"showLoadMore": function () {
 		// TODO
@@ -265,6 +269,7 @@ function hidePostPopup() {
 		promptTextarea.val(textarea.val());
 		Session.set("showingPostPopup", false);
 		Meteor.clearInterval(window.savePostDraftHandle);
+		flashNewPost(true);
 	}});
 
 	// Animate other stuff.
@@ -273,6 +278,29 @@ function hidePostPopup() {
 	});
 	div.find(".post-popup-footer").fadeTo(duration, 0);
 };
+
+// Flash the background color of the new post. But we only want to do it once:
+// 1) The new post popup is gone.
+// 2) We have the new post object.
+function flashNewPost(popupGone, newPost) {
+	window.popupGone |= popupGone;
+	if (newPost !== undefined) {
+		window.newPost = newPost;
+	}
+	if (window.newPost === undefined || !window.popupGone) return false;
+
+	var posts = Session.get("posts");
+	posts.unshift(window.newPost);
+	Session.set("posts", posts);
+	Tracker.flush();
+
+	var postDiv = $("#" + window.newPost._id);
+	postDiv.animate({"backgroundColor": "#ddddff"}, {queue: false, duration: 1000, complete: function() {
+		postDiv.animate({"backgroundColor": "transparent"}, {queue: false, duration: 1000});
+	}});
+	window.newPost = undefined;
+	window.popupGone = false;
+}
 
 Template.home.events({
 	"click #loft-logout": function (event) {
@@ -317,10 +345,10 @@ Template.home.events({
 	"click #submit-post": function (event) {
 		var textarea = $("#post-popup .post-input-textarea");
 		var text = textarea.val();
-		console.log(text);
 		Meteor.call("addPost", textarea.val(), function(err, result) {
 			if (err == undefined) {
 				Session.set("postsLeft", Session.get("postsLeft") - 1);
+				flashNewPost(false, result);
 			} else {
 				console.log("addPost error: " + err);
 			}

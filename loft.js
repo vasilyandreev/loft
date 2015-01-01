@@ -93,6 +93,7 @@ Meteor.methods({
 		});
 	},
 	// Create a new post with the given text.
+	// Returns the created post.
 	addPost: function (text) {
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
@@ -101,7 +102,8 @@ Meteor.methods({
 			throw new Meteor.Error("Can't make any more posts this week.");
 		}
 
-		posts.insert({
+		var post = {
+			_id: new Mongo.ObjectID().toHexString(),
 			userId: Meteor.userId(),
 			text: text,
 			createdAt: Date.now(),
@@ -109,7 +111,9 @@ Meteor.methods({
 			// Immediately add the post owner to commenters, so they get a notification
 			// when someone comments on their post.
 			commenters: [Meteor.userId()]  // list of userIds who have commented on this post
-		});
+		};
+		posts.insert(post);
+		return post;
 	},
 	// Love the given post.
 	lovePost: function (postId) {
