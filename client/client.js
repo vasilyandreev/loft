@@ -283,8 +283,13 @@ function showPostPopup() {
 		// Set max-height so that it's set in pixels. Workaround for this bug:
 		// https://github.com/jackmoore/autosize/issues/191
 		textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
+		textarea.trigger("autosize.destroy");
+		textarea.autosize({append: ""}).trigger("autosize.resize");
+
 		var scrollDuration = 500 * ANIMATION_FACTOR;
 		if (textarea[0].scrollHeight <= textarea[0].clientHeight) scrollDuration = 0;
+		// Set cursor here to prevent quick jump to the top after animation if the cursor was at the top.
+		textarea.setCursorPosition(textarea.val().length);
 		textarea.animate({scrollTop: textarea[0].scrollHeight - textarea[0].clientHeight}, {duration: scrollDuration, queue: false, complete: function() {
 			textarea.focus();
 			textarea.setCursorPosition(textarea.val().length);
