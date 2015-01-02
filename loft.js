@@ -7,6 +7,8 @@ UPDATE_TYPE = {
 updates = new Mongo.Collection("updates");
 posts = new Mongo.Collection("posts");
 comments = new Mongo.Collection("comments");
+invites = new Mongo.Collection("invites");
+quotes = new Mongo.Collection("quotes");
 
 // Returns Date corresponding to the time when "today" started.
 // Note: we define end of a day at 3am Pacific (5am Central).
@@ -21,6 +23,26 @@ function getStartOfToday() {
 	}
 	startOfToday.setUTCHours(11);
 	return startOfToday;
+
+}
+
+function getTodaysQuote() {
+	var today = getStartOfToday();
+	var todayStr = (today.getUTCMonth() + 1) + "/" + today.getUTCDate() + "/" + today.getUTCFullYear();
+	var quoteObject = quotes.findOne({"date": todayStr});
+	return quoteObject.quote;
+}
+
+function checkCode(code) {
+	var codeObject = invites.findOne({"code": code});
+	if(codeObject === undefined){
+		throw new Meteor.Error("This invite code doesn't exist.");
+	}
+	if(codeObject.reedemed){
+		throw new Meteor.Error("Your code has already been used.");
+	}
+	invites.update(codeObject._id, {$set: {"reedemed": true}});
+	return codeObject.code;
 }
 
 // Returns Date corresponding to the time when the week started.
@@ -58,6 +80,8 @@ function canLove() {
 
 Meteor.methods({
 	canLove: canLove,
+	checkCode: checkCode,
+	getTodaysQuote: getTodaysQuote,
 	getPostsLeft: getPostsLeft,
 	// Create a new comment for the given post with the given text.
 	addComment: function (postId, text) {
@@ -68,7 +92,7 @@ Meteor.methods({
 		if (!post) {
 			throw new Meteor.Error("No post with this id.");
 		}
-		
+
 		comments.insert({
 			postId: postId,
 			userId: Meteor.userId(),
@@ -137,7 +161,7 @@ Meteor.methods({
 		posts.update(postId, {$addToSet: {lovedBy: Meteor.userId()}});
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 		Meteor.users.update(Meteor.userId(), {$set: {"profile.lastLoveTime": Date.now()}});
-				
+
 		updates.insert({
 			type: UPDATE_TYPE.LOVE,
 			forUserId: post.userId,
