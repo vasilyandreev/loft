@@ -1,4 +1,4 @@
-POSTS_PER_WEEK = 3
+POSTS_PER_WEEK = 3;
 UPDATE_TYPE = {
 	ADMIN: "admin",  // was created by an admin
 	COMMENT: "comment",  // was created by a comment

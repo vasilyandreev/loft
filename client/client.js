@@ -259,7 +259,7 @@ function hidePostPopup() {
 	var scrollDuration = 500 * ANIMATION_FACTOR;
 	if (textarea.scrollTop() === 0) scrollDuration = 0;
 	textarea.blur();
-	textarea.css("max-height", textarea.height());
+	textarea.css("max-height", textarea.css("height"));
 	textarea.trigger("autosize.destroy");
 	textarea.animate({scrollTop: 0}, {duration: scrollDuration, queue: false, complete: function() {
 		// Animate div.
