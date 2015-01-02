@@ -1,0 +1,18 @@
+.container hr {
+	width: 90%;
+	text-align: left;
+	margin: 0;
+}
+
+.container h1{
+	font-size: 1.75em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+}
+
+.container {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+}

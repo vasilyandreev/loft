@@ -1,9 +1,12 @@
+
 <template name="home">
 <header>
 	<span id="loft-logo">Loft.&nbsp;&nbsp;&nbsp;</span><button id="update-button">{{newUpdates.count}}</button>
 	<span id="loft-logout-span"><a id="loft-logout" href="#">LOGOUT</a></span>
 </header>
 <div class="b-updates">
+	<div class="verticalLine">
+	</div>
 	{{#if showUpdates}}
 		{{> updates}}
 	{{/if}}
@@ -18,7 +21,7 @@
 		<div>
 			{{#if canPost}}
 				<form id="new-post">
-					<textarea id="post-input" name="text" placeholder="What's on your mind?"></textarea>
+					<textarea id="post-input" name="text" placeholder="Tell a story, share a thought, reflect on life..."></textarea>
 					<span>
 						<input type="submit" value="Post">&nbsp;&nbsp;&nbsp;
 						Posts left for this week: {{postsLeft}}

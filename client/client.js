@@ -5,6 +5,7 @@ PAGES = {
 	HOME: "home",
 	WAY: "way",
 	QUOTE: "quote",
+	INVITE: "invite",
 };
 
 // Call init when we open the website and also when we login.
@@ -16,6 +17,9 @@ function init() {
 	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
 	Session.set("selectedUpdate", undefined);  // Id of the update we have selected
 	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
+	Session.set("quoteText", "");  // Quote text displayed on the quote page
+	Session.set("codeError", "");  // Error during invite code submission
+	Session.set("showRegistration", false);  // True iff we are showing registration section in register.html
 
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
@@ -38,6 +42,13 @@ function init() {
 			console.log("getDebugInfo: " + err);
 		}
 	});
+	Meteor.call("getTodaysQuote", function(err, result){
+		if (err == undefined) {
+			Session.set("quoteText", result);
+		} else {
+			console.log("getTodaysQuote" + err);
+		}
+	});
 }
 
 // Return cleaned and safe version of the given string.
@@ -51,6 +62,11 @@ function escapeHtml(str) {
 function getFullName(userId) {
 	var user = Meteor.users.findOne(userId);
 	return user.profile.firstName + " " + user.profile.lastName;
+}
+
+function getFirstName(userId) {
+	var user = Meteor.users.findOne(userId);
+	return user.profile.firstName;
 }
 
 // Change currentPage to the given value and perform a history.pushState to
@@ -68,6 +84,7 @@ function findUpdates(areNew) {
 	// Meteor bug where the update flashes for a second when the user comments/loves.
 	return updates.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: areNew}]}, {sort: {createdAt: -1}});
 }
+
 
 // Router setup.
 Router.route('/', function () {
@@ -114,9 +131,11 @@ Template.way.events({
 })
 
 Template.quote.helpers({
-	firstName: function() {
-		Session.get(profile.firstName);
-		return firstName;
+	"firstName": function () {
+		return getFirstName(Meteor.userId());
+	},
+	"quoteText": function(){
+		return Session.get("quoteText");
 	}
 })
 
@@ -377,7 +396,7 @@ Template.login.events({
 		});
 		return false; 
 	},
-})
+});
 
 // REGISTER
 Template.register.events({
@@ -403,4 +422,33 @@ Template.register.events({
 		});
 		return false;
 	},
+	"submit #invite-form": function(event, target) {
+		Meteor.call("checkCode", target.find("#invite-code").value, function(err, result) {
+			if (err == undefined) {
+				Session.set("showRegistration", true);
+			} else {
+				console.log("checkCode: " + err);
+				Session.set("codeError", String(err));
+			}
+		});
+		return false;
+	},
+	"keypress #invite-code": function(event) {
+		if (event.which == 13) {
+			event.preventDefault();
+			$("#invite-form").submit();
+		}
+	}
 });
+
+Template.register.helpers({
+	"codeErr": function() {
+		return Session.get("codeError");
+	},
+	"showRegistration": function() {
+		return Session.get("showRegistration");
+	},
+	"showInvite": function(){
+		return !Session.get("showRegistration");
+	}
+})
