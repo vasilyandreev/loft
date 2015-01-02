@@ -373,20 +373,24 @@ Template.home.events({
 		goToLoftPage(PAGES.WELCOME);
 	},
 	"click #update-button": function (event) {
+		var $updates = $(".b-updates");
+		var $spacers = $(".b-posts-spacer");
+		var $posts = $(".b-posts");
+		var updatesWidth = $(window).width() - $posts.width();
 		if (!Session.get("showUpdates")) {
 			Session.set("showUpdates", true);
-			$(".b-updates").animate({"left": "0%"}, {queue: false});
-			$(".b-updates").animate({"margin-right": "0%"}, {queue: false});
-			$(".b-posts-spacer").hide({effect: "scale", direction: "horizontal", queue: false});
+			$updates.animate({"left": "0%"}, {queue: false});
+			$updates.animate({"margin-right": "0%"}, {queue: false});
+			$spacers.animate({width: "0%"}, {queue: false});
 		} else {
 			if (Session.get("selectedPost") !== undefined) {
-				$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
+				$posts.animate({"opacity": "0"}, {queue: false, complete: function() {
 					Session.set("selectedPost", undefined);
 					Session.set("selectedUpdate", undefined);
-					$(".b-posts").animate({"opacity": "1"}, {queue: false});
+					$posts.animate({"opacity": "1"}, {queue: false});
 				}});
 			}
-			$(".b-updates").animate({"left": "-40%"}, {queue: false, complete: function() {
+			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, complete: function() {
 				Session.set("showUpdates", false);
 				Meteor.call("markAllUpdatesOld", function (result, err) {
 					if (err != undefined) {
@@ -394,8 +398,8 @@ Template.home.events({
 					}
 				});
 			}});
-			$(".b-updates").animate({"margin-right": "-40%"}, {queue: false});
-			$(".b-posts-spacer").show({effect: "scale", direction: "horizontal", queue: false});
+			$updates.animate({"margin-right": "-=" + updatesWidth}, {queue: false});
+			$spacers.animate({width: Math.floor(updatesWidth / 2.0)}, {queue: false});
 		}
 	},
 	"focus #post-prompt .post-input-textarea": function (event) {
