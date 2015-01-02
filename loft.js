@@ -123,6 +123,7 @@ Meteor.methods({
 	// Create a new post with the given text.
 	// Returns the created post.
 	addPost: function (text) {
+		if (Meteor.isClient) return;
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
@@ -145,6 +146,7 @@ Meteor.methods({
 	},
 	// Love the given post.
 	lovePost: function (postId) {
+		if (Meteor.isClient) return;
 		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
@@ -220,6 +222,11 @@ Meteor.methods({
 	getPostDraftText: function() {
 		if (!Meteor.userId()) return "";
 		return Meteor.user().postDraftText;
+	},
+	// Return "limit" number of posts which we created after startTime.
+	getPosts: function(startTime, limit) {
+		var result = posts.find({createdAt: {$lt: startTime}}, {sort: {createdAt: -1}, limit: limit}).fetch();
+		return result;
 	},
 	// Set the text of the post draft.
 	setPostDraftText: function(text) {

@@ -1,5 +1,11 @@
+// Number of posts to load initially.
+INITIAL_POSTS = 10;
+// Number of posts to load each time we reach the end.
+INFINITE_SCROLL_POSTS = 5;
 // How often we save the post draft when the user is editing it.
 SAVE_POST_DRAFT_PERIOD = 5000;  // in milliseconds
+// Percent scroll necessary to load more posts.
+SCROLL_TRIGGER = 0.95;
 // Number used to make all animations slower.
 ANIMATION_FACTOR = 1;
 PAGES = {
@@ -14,9 +20,12 @@ PAGES = {
 
 // Call init when we open the website and also when we login.
 function init() {
+	console.log("init");
 	Session.set("loginError", "");
 	Session.set("registerError", "");
-	Session.set("postsCount", 4);  // number of posts to show
+	Session.set("posts", undefined);  // array of posts we are showing
+	Session.set("loadingMorePosts", false);  // True iff we already asked the server for more posts
+	Session.set("noMorePosts", false);  // True iff there are no more posts to load
 	Session.set("showUpdates", false);  // True iff we are showing updates section
 	Session.set("showingPostPopup", false);  // True iff we are showing the post popup modal
 	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
@@ -42,16 +51,38 @@ function init() {
 			console.log("getPostsLeft: " + err);
 		}
 	});
-	Meteor.call("getDebugInfo", function(err, result) {
-		if (err == undefined) {
-			console.log(result);
-		} else {
-			console.log("getDebugInfo: " + err);
-		}
-	});
 	Meteor.call("getPostDraftText", function(err, result) {
 		if (err == undefined) {
 			Session.set("postDraftText", result);
+		} else {
+			console.log("getPostDraftText: " + err);
+		}
+	});
+	loadMorePosts(INITIAL_POSTS);
+}
+
+// Load "limit" more posts.
+function loadMorePosts(limit) {
+	if (Session.equals("loadingMorePosts", true)) return;
+	if (Session.equals("noMorePosts", true)) return;
+
+	Session.set("loadingMorePosts", true);
+	var cutoffTime = Date.now();
+	var posts = Session.get("posts");
+	if (posts !== undefined && posts.length > 0) {
+		cutoffTime = posts[posts.length - 1].createdAt;
+	}
+	console.log("Loading more posts with cutoffTime=" + cutoffTime);
+	Meteor.call("getPosts", cutoffTime, limit, function(err, result) {
+		Session.set("loadingMorePosts", false);
+		if (err == undefined) {
+			if (result.length < limit) {
+				Session.set("noMorePosts", true);
+			}
+			if (posts !== undefined) {
+				result = $.merge(posts, result);
+			}
+			Session.set("posts", result);
 		} else {
 			console.log("getPostDraftText: " + err);
 		}
@@ -124,9 +155,6 @@ Router.route('/', function () {
 Tracker.autorun(function () {
 	Meteor.subscribe("userProfiles");
 	Meteor.subscribe("updates");
-	Meteor.subscribe("posts", Session.get("postsCount"), function() {
-		Session.set("posts", posts.find({}, {sort: {createdAt: -1}, reactive: false}).fetch());
-	});
 	Meteor.subscribe("comments");
 });
 
@@ -145,6 +173,13 @@ $(window).load(function() {
 			Session.set("currentPage", state.currentPage);
 		}
 	});
+	$(window).on("scroll", function(e) {
+		var winTop = $(window).scrollTop(), docHeight = $(document).height(), winHeight = $(window).height();
+		if (winTop / (docHeight - winHeight) > SCROLL_TRIGGER) {
+			loadMorePosts(INFINITE_SCROLL_POSTS);
+		}
+	});
+	$(window).scrollTop(0);
 });
 
 init();
@@ -192,9 +227,8 @@ Template.home.helpers({
 	"posts": function () {
 		return Session.get("posts");
 	},
-	"showLoadMore": function () {
-		// TODO
-		return true;
+	"noMorePosts": function () {
+		return Session.get("noMorePosts");
 	},
 	"selectedPost": function () {
 		return Session.get("selectedPost");
@@ -257,8 +291,13 @@ function showPostPopup() {
 		// Set max-height so that it's set in pixels. Workaround for this bug:
 		// https://github.com/jackmoore/autosize/issues/191
 		textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
+		textarea.trigger("autosize.destroy");
+		textarea.autosize({append: ""}).trigger("autosize.resize");
+
 		var scrollDuration = 500 * ANIMATION_FACTOR;
 		if (textarea[0].scrollHeight <= textarea[0].clientHeight) scrollDuration = 0;
+		// Set cursor here to prevent quick jump to the top after animation if the cursor was at the top.
+		textarea.setCursorPosition(textarea.val().length);
 		textarea.animate({scrollTop: textarea[0].scrollHeight - textarea[0].clientHeight}, {duration: scrollDuration, queue: false, complete: function() {
 			textarea.focus();
 			textarea.setCursorPosition(textarea.val().length);
@@ -347,20 +386,24 @@ Template.home.events({
 		goToLoftPage(PAGES.WELCOME);
 	},
 	"click #update-button": function (event) {
+		var $updates = $(".b-updates");
+		var $spacers = $(".b-posts-spacer");
+		var $posts = $(".b-posts");
+		var updatesWidth = $(window).width() - $posts.width();
 		if (!Session.get("showUpdates")) {
 			Session.set("showUpdates", true);
-			$(".b-updates").animate({"left": "0%"}, {queue: false});
-			$(".b-updates").animate({"margin-right": "0%"}, {queue: false});
-			$(".b-posts-spacer").hide({effect: "scale", direction: "horizontal", queue: false});
+			$updates.animate({"left": "0%"}, {queue: false});
+			$updates.animate({"margin-right": "0%"}, {queue: false});
+			$spacers.animate({width: "0%"}, {queue: false});
 		} else {
 			if (Session.get("selectedPost") !== undefined) {
-				$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
+				$posts.animate({"opacity": "0"}, {queue: false, complete: function() {
 					Session.set("selectedPost", undefined);
 					Session.set("selectedUpdate", undefined);
-					$(".b-posts").animate({"opacity": "1"}, {queue: false});
+					$posts.animate({"opacity": "1"}, {queue: false});
 				}});
 			}
-			$(".b-updates").animate({"left": "-40%"}, {queue: false, complete: function() {
+			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, complete: function() {
 				Session.set("showUpdates", false);
 				Meteor.call("markAllUpdatesOld", function (result, err) {
 					if (err != undefined) {
@@ -368,12 +411,9 @@ Template.home.events({
 					}
 				});
 			}});
-			$(".b-updates").animate({"margin-right": "-40%"}, {queue: false});
-			$(".b-posts-spacer").show({effect: "scale", direction: "horizontal", queue: false});
+			$updates.animate({"margin-right": "-=" + updatesWidth}, {queue: false});
+			$spacers.animate({width: Math.floor(updatesWidth / 2.0)}, {queue: false});
 		}
-	},
-	"click #load-more": function (event) {
-		Session.set("postsCount", Session.get("postsCount") + 4);
 	},
 	"focus #post-prompt .post-input-textarea": function (event) {
 		showPostPopup();
@@ -411,6 +451,9 @@ Template.home.events({
 		// Prevent default form submit
 		return false;
 	},
+	"scroll": function(event) {
+		//console.log(event);
+	}
 });
 
 // UPDATES
@@ -532,9 +575,14 @@ Template.post.helpers({
 
 Template.post.events({
 	"click .love-button": function () {
+		var postId = this._id;
 		Meteor.call("lovePost", this._id, function (err, result) {
 			if (err == undefined) {
 				Session.set("canLove", false);
+				var posts = Session.get("posts");
+				var post = $.grep(posts, function(p){ return p._id == postId; })[0];
+				post.lovedBy.push(Meteor.userId());
+				Session.set("posts", posts);
 			} else {
 				console.log("lovePost error: " + err);
 			}
