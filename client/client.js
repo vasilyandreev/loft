@@ -193,7 +193,7 @@ function showPostPopup() {
 	var promptTextarea = promptDiv.find(".post-input-textarea");
 	var div = $("#post-popup");
 	var textarea = div.find(".post-input-textarea");
-	var textareaHeight = textarea.height();
+	var finalMaxHeight = textarea.css("max-height");
 
 	// Animate div.
 	var divFinalParams = {
@@ -212,12 +212,15 @@ function showPostPopup() {
 	div.css("visibility", "visible");
 
 	// Animate textarea.
+	// Set unlimited max-height, so that we can compute what the textarea will be autoresized to.
+	textarea.css("max-height", "10000px");  
+	textarea.val(promptTextarea.val());
+	textarea.autosize({append: ""}).trigger("autosize.resize");
 	var textareaFinalParams = {
 		fontSize: textarea.css("font-size"),
-		height: textareaHeight,
-		maxHeight: textarea.css("max-height"),
+		height: textarea.css("height"),
+		maxHeight: finalMaxHeight,
 	};
-	textarea.val(promptTextarea.val());
 	textarea.scrollTop(0);
 	textarea.css({
 		fontSize: promptTextarea.css("font-size"),
@@ -227,10 +230,10 @@ function showPostPopup() {
 	textarea.animate(textareaFinalParams, {duration: duration, queue: false, complete: function() {
 		// Set max-height so that it's set in pixels. Workaround for this bug:
 		// https://github.com/jackmoore/autosize/issues/191
-		var maxHeight = parseFloat(textarea.css("max-height")) / 100.0;
-		textarea.css("max-height", div.height() * maxHeight);
-		textarea.autosize({append: ""}).trigger("autosize.resize");
-		textarea.animate({scrollTop: textarea[0].scrollHeight - textarea[0].clientHeight}, {duration: 500 * ANIMATION_FACTOR, queue: false, complete: function() {
+		textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
+		var scrollDuration = 500 * ANIMATION_FACTOR;
+		if (textarea[0].scrollHeight <= textarea[0].clientHeight) scrollDuration = 0;
+		textarea.animate({scrollTop: textarea[0].scrollHeight - textarea[0].clientHeight}, {duration: scrollDuration, queue: false, complete: function() {
 			textarea.focus();
 			textarea.setCursorPosition(textarea.val().length);
 		}});
@@ -256,7 +259,7 @@ function hidePostPopup() {
 	var scrollDuration = 500 * ANIMATION_FACTOR;
 	if (textarea.scrollTop() === 0) scrollDuration = 0;
 	textarea.blur();
-	textarea.css("max-height", "");
+	textarea.css("max-height", textarea.height());
 	textarea.trigger("autosize.destroy");
 	textarea.animate({scrollTop: 0}, {duration: scrollDuration, queue: false, complete: function() {
 		// Animate div.
