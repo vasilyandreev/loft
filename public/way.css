@@ -1,3 +1,7 @@
+.way-body hr {
+	width: 5em;
+}
+
 .way-body h1 {
 	text-align: center;
 	font-size: 1.5em;
@@ -24,7 +28,7 @@
 }
 
 .way-body p {
-	text-align: center;
+	text-align: left;
 	font-size: .75em;
 }
 
@@ -36,7 +40,7 @@
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
-	font-size: 1.5em;
+	font-size: 1.25em;
 	left: 0;
 	bottom: 0px;
 	border-width: 0 0 0;

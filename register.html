@@ -1,19 +1,23 @@
 <template name="register">
-	{{#if showRegistration}
+	{{#if showRegistration}}
 		<div class="register">
-			<h1> Loft. </h1>
-			<h2> Come see what's going on inside. </h2>
+			<h1> Loft</h1>
 			<form id="register-form">
 				<ul>
-					<li><label> First name: </label><span><input type="text" id="account-first-name" placeholder=""/></span></li>
-					<li><label><span> Last name: </span><input type="text" id="account-last-name" placeholder=""/></label></li>
-					<li><label><span> E-mail: </span><input type="email" id="account-email" placeholder=""/></label></li>
-					<li><label><span> Password: </span><input type="password" id="account-password" placeholder=""/></label></li>
+					<li><label> First name: </label><span><input type="text" id="account-first-name" value="Austin" placeholder="" /></span></li>
+					<li><label><span> Last name: </span><input type="text" id="account-last-name" value="Hansen" placeholder="" /></label></li>
+					<li><label><span> E-mail: &nbsp; &nbsp; &nbsp; &nbsp; </span><input type="email" id="account-email" placeholder=""/></label></li>
+					<li><label><span> Password: &nbsp; </span><input type="password" id="account-password" placeholder=""/></label></li>
 					<label> <input type="submit" id="create-account" value="Enter"/></label>
 				</ul> 
 			</form>
 			<p>{{registerError}}</p>
 		</div>
+		<div id = "footer">
+		<ul>
+			<div class="steps"><p> 2/3 </p> </div>
+		</ul>
+	</div>
 	{{else}}
 		<div class="invite">
 			<form id ="invite-form">
@@ -27,10 +31,10 @@
 				<p>{{codeErr}}</p>
 			</form>
 		</div>
-	{{/if}}
 	<div id = "footer">
 		<ul>
 			<div class="steps"><p> 1/3 </p> </div>
 		</ul>
-	</div>
+		</div>
+	{{/if}}
 </template>

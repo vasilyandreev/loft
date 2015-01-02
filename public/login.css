@@ -1,44 +1,57 @@
-.quote {
+.login {
 	text-align: center;
-	left:25%;
-	width:50%;
-	height:50%;
-	top: 1%;
-	position:absolute;
-	text-align: center;
-	font-size: 1.5em;
-}
-
-#quote-header {
-	font-size: 2rem;
-	font-family: 'Open Sans';
-	font-style: normal;
-	font-weight: 300;
-}
-
-#quote-body{
-	top: 40%;
-	width: 25em;
+	left: 25%;
+	width: 50%;
+	height: 50%;
+	top: 15%;
 	position: absolute;
-	text-align: left;
+}
+
+.login h1 {
+	font-size: 3em;
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
-	font-size: 1.5em;
 }
 
-.quote-enter {
-	 margin-top: 3em;
-	 margin-left: 7.9em;
+.login ul {
+	list-style: none;
+	border-bottom: none;
+	text-align: center;
+	margin-right: 3em;
 }
 
-#quote-enter {
+.login li {
+	margin: 2em;
+}
+
+#login-form{
+	margin: 0 auto;
+}
+
+#login-email {
+	width: 15em;
+	margin: .5em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
+}
+
+#login-password {
+	width: 15em;
+	margin: .5em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
+}
+
+#login-button {;
 	width: 5em;
 	margin: 1.0em;
 	text-align: center;
 	font-family: 'Open Sans';
 	font-style: normal;
-	font-weight: 300;
+	font-weight: 400;
 	background: #ffffff;
 	background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
 	background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
@@ -49,7 +62,7 @@
 	-moz-border-radius: 6;
 	border-radius: 6px;
 	color: #000000;
-	font-size: 1em;
+	font-size: 23px;
 	padding: 10px 20px 10px 20px;
 	border: solid #000000 2px;
 	text-decoration: none;

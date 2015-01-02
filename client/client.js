@@ -25,6 +25,8 @@ function init() {
 	Session.set("quoteText", "");  // Quote text displayed on the quote page
 	Session.set("codeError", "");  // Error during invite code submission
 	Session.set("showRegistration", false);  // True iff we are showing registration section in register.html
+	Session.set("prefillFirstName", "");
+	Session.set("prefillLastName", "");
 
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
@@ -160,16 +162,22 @@ Template.welcome.events({
 // WAY 
 Template.way.events({
 	"click #way-button": function (event) {
-		goToLoftPage(PAGES.QUOTE);
+		goToLoftPage(PAGES.HOME);
 	},
 })
-
+// QUOTE
 Template.quote.helpers({
 	"firstName": function () {
 		return getFirstName(Meteor.userId());
 	},
 	"quoteText": function(){
 		return Session.get("quoteText");
+	}
+})
+
+Template.quote.events({
+	"click #quote-enter": function(event){
+		goToLoftPage(PAGES.HOME);
 	}
 })
 
@@ -512,6 +520,13 @@ Template.post.helpers({
 	},
 	"comments": function() {
 		return comments.find({postId: this._id}, {sort: {createdAt: 1}});
+	},
+	"imageSource": function () {
+		if (this.lovedBy.indexOf(Meteor.userId()) < 0) {
+			return "images/heart-2x-cleared.png";
+		} else {
+			return "images/heart-2x.png";
+		}
 	}
 });
 
@@ -524,7 +539,18 @@ Template.post.events({
 				console.log("lovePost error: " + err);
 			}
 		});
+	},
+	"keypress #comment-input-textarea": function(event) {
+		if (event.which == 13) {
+			event.preventDefault();
+			$("#new-comment").submit();
+		}
 	}
+	//"focus .comment-input-textarea": function (event, target) {
+	//	console.log(target);
+	//	console.log(event.currentTarget);
+	//	$(event.currentTarget).autosize({append: ""}).trigger("autosize.resize");
+	//}
 });
 
 
@@ -560,7 +586,7 @@ Template.login.events({
 		Meteor.loginWithPassword(email, password, function(err){
 			if (err == undefined) {
 				init();
-				goToLoftPage(PAGES.HOME);
+				goToLoftPage(PAGES.QUOTE);
 			} else {
 				Session.set("loginError", String(err));
 			}
@@ -597,6 +623,7 @@ Template.register.events({
 		Meteor.call("checkCode", target.find("#invite-code").value, function(err, result) {
 			if (err == undefined) {
 				Session.set("showRegistration", true);
+
 			} else {
 				console.log("checkCode: " + err);
 				Session.set("codeError", String(err));
@@ -621,5 +648,11 @@ Template.register.helpers({
 	},
 	"showInvite": function(){
 		return !Session.get("showRegistration");
+	},
+	"prefillFirstName" :function(){
+		return Session.get("prefillFirstName");
+	},
+	"prefillLastName": function(){
+		return Session.get(prefillLastName);
 	}
 })

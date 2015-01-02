@@ -41,9 +41,13 @@ function checkCode(code) {
 	if(codeObject.reedemed){
 		throw new Meteor.Error("Your code has already been used.");
 	}
-	invites.update(codeObject._id, {$set: {"reedemed": true}});
+	// invites.update(codeObject._id, {$set: {"reedemed": true}});
 	return codeObject.code;
 }
+
+function getInviteFirstName(code){
+
+}	
 
 // Returns Date corresponding to the time when the week started.
 // Note: we define end of a week at 3am Pacific on a Monday.

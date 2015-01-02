@@ -1,17 +1,21 @@
 <template name="post">
 	<div class="post" id="{{_id}}">
-		<p>{{name}} ({{lovedBy.length}})</p>
-		<p>{{{safeText}}}</p>
-		{{#if canLove}}
-			<button class="love-button">Love</button>
-		{{/if}}
-		<p>Comments:</p>
+		<div class = postHeader> <p>{{name}}
+			<!-- <form id = "submitLove">
+			<input type="image" src="images/heart-2x.png" alt="Submit" class="love-button"/>
+		</form> -->
+			<button class="love-button"> <div class = "lovedBy"> {{lovedBy.length}} </div> <input type ="image" img id ="blackHeart" image src={{imageSource}}></button>
+		 </p>  </div>
+		<div class = postContent> <p>{{{safeText}}}</p> </div>
+		
+		<div class = commentSection> <p></p>
 		{{#each comments}}
 			{{> comment}}
 		{{/each}}
-		<form class="new-comment">
-	    <input type="text" name="text" placeholder="Leave a comment..." />
+		<form class="new-comment"> 
+			<textarea class="comment-input-textarea" placeholder="What do you think?"></textarea>
 	  </form>
 		<br><br>
+	</div>
 	</div>
 </template>

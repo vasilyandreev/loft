@@ -1,0 +1,24 @@
+.invite {
+	left:25%;
+	width:50%;
+	height:50%;
+	top: 35%;
+	position:absolute;
+	text-align:center;
+}
+
+.invite li {
+	list-style: none;
+	font-family: 'Open Sans';
+	font-size: 1.75em;
+}
+
+#invite-code {
+	text-align: center;
+	width: 7em;
+}
+
+.invite input:focus{
+	text-align: center;
+outline:none;
+}

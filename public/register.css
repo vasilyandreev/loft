@@ -51,16 +51,25 @@
 #account-first-name {
 	width: 15em;
 	margin: 1.0em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
 }
 
 #account-last-name {
 	width: 15em;
 	margin: 1.0em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
 }
 
 #account-email {
 	width: 15em;
 	margin: 1.0em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
 }
 
 #account-password {
@@ -89,6 +98,7 @@
 	padding: 10px 20px 10px 20px;
 	border: solid #000000 2px;
 	text-decoration: none;
+	border: none;
 }
 
 #create-account:hover {

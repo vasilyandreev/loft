@@ -28,8 +28,8 @@ if (Meteor.isServer) {
 		updates.insert({
 			type: UPDATE_TYPE.ADMIN,
 			forUserId: user._id,
-			// TODO: byUserId: 0,
-			// TODO: postId: 0,
+			byUserId: 0,
+			postId: 0,
 			createdAt: Date.now(),
 			new: true,
 			read: false,
