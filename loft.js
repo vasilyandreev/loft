@@ -193,6 +193,11 @@ Meteor.methods({
 		if (!Meteor.userId()) return "";
 		return Meteor.user().postDraftText;
 	},
+	// Return "limit" number of posts which we created after startTime.
+	getPosts: function(startTime, limit) {
+		var result = posts.find({createdAt: {$lt: startTime}}, {sort: {createdAt: -1}, limit: limit}).fetch();
+		return result;
+	},
 	// Set the text of the post draft.
 	setPostDraftText: function(text) {
 		if (!Meteor.userId()) return "";

@@ -40,8 +40,8 @@
 		{{#each posts}}
 			{{> post}}
 		{{/each}}
-		{{#if showLoadMore}}
-			<p><a id="load-more" href="#">Load More</a></p>
+		{{#if noMorePosts}}
+			<span id="no-more-posts">No More Posts</span>
 		{{/if}}
 	{{/if}}
 </div>
