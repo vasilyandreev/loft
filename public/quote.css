@@ -1,0 +1,17 @@
+.quote {
+	text-align: center;
+	left:25%;
+	width:50%;
+	height:50%;
+	top: 1%;
+	position:absolute;
+	text-align: center;
+	font-size: 1.5em;
+}
+
+#quote-header {
+	font-size: 2rem;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+}

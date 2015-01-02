@@ -6,13 +6,12 @@
 }
 
 .register {
-	left:25%;
-	width:50%;
-	height:50%;
+	left: 25%;
+	width: 50%;
+	height: 50%;
 	top: 5%;
-	position:absolute;
-	text-align:center;
-
+	position: absolute;
+	text-align: center;
 }
 
 .register form {
@@ -20,12 +19,11 @@
 	margin: 0 auto;
 }
 
-
 .register ul {
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
-	text-align:center;
+	text-align: center;
 	font-size: 1.5em;
 	padding: 0;
 }
@@ -33,15 +31,14 @@
 .register li {
 	border-bottom: none;
 	text-align: left;
+	list-style: none;
 }
 
-
-
 .steps {
-	position:absolute;
-	left:90%;
-	width:10em;
-	height:1.5em;
+	position: absolute;
+	left: 90%;
+	width: 10em;
+	height: 1.5em;
 	top: 90%;
 	text-align:center;
 	font-family: 'Open Sans';
@@ -49,7 +46,6 @@
 	font-weight: 300;
 	text-align:center;
 	font-size: 1.3em;
-
 }
 
 #account-first-name {
@@ -98,4 +94,29 @@
 #create-account:hover {
 	background: #fafafa;
 	text-decoration: none;
+}
+
+.invite {
+	left: 25%;
+	width: 50%;
+	height: 50%;
+	top: 35%;
+	position: absolute;
+	text-align: center;
+}
+
+.invite li {
+	list-style: none;
+	font-family: 'Open Sans';
+	font-size: 1.75em;
+}
+
+#invite-code {
+	text-align: center;
+	width: 7em;
+}
+
+.invite input:focus{
+	text-align: center;
+	outline: none;
 }
