@@ -119,6 +119,7 @@ Meteor.methods({
 	// Create a new post with the given text.
 	// Returns the created post.
 	addPost: function (text) {
+		if (Meteor.isClient) return;
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
@@ -141,6 +142,7 @@ Meteor.methods({
 	},
 	// Love the given post.
 	lovePost: function (postId) {
+		if (Meteor.isClient) return;
 		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");

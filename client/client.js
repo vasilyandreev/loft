@@ -555,9 +555,14 @@ Template.post.helpers({
 
 Template.post.events({
 	"click .love-button": function () {
+		var postId = this._id;
 		Meteor.call("lovePost", this._id, function (err, result) {
 			if (err == undefined) {
 				Session.set("canLove", false);
+				var posts = Session.get("posts");
+				var post = $.grep(posts, function(p){ return p._id == postId; })[0];
+				post.lovedBy.push(Meteor.userId());
+				Session.set("posts", posts);
 			} else {
 				console.log("lovePost error: " + err);
 			}
