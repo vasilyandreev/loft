@@ -99,6 +99,7 @@
 
 #post-popup .post-input-textarea {
 	font-size: 1em;
+	height: 93%;
 	max-height: 93%;
 	top: 40%;
 	-webkit-transform: translateY(-40%);

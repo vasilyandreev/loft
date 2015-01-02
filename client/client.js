@@ -68,6 +68,7 @@ function escapeHtml(str) {
 // Return the full name of a user.
 function getFullName(userId) {
 	var user = Meteor.users.findOne(userId);
+	if (user === undefined) return "";
 	return user.profile.firstName + " " + user.profile.lastName;
 }
 
@@ -192,6 +193,7 @@ function showPostPopup() {
 	var promptTextarea = promptDiv.find(".post-input-textarea");
 	var div = $("#post-popup");
 	var textarea = div.find(".post-input-textarea");
+	var textareaHeight = textarea.height();
 
 	// Animate div.
 	var divFinalParams = {
@@ -212,11 +214,11 @@ function showPostPopup() {
 	// Animate textarea.
 	var textareaFinalParams = {
 		fontSize: textarea.css("font-size"),
-		height: textarea.css("height"),
+		height: textareaHeight,
 		maxHeight: textarea.css("max-height"),
 	};
 	textarea.val(promptTextarea.val());
-	textarea.focus();
+	textarea.scrollTop(0);
 	textarea.css({
 		fontSize: promptTextarea.css("font-size"),
 		height: promptTextarea.css("height"),
@@ -228,6 +230,10 @@ function showPostPopup() {
 		var maxHeight = parseFloat(textarea.css("max-height")) / 100.0;
 		textarea.css("max-height", div.height() * maxHeight);
 		textarea.autosize({append: ""}).trigger("autosize.resize");
+		textarea.animate({scrollTop: textarea[0].scrollHeight - textarea[0].clientHeight}, {duration: 500 * ANIMATION_FACTOR, queue: false, complete: function() {
+			textarea.focus();
+			textarea.setCursorPosition(textarea.val().length);
+		}});
 		window.savePostDraftHandle = Meteor.setInterval(savePostDraft, SAVE_POST_DRAFT_PERIOD);
 	}});
 
@@ -246,39 +252,41 @@ function hidePostPopup() {
 	var div = $("#post-popup");
 	var textarea = div.find(".post-input-textarea");
 
-	// Animate div.
-	div.animate({
-		left: promptDiv.position().left,
-		top: promptDiv.position().top,
-		width: promptDiv.width(),
-		height: promptDiv.height(),
-	}, {duration: duration, queue: false});
-
 	// Animate textarea.
+	var scrollDuration = 500 * ANIMATION_FACTOR;
+	if (textarea.scrollTop() === 0) scrollDuration = 0;
 	textarea.blur();
 	textarea.css("max-height", "");
-	//var oldHeight = textarea.height();
 	textarea.trigger("autosize.destroy");
-	//textarea.height(oldHeight);
-	textarea.animate({
-		fontSize: promptTextarea.css("font-size"),
-		height: promptTextarea.css("height"),
-	}, {duration: duration, queue: false, complete: function() {
-		savePostDraft();
-		div.removeAttr("style");
-		textarea.removeAttr("style");
-		promptDiv.css("visibility", "visible");
-		promptTextarea.val(textarea.val());
-		Session.set("showingPostPopup", false);
-		Meteor.clearInterval(window.savePostDraftHandle);
-		flashNewPost(true);
-	}});
+	textarea.animate({scrollTop: 0}, {duration: scrollDuration, queue: false, complete: function() {
+		// Animate div.
+		div.animate({
+			left: promptDiv.position().left,
+			top: promptDiv.position().top,
+			width: promptDiv.width(),
+			height: promptDiv.height(),
+		}, {duration: duration, queue: false});
 
-	// Animate other stuff.
-	$("#darken").fadeTo(duration, 0, function() {
-		$("#darken").hide();
-	});
-	div.find(".post-popup-footer").fadeTo(duration, 0);
+		textarea.animate({
+			fontSize: promptTextarea.css("font-size"),
+			height: promptTextarea.css("height"),
+		}, {duration: duration, queue: false, complete: function() {
+			savePostDraft();
+			div.removeAttr("style");
+			textarea.removeAttr("style");
+			promptDiv.css("visibility", "visible");
+			promptTextarea.val(textarea.val());
+			Session.set("showingPostPopup", false);
+			Meteor.clearInterval(window.savePostDraftHandle);
+			flashNewPost(true);
+		}});
+
+		// Animate other stuff.
+		$("#darken").fadeTo(duration, 0, function() {
+			$("#darken").hide();
+		});
+		div.find(".post-popup-footer").fadeTo(duration, 0);
+	}});
 };
 
 // Flash the background color of the new post. But we only want to do it once:
