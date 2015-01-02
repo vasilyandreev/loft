@@ -84,7 +84,7 @@ function loadMorePosts(limit) {
 			}
 			Session.set("posts", result);
 		} else {
-			console.log("getPostDraftText: " + err);
+			console.log("getPosts: " + err);
 		}
 	});
 	Meteor.call("getTodaysQuote", function(err, result){
@@ -281,24 +281,26 @@ function showPostPopup() {
 		height: textarea.css("height"),
 		maxHeight: finalMaxHeight,
 	};
+	textarea.trigger("autosize.destroy");
 	textarea.scrollTop(0);
 	textarea.css({
 		fontSize: promptTextarea.css("font-size"),
 		height: promptTextarea.css("height"),
 		maxHeight: promptTextarea.css("max-height"),
 	});
-	textarea.animate(textareaFinalParams, {duration: duration, queue: false, complete: function() {
+	textarea.animate(textareaFinalParams, {duration: duration, queue: false, done: function() {
+		// Reset height to smallest value, since it'll be automatically handled by autoresize.
+		textarea.css("height", promptTextarea.css("height"));
 		// Set max-height so that it's set in pixels. Workaround for this bug:
 		// https://github.com/jackmoore/autosize/issues/191
 		textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
-		textarea.trigger("autosize.destroy");
 		textarea.autosize({append: ""}).trigger("autosize.resize");
 
 		var scrollDuration = 500 * ANIMATION_FACTOR;
 		if (textarea[0].scrollHeight <= textarea[0].clientHeight) scrollDuration = 0;
 		// Set cursor here to prevent quick jump to the top after animation if the cursor was at the top.
 		textarea.setCursorPosition(textarea.val().length);
-		textarea.animate({scrollTop: textarea[0].scrollHeight - textarea[0].clientHeight}, {duration: scrollDuration, queue: false, complete: function() {
+		textarea.animate({scrollTop: textarea[0].scrollHeight - textarea[0].clientHeight}, {duration: scrollDuration, queue: false, done: function() {
 			textarea.focus();
 			textarea.setCursorPosition(textarea.val().length);
 		}});
@@ -319,14 +321,16 @@ function hidePostPopup() {
 	var promptTextarea = promptDiv.find(".post-input-textarea");
 	var div = $("#post-popup");
 	var textarea = div.find(".post-input-textarea");
+	var textareaHeight = textarea.css("height");
 
 	// Animate textarea.
 	var scrollDuration = 500 * ANIMATION_FACTOR;
 	if (textarea.scrollTop() === 0) scrollDuration = 0;
 	textarea.blur();
-	textarea.css("max-height", textarea.css("height"));
 	textarea.trigger("autosize.destroy");
-	textarea.animate({scrollTop: 0}, {duration: scrollDuration, queue: false, complete: function() {
+	textarea.css("max-height", textareaHeight);
+	textarea.css("height", textareaHeight);
+	textarea.animate({scrollTop: 0}, {duration: scrollDuration, queue: false, done: function() {
 		// Animate div.
 		div.animate({
 			left: promptDiv.position().left,
@@ -338,7 +342,7 @@ function hidePostPopup() {
 		textarea.animate({
 			fontSize: promptTextarea.css("font-size"),
 			height: promptTextarea.css("height"),
-		}, {duration: duration, queue: false, complete: function() {
+		}, {duration: duration, queue: false, done: function() {
 			savePostDraft();
 			div.removeAttr("style");
 			textarea.removeAttr("style");
@@ -397,13 +401,13 @@ Template.home.events({
 			$spacers.animate({width: "0%"}, {queue: false});
 		} else {
 			if (Session.get("selectedPost") !== undefined) {
-				$posts.animate({"opacity": "0"}, {queue: false, complete: function() {
+				$posts.animate({"opacity": "0"}, {queue: false, done: function() {
 					Session.set("selectedPost", undefined);
 					Session.set("selectedUpdate", undefined);
 					$posts.animate({"opacity": "1"}, {queue: false});
 				}});
 			}
-			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, complete: function() {
+			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, done: function() {
 				Session.set("showUpdates", false);
 				Meteor.call("markAllUpdatesOld", function (result, err) {
 					if (err != undefined) {
@@ -451,10 +455,8 @@ Template.home.events({
 		// Prevent default form submit
 		return false;
 	},
-	"scroll": function(event) {
-		//console.log(event);
-	}
 });
+
 
 // UPDATES
 Template.updates.helpers({
@@ -528,7 +530,7 @@ Template.update.events({
 		// server, we need to do it while we are animating.
 		var postId = this.postId;
 		// Set selectedPost to a temp stub, so that the update gets highlighted.
-		$(".b-posts").animate({"opacity": "0"}, {queue: false, complete: function() {
+		$(".b-posts").animate({"opacity": "0"}, {queue: false, done: function() {
 			var post = posts.findOne({"_id": postId});
 			if (post != undefined) {
 				Session.set("selectedPost", post);
