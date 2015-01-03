@@ -34,7 +34,7 @@ function init() {
 	Session.set("quoteText", "");  // Quote text displayed on the quote page
 	Session.set("codeError", "");  // Error during invite code submission
 	Session.set("showRegistration", false);  // True iff we are showing registration section in register.html
-	Session.set("prefillFirstName", "");
+	Session.set("prefillFirstName", "");  // Value to put into the first name textbox when registering
 	Session.set("prefillLastName", "");
 
 	Meteor.call("canLove", function(err, result) {
@@ -622,7 +622,11 @@ Template.login.helpers({
 	},
 	"registerError": function() {
 		return Session.get("registerError");
-	}
+	},
+	"firstName": function() {
+	},
+	"lastName": function() {
+	},
 });
 
 Template.login.events({
@@ -670,10 +674,14 @@ Template.register.events({
 		return false;
 	},
 	"submit #invite-form": function(event, target) {
-		Meteor.call("checkCode", target.find("#invite-code").value, function(err, result) {
+		var code = target.find("#invite-code").value;
+		Meteor.call("checkCode", code, function(err, result) {
 			if (err == undefined) {
+				if (result.firstName !== undefined) {
+					Session.set("prefillFirstName", result.firstName);
+					Session.set("prefillLastName", result.lastName);
+				}
 				Session.set("showRegistration", true);
-
 			} else {
 				console.log("checkCode: " + err);
 				Session.set("codeError", String(err));
@@ -703,6 +711,6 @@ Template.register.helpers({
 		return Session.get("prefillFirstName");
 	},
 	"prefillLastName": function(){
-		return Session.get(prefillLastName);
+		return Session.get("prefillLastName");
 	}
 })
