@@ -441,20 +441,6 @@ Template.home.events({
 		hidePostPopup();
 		return false;
 	},
-	"submit .new-comment": function (event) {
-		Meteor.call("addComment", this._id, event.target.text.value, function(err, result) {
-			if (err == undefined) {
-			} else {
-				console.log("addComment error: " + err);
-			}
-		});
-
-		// Clear form
-		event.target.text.value = "";
-
-		// Prevent default form submit
-		return false;
-	},
 });
 
 
@@ -590,12 +576,34 @@ Template.post.events({
 			}
 		});
 	},
-	
-	//"focus .comment-input-textarea": function (event, target) {
-	//	console.log(target);
-	//	console.log(event.currentTarget);
-	//	$(event.currentTarget).autosize({append: ""}).trigger("autosize.resize");
-	//}
+	"click .comment-link": function (event) {
+		var $target = $(event.currentTarget).prev(".comment-input-textarea");
+		console.log($target);
+		console.log($target.val());
+		Meteor.call("addComment", this._id, $target.val(), function(err, result) {
+			if (err == undefined) {
+			} else {
+				console.log("addComment error: " + err);
+			}
+		});
+
+		$target.val("");
+		$target.blur();
+	},
+	"focus .comment-input-textarea": function (event) {
+		var $target = $(event.currentTarget);
+		if ($target.val().length <= 0) {
+			$target.autosize({append: ""}).trigger("autosize.resize");
+			$target.next(".comment-link").fadeIn();
+		}
+	},
+	"blur .comment-input-textarea": function (event) {
+		var $target = $(event.currentTarget);
+		if ($target.val().length <= 0) {
+			$target.trigger("autosize.destroy");
+			$target.next(".comment-link").fadeOut();
+		}
+	}
 });
 
 
