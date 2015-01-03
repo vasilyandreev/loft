@@ -494,13 +494,13 @@ Template.update.helpers({
 		}
 		return escapeHtml(text);
 	},
-	"class": function() {
+	"mixin": function() {
 		if (this._id == Session.get("selectedUpdate")) {
 			return "selected-update";
 		} else if (this.read) {
 			return "read-update";
 		}
-		return "";
+		return "default-update";
 	}
 });
 
@@ -590,12 +590,7 @@ Template.post.events({
 			}
 		});
 	},
-	"keypress #comment-input-textarea": function(event) {
-		if (event.which == 13) {
-			event.preventDefault();
-			$("#new-comment").submit();
-		}
-	}
+	
 	//"focus .comment-input-textarea": function (event, target) {
 	//	console.log(target);
 	//	console.log(event.currentTarget);

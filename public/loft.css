@@ -13,7 +13,8 @@
 }
 
 #loft-logout {
-	margin: 1.5em;
+	margin-top: 4em;
+	margin-right: 1em;
 }
 
 #loft-logo {
@@ -149,7 +150,7 @@
 }
 
 .read-update {
-	background: rgb(252,252,252);
+	background: rgb(252,247,252);
 	text-decoration: inherit;
 	color: inherit;
 	margin: 0;
@@ -160,16 +161,18 @@
 	background: rgb(233,244,255);
 }
 
-.b-update a {
-	text-decoration: inherit;
-	color: inherit;
+.b-update {
+	width: 80%;
+	padding: 0.7em 1.5em;
 }
 
-.b-update p {
-	padding: 1.5em 0em 0 0;
-	width: 90%;
-	margin: 0;
+.default-update {
+	background: rgb(250,250,250);
 }
 
+.update-link {
+	text-decoration: none;
+	color: #000000;
+}
 
 
