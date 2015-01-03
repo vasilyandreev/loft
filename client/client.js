@@ -58,6 +58,24 @@ function init() {
 			console.log("getPostDraftText: " + err);
 		}
 	});
+	if (!Session.equals("currentPage", PAGES.QUOTE)) {
+		Meteor.call("shouldShowQuote", function(err, result) {
+			if (err == undefined) {
+				if (result) {
+					goToLoftPage(PAGES.QUOTE);
+				}
+			} else {
+				console.log("shouldShowQuote: " + err);
+			}
+		});
+	}
+	Meteor.call("getTodaysQuote", function(err, result){
+		if (err == undefined) {
+			Session.set("quoteText", result);
+		} else {
+			console.log("getTodaysQuote" + err);
+		}
+	});
 	loadMorePosts(INITIAL_POSTS);
 }
 
@@ -85,13 +103,6 @@ function loadMorePosts(limit) {
 			Session.set("posts", result);
 		} else {
 			console.log("getPosts: " + err);
-		}
-	});
-	Meteor.call("getTodaysQuote", function(err, result){
-		if (err == undefined) {
-			Session.set("quoteText", result);
-		} else {
-			console.log("getTodaysQuote" + err);
 		}
 	});
 }
@@ -184,6 +195,7 @@ $(window).load(function() {
 
 init();
 
+
 // WELCOME
 Template.welcome.events({
 	"click #login": function (event) {
@@ -194,27 +206,32 @@ Template.welcome.events({
 	},
 });
 
+
 // WAY 
 Template.way.events({
 	"click #way-button": function (event) {
 		goToLoftPage(PAGES.HOME);
 	},
 })
+
+
 // QUOTE
 Template.quote.helpers({
 	"firstName": function () {
 		return getFirstName(Meteor.userId());
 	},
 	"quoteText": function(){
-		return Session.get("quoteText");
+		return escapeHtml(Session.get("quoteText"));
 	}
 })
 
 Template.quote.events({
 	"click #quote-enter": function(event){
+		Meteor.call("readQuote");
 		goToLoftPage(PAGES.HOME);
 	}
 })
+
 
 // HOME
 Template.home.helpers({
@@ -623,9 +640,6 @@ Template.login.helpers({
 	"loginError": function() {
 		return Session.get("loginError");
 	},
-	"registerError": function() {
-		return Session.get("registerError");
-	},
 	"firstName": function() {
 	},
 	"lastName": function() {
@@ -703,6 +717,9 @@ Template.register.events({
 Template.register.helpers({
 	"codeErr": function() {
 		return Session.get("codeError");
+	},
+	"registerError": function() {
+		return Session.get("registerError");
 	},
 	"showRegistration": function() {
 		return Session.get("showRegistration");

@@ -34,6 +34,7 @@ if (Meteor.isServer) {
 			new: true,
 			read: false,
 		});
+		user.readQuoteTime = getStartOfToday().getTime();
 		return user;
 	});
 }
