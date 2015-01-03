@@ -2,14 +2,29 @@ if (Meteor.isServer) {
 	Meteor.publish("userProfiles", function () {
 		return Meteor.users.find({});
 	});
-	Meteor.publish("updates", function () {
+	Meteor.publish("newUpdates", function () {
 		return updates.find({
-			forUserId: this.userId
+			$and: [
+				{forUserId: this.userId},
+				{new: true},
+			],
+		}, {
 		});
 	});
-	// Publish a "count" number of posts to each user.
-	Meteor.publish("posts", function (count) {
-		return posts.find({}, {limit: count, sort: {createdAt: -1}});
+	Meteor.publish("oldUpdates", function (limit) {
+		return updates.find({
+			$and: [
+				{forUserId: this.userId},
+				{new: false},
+			],
+		}, {
+			limit: limit,
+			sort: {createdAt: -1},
+		});
+	});
+	// Publish a "limit" number of posts to each user.
+	Meteor.publish("posts", function (limit) {
+		return posts.find({}, {limit: limit, sort: {createdAt: -1}});
 	});
 	Meteor.publish("comments", function () {
 		return comments.find({});

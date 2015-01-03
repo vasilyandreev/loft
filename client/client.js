@@ -1,13 +1,18 @@
 // Number of posts to load initially.
 INITIAL_POSTS = 10;
 // Number of posts to load each time we reach the end.
-INFINITE_SCROLL_POSTS = 5;
+LOAD_MORE_POSTS = 5;
+// Number of updates to load initially (both for new and old).
+INITIAL_UPDATES = 10;
+// Number of updates to load when user wants to load more.
+LOAD_MORE_UPDATES = 10;
 // How often we save the post draft when the user is editing it.
 SAVE_POST_DRAFT_PERIOD = 5000;  // in milliseconds
 // Percent scroll necessary to load more posts.
 SCROLL_TRIGGER = 0.95;
 // Number used to make all animations slower.
 ANIMATION_FACTOR = 1;
+// Constants for page names.
 PAGES = {
 	WELCOME: "welcome",
 	LOGIN: "login",
@@ -27,6 +32,7 @@ function init() {
 	Session.set("loadingMorePosts", false);  // True iff we already asked the server for more posts
 	Session.set("noMorePosts", false);  // True iff there are no more posts to load
 	Session.set("showUpdates", false);  // True iff we are showing updates section
+	Session.set("oldUpdatesCount", 0);  // Number of old updates available on the server
 	Session.set("showingPostPopup", false);  // True iff we are showing the post popup modal
 	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
 	Session.set("selectedUpdate", undefined);  // Id of the update we have selected
@@ -37,6 +43,17 @@ function init() {
 	Session.set("prefillFirstName", "");  // Value to put into the first name textbox when registering
 	Session.set("prefillLastName", "");
 
+	if (!Session.equals("currentPage", PAGES.QUOTE)) {
+		Meteor.call("shouldShowQuote", function(err, result) {
+			if (err == undefined) {
+				if (result) {
+					goToLoftPage(PAGES.QUOTE);
+				}
+			} else {
+				console.log("shouldShowQuote: " + err);
+			}
+		});
+	}
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
 			Session.set("canLove", result);
@@ -58,17 +75,6 @@ function init() {
 			console.log("getPostDraftText: " + err);
 		}
 	});
-	if (!Session.equals("currentPage", PAGES.QUOTE)) {
-		Meteor.call("shouldShowQuote", function(err, result) {
-			if (err == undefined) {
-				if (result) {
-					goToLoftPage(PAGES.QUOTE);
-				}
-			} else {
-				console.log("shouldShowQuote: " + err);
-			}
-		});
-	}
 	Meteor.call("getTodaysQuote", function(err, result){
 		if (err == undefined) {
 			Session.set("quoteText", result);
@@ -165,7 +171,8 @@ Router.route('/', function () {
 
 Tracker.autorun(function () {
 	Meteor.subscribe("userProfiles");
-	Meteor.subscribe("updates");
+	Meteor.subscribe("newUpdates");
+	Meteor.subscribe("oldUpdates", INITIAL_UPDATES);
 	Meteor.subscribe("comments");
 });
 
@@ -187,7 +194,7 @@ $(window).load(function() {
 	$(window).on("scroll", function(e) {
 		var winTop = $(window).scrollTop(), docHeight = $(document).height(), winHeight = $(window).height();
 		if (winTop / (docHeight - winHeight) > SCROLL_TRIGGER) {
-			loadMorePosts(INFINITE_SCROLL_POSTS);
+			loadMorePosts(LOAD_MORE_POSTS);
 		}
 	});
 	$(window).scrollTop(0);
@@ -416,6 +423,14 @@ Template.home.events({
 			$updates.animate({"left": "0%"}, {queue: false});
 			$updates.animate({"margin-right": "0%"}, {queue: false});
 			$spacers.animate({width: "0%"}, {queue: false});
+
+			Meteor.call("countAllUpdates", false, function(err, result) {
+				if (err == undefined) {
+					Session.set("oldUpdatesCount", result);
+				} else {
+					console.log("countAllUpdates error: " + err);
+				}
+			});
 		} else {
 			if (Session.get("selectedPost") !== undefined) {
 				$posts.animate({"opacity": "0"}, {queue: false, done: function() {
@@ -468,6 +483,19 @@ Template.updates.helpers({
 	},
 	"oldUpdates": function () {
 		return findUpdates(false);
+	},
+	"showLoadMoreNewUpdates": function() {
+		return false;
+	},
+	"showLoadMoreOldUpdates": function() {
+		return findUpdates(false).count() < Session.get("oldUpdatesCount");
+	},
+});
+
+Template.updates.events({
+	"click #load-old-updates": function(event) {
+		var newCount = findUpdates(false).count() + LOAD_MORE_UPDATES;
+		Meteor.subscribe("oldUpdates", newCount);
 	},
 });
 
@@ -595,8 +623,6 @@ Template.post.events({
 	},
 	"click .comment-link": function (event) {
 		var $target = $(event.currentTarget).prev(".comment-input-textarea");
-		console.log($target);
-		console.log($target.val());
 		Meteor.call("addComment", this._id, $target.val(), function(err, result) {
 			if (err == undefined) {
 			} else {

@@ -63,6 +63,7 @@ Meteor.methods({
 	getPostsLeft: getPostsLeft,
 	// Create a new comment for the given post with the given text.
 	addComment: function (postId, text) {
+		if (Meteor.isClient) return;
 		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
@@ -130,6 +131,16 @@ Meteor.methods({
 		}
 		invites.update(codeObject._id, {$set: {"reedemed": true}});
 		return codeObject;
+	},
+	// Return the number of all updates.
+	countAllUpdates: function(areNew) {
+		if (Meteor.isClient) return 0;
+		return updates.find({
+			$and: [
+				{forUserId: Meteor.userId()},
+				{new: areNew},
+			],
+		}).count(); 
 	},
 	// Return today's quote string.
 	getTodaysQuote: function() {

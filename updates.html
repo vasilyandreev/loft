@@ -4,10 +4,22 @@
 		{{#each newUpdates}}
 			{{> update}}
 		{{/each}}
+		{{#if showLoadMoreNewUpdates}}
+			<div class="load-more-updates">
+				<a href="#" id="load-new-updates" class="standard-link">LOAD MORE</a>
+			</div>
+		{{/if}}
 	</div>
 	<h1>Old Updates</h1>
-	{{#each oldUpdates}}
-		{{> update}}
-	{{/each}}
+	<div class="old-updates">
+		{{#each oldUpdates}}
+			{{> update}}
+		{{/each}}
+		{{#if showLoadMoreOldUpdates}}
+			<div class="load-more-updates">
+				<a href="#" id="load-old-updates" class="standard-link">LOAD MORE</a>
+			</div>
+		{{/if}}
+	</div>
 </div>
 </template>
