@@ -6,7 +6,7 @@
 <div id="darken"></div>
 <div id="vertical-line"></div>
 <div id="post-popup" class="post-popup-div">
-	<textarea class="post-input-textarea" placeholder="What do you want to share?"></textarea>
+	<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?"></textarea>
 	<div class="post-popup-footer">
 		Posts left for this week: {{postsLeft}}
 		<a id="submit-post" class="standard-link" href="#">SUBMIT</a>
@@ -32,7 +32,7 @@
 		<div>
 			{{#if canPost}}
 				<div id="post-prompt" class="post-prompt-div">
-					<textarea class="post-input-textarea" placeholder="What do you want to share?">{{postDraftText}}</textarea>
+					<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?">{{postDraftText}}</textarea>
 				</div>
 			{{else}}
 				<p>Ran out of posts for this week.</p>

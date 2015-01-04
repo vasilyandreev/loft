@@ -40,6 +40,7 @@ function init() {
 	Session.set("showUpdates", false);  // True iff we are showing updates section
 	Session.set("oldUpdatesCount", 0);  // Number of old updates available on the server
 	Session.set("showingPostPopup", false);  // True iff we are showing the post popup modal
+	Session.set("postDraftText", "");  // Text stored from a drafted post
 	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
 	Session.set("selectedUpdate", undefined);  // Id of the update we have selected
 	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
@@ -116,6 +117,8 @@ function loadMorePosts(limit) {
 				posts.upsert(result[i]._id, result[i]);
 				postsCutoffTime = Math.min(postsCutoffTime, result[i].createdAt);
 			}
+			Tracker.flush();
+			$('[placeholder]').blur();
 
 			var postIds = $.map(result, function(post) { return post._id; });
 			loadComments(postIds);
@@ -136,6 +139,8 @@ function loadComments(postIds) {
 			for (var i = 0; i < length; i++) {
 				comments.upsert(result[i]._id, result[i]);
 			}
+			Tracker.flush();
+			$('[placeholder]').blur();
 		} else {
 			console.log("loadComments: " + err);
 		}
@@ -240,29 +245,6 @@ $(window).load(function() {
 		if (winTop / (docHeight - winHeight) > SCROLL_TRIGGER) {
 			loadMorePosts(LOAD_MORE_POSTS);
 		}
-	});
-
-	// Placeholder jQuery implementation, since we can't get it to show up in Firefox.
-	$('[placeholder]').focus(function() {
-		var input = $(this);
-		if (input.val() == input.attr('placeholder')) {
-			input.val('');
-		}
-		input.removeClass('placeholder');
-	}).blur(function() {
-		var input = $(this);
-		if (input.val() == '' || input.val() == input.attr('placeholder')) {
-			input.addClass('placeholder');
-			input.val(input.attr('placeholder'));
-		}
-	}).blur();
-	$('[placeholder]').parents('form').submit(function() {
-		$(this).find('[placeholder]').each(function() {
-			var input = $(this);
-			if (input.val() == input.attr('placeholder')) {
-				input.val('');
-			}
-		})
 	});
 });
 
@@ -439,6 +421,9 @@ function hidePostPopup() {
 			fontSize: promptTextarea.css("font-size"),
 			height: promptTextarea.css("height"),
 		}, {duration: duration, queue: false, done: function() {
+			if (textarea.val() == textarea.attr('placeholder')) {
+				textarea.val("");
+			}
 			savePostDraft();
 			div.removeAttr("style");
 			textarea.removeAttr("style");
@@ -521,6 +506,8 @@ Template.home.events({
 					Session.set("selectedPost", undefined);
 					Session.set("selectedUpdate", undefined);
 					$posts.animate({"opacity": "1"}, {queue: false});
+					Tracker.flush();
+					$('[placeholder]').blur();
 				}});
 			}
 			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, done: function() {
@@ -564,6 +551,21 @@ Template.home.events({
 		textarea.val("");
 		hidePostPopup();
 		return false;
+	},
+	// Placeholder jQuery implementation, since we can't get it to show up in Firefox.
+	"focus .placeholder": function(event) {
+		var input = $(event.currentTarget);
+		if (input.val() == input.attr('placeholder')) {
+			input.val('');
+		}
+		input.removeClass('placeholder');
+	},
+	"blur .placeholder": function(event) {
+		var input = $(event.currentTarget);
+		if (input.val() == '' || input.val() == input.attr('placeholder')) {
+			input.addClass('placeholder');
+			input.val(input.attr('placeholder'));
+		}
 	},
 });
 
@@ -650,7 +652,10 @@ Template.update.events({
 		}
 
 		var fadeIn = function() {
-			$(".b-posts").animate({"opacity": "1"}, {queue: false});
+			$(".b-posts").animate({"opacity": "1"}, {queue: false, done: function(){
+				Tracker.flush();
+				$('[placeholder]').blur();
+			}});
 		}
 
 		// TODO: ideally, if we don't have this post and need to fetch it from the

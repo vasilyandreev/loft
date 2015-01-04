@@ -100,11 +100,11 @@ Meteor.methods({
 	// Create a new post with the given text.
 	// Returns the created post.
 	addPost: function (text) {
-		if (Meteor.isClient) return;
+		if (Meteor.isClient) return null;
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
-		if (getPostsLeft() <= 0) {
+		if (!Meteor.userId()) {
 			throw new Meteor.Error("Can't make any more posts this week.");
 		}
 
@@ -226,7 +226,11 @@ Meteor.methods({
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
-		return posts.findOne(postId);
+		var result = posts.findOne(postId);
+		if (result === undefined) {
+			throw new Meteor.Error("No such post.");
+		}
+		return result;
 	},
 	// Get the text of the post draft.
 	getPostDraftText: function() {
