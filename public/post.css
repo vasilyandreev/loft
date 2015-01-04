@@ -71,7 +71,7 @@ input:focus{
 }
 
 .comment-input-textarea {
-	background-image: linear-gradient(#ccccff .1em, transparent .1em);
+	background-image: linear-gradient(rgb(138,224,255) .1em, transparent .1em);
 	background-position: 0em -0.2em;
 	background-size: 100% 1.5em;
 	background-attachment: local;
@@ -86,4 +86,15 @@ input:focus{
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	        box-sizing: border-box;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1.1em;
+}
+
+.load-more-comments {
+	color: rgb(220,220,220);
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 400;
 }

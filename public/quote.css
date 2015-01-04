@@ -34,7 +34,7 @@
 
 #quote-enter {
 	width: 5em;
-	margin: 1.0em;
+	margin-top: 1.0em;
 	text-align: center;
 	font-family: 'Open Sans';
 	font-style: normal;
@@ -49,8 +49,8 @@
 	-moz-border-radius: 6;
 	border-radius: 6px;
 	color: #000000;
-	font-size: 1em;
-	padding: 10px 20px 10px 20px;
+	font-size: 1.5em;
+	/*padding: 10px 20px 10px 20px;*/
 	border: solid #000000 2px;
 	text-decoration: none;
 	border: none;

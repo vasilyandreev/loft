@@ -80,7 +80,7 @@
 	font-style: bold;
 	font-weight: 300;
 	position: relative;
-	background-image: linear-gradient(#ccccff .1em, transparent .1em);
+	background-image: linear-gradient(rgb(138,224,255) .1em, transparent .1em);
 	background-position: 0em -0.2em;
 	background-size: 100% 1.5em;
 	background-attachment: local;
@@ -177,7 +177,7 @@
 }
 
 .default-update {
-	color: rgb(82,221,255);
+	color: rgb(0,184,255);
 	margin-right: 0;
 }
 
