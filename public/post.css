@@ -3,7 +3,11 @@
 }
 
 .post {
-	margin-right: 2em;
+	margin-bottom: 8em;
+}
+
+.load-more-comments {
+	padding-left: 2em;
 }
 
 .comment {
@@ -51,7 +55,7 @@
 
 .new-comment {
 	text-align: right;
-	margin-left: 3em;
+	margin-left: 2em;
 	width: 50%;
 	-webkit-transform-style: preserve-3d;
 	   -moz-transform-style: preserve-3d;

@@ -233,6 +233,10 @@ Meteor.methods({
 	// Return "limit" number of posts which we created after startTime.
 	getPosts: function(startTime, limit) {
 		var result = posts.find({createdAt: {$lt: startTime}}, {sort: {createdAt: -1}, limit: limit}).fetch();
+		Meteor.publish("comments", function () {
+			return comments.find({});
+		});
+
 		return result;
 	},
 	// Called after the user read the quote.

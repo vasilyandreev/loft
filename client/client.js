@@ -2,6 +2,8 @@
 INITIAL_POSTS = 10;
 // Number of posts to load each time we reach the end.
 LOAD_MORE_POSTS = 5;
+// Number of comments to show initially for any post.
+INITIAL_COMMENTS = 10;
 // Number of updates to load initially (both for new and old).
 INITIAL_UPDATES = 10;
 // Number of updates to load when user wants to load more.
@@ -594,8 +596,21 @@ Template.post.helpers({
 			Session.get("canLove") &&
 			this.lovedBy.indexOf(Meteor.userId()) == -1;
 	},
+	"showLoadMoreComments": function() {
+		var limit = INITIAL_COMMENTS;
+		if (this.showAllComments !== undefined) return this.showAllComments;
+		if (this.commentLimit !== undefined) limit = this.commentLimit;
+		var totalCount = comments.find({postId: this._id}).count();
+		return limit < totalCount;
+	},
 	"comments": function() {
-		return comments.find({postId: this._id}, {sort: {createdAt: 1}});
+		var limit = INITIAL_COMMENTS;
+		if (this.showAllComments) {
+			limit = -1;
+		} else if (this.commentLimit !== undefined) {
+			limit = this.commentLimit;
+		}
+		return comments.find({postId: this._id}, {limit: limit, sort: {createdAt: -1}}).fetch().reverse();
 	},
 	"imageSource": function () {
 		if (this.lovedBy.indexOf(Meteor.userId()) < 0) {
@@ -621,10 +636,20 @@ Template.post.events({
 			}
 		});
 	},
+	"click .load-more-comments": function(event){
+		this.showAllComments = true;
+	},
 	"click .comment-link": function (event) {
 		var $target = $(event.currentTarget).prev(".comment-input-textarea");
+		var postId = this._id;
+		var limit = this.commentLimit;
 		Meteor.call("addComment", this._id, $target.val(), function(err, result) {
 			if (err == undefined) {
+				var posts = Session.get("posts");
+				var post = $.grep(posts, function(p){ return p._id == postId; })[0];
+				if (limit === undefined) limit = INITIAL_COMMENTS;
+				post.commentLimit = limit + 1;
+				Session.set("posts", posts);
 			} else {
 				console.log("addComment error: " + err);
 			}
@@ -673,7 +698,7 @@ Template.login.helpers({
 });
 
 Template.login.events({
-	"submit #login-form" : function(event, target){
+	"submit #login-form": function(event, target){
 		// retrieve the input field values
 		var email = target.find("#login-email").value;
 		var password = target.find("#login-password").value;

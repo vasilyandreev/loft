@@ -22,13 +22,10 @@ if (Meteor.isServer) {
 			sort: {createdAt: -1},
 		});
 	});
-	// Publish a "limit" number of posts to each user.
-	Meteor.publish("posts", function (limit) {
-		return posts.find({}, {limit: limit, sort: {createdAt: -1}});
-	});
 	Meteor.publish("comments", function () {
 		return comments.find({});
 	});
+
 	// Don't allow users to update their profiles.
 	Meteor.users.deny({update: function () { return true; }});
 
