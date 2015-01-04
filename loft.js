@@ -223,10 +223,11 @@ Meteor.methods({
 	// Return post with the given id. Used to fetch the selected post if it's not
 	// already loaded on the client.
 	getPost: function (postId) {
+		if (Meteor.isClient) return null;
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
-		return posts.findOne({"_id": postId});
+		return posts.findOne(postId);
 	},
 	// Get the text of the post draft.
 	getPostDraftText: function() {

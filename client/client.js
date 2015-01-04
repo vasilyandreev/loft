@@ -96,20 +96,15 @@ function init() {
 }
 
 // Load "limit" more posts.
+var postsCutoffTime = Date.now();
 function loadMorePosts(limit) {
 	if (Session.equals("loadingMorePosts", true)) return;
 	if (Session.equals("noMorePosts", true)) return;
 
 	Session.set("loadingMorePosts", true);
-	var cutoffTime = Date.now();
-	if (posts.find({}).count() > 0) {
-		posts.find({}).forEach(function (post){
-			cutoffTime = Math.min(cutoffTime, post.createdAt);
-		});
-	}
-	console.log("Loading more posts with cutoffTime=" + cutoffTime);
+	console.log("Loading more posts with postsCutoffTime=" + postsCutoffTime);
 
-	Meteor.call("loadPosts", cutoffTime, limit, function(err, result) {
+	Meteor.call("loadPosts", postsCutoffTime, limit, function(err, result) {
 		Session.set("loadingMorePosts", false);
 		if (err == undefined) {
 			if (result.length < limit) {
@@ -118,8 +113,10 @@ function loadMorePosts(limit) {
 			var length = result.length;
 			for (var i = 0; i < length; i++) {
 				result[i].commentLimit = INITIAL_COMMENTS;
-				posts.insert(result[i]);
+				posts.upsert(result[i]._id, result[i]);
+				postsCutoffTime = Math.min(postsCutoffTime, result[i].createdAt);
 			}
+
 			var postIds = $.map(result, function(post) { return post._id; });
 			loadComments(postIds);
 		} else {
@@ -137,7 +134,7 @@ function loadComments(postIds) {
 		if (err == undefined) {
 			var length = result.length;
 			for (var i = 0; i < length; i++) {
-				comments.insert(result[i]);
+				comments.upsert(result[i]._id, result[i]);
 			}
 		} else {
 			console.log("loadComments: " + err);
@@ -628,16 +625,20 @@ Template.update.events({
 		// Set selectedPost to a temp stub, so that the update gets highlighted.
 		$(".b-posts").animate({"opacity": "0"}, {queue: false, done: function() {
 			var post = posts.findOne({"_id": postId});
-			if (post != undefined) {
+			if (post !== undefined) {
 				Session.set("selectedPost", post);
 				fadeIn();
 			} else {
 				Meteor.call("getPost", postId, function(err, result) {
-					if (err != undefined) {
+					if (err === undefined) {
+						//  BAD?
+						posts.insert(result);
+						loadComments([result._id]);
+						Session.set("selectedPost", result);
+						fadeIn();
+					} else {
 						console.log("Error getPost: " + err);
 					}
-					Session.set("selectedPost", result);
-					fadeIn();
 				});
 			}
 		}});
