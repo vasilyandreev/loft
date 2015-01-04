@@ -241,6 +241,9 @@ $(window).load(function() {
 		}
 	});
 	$(window).scrollTop(0);
+	// For some reason have to set placeholders manually here for them to appear in Firefox.
+	$(".post-input-textarea").attr("placeholder", "What do you want to share?");
+	$(".comment-input-textarea").attr("placeholder", "What do you think?");
 });
 
 init();
