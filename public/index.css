@@ -19,6 +19,10 @@ header {
 	padding: 5px;
 }
 
+.placeholder {
+	color: #aaa;
+}
+
 @media (max-width: 600px) {
 	li {
 		padding: 12px 15px;

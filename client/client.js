@@ -234,16 +234,36 @@ $(window).load(function() {
 			Session.set("currentPage", state.currentPage);
 		}
 	});
+	$(window).scrollTop(0);
 	$(window).on("scroll", function(e) {
 		var winTop = $(window).scrollTop(), docHeight = $(document).height(), winHeight = $(window).height();
 		if (winTop / (docHeight - winHeight) > SCROLL_TRIGGER) {
 			loadMorePosts(LOAD_MORE_POSTS);
 		}
 	});
-	$(window).scrollTop(0);
-	// For some reason have to set placeholders manually here for them to appear in Firefox.
-	$(".post-input-textarea").attr("placeholder", $(".post-input-textarea").attr("placeholder") + " ");
-	$(".comment-input-textarea").attr("placeholder", $(".comment-input-textarea").attr("placeholder") + " ");
+
+	// Placeholder jQuery implementation, since we can't get it to show up in Firefox.
+	$('[placeholder]').focus(function() {
+		var input = $(this);
+		if (input.val() == input.attr('placeholder')) {
+			input.val('');
+		}
+		input.removeClass('placeholder');
+	}).blur(function() {
+		var input = $(this);
+		if (input.val() == '' || input.val() == input.attr('placeholder')) {
+			input.addClass('placeholder');
+			input.val(input.attr('placeholder'));
+		}
+	}).blur();
+	$('[placeholder]').parents('form').submit(function() {
+		$(this).find('[placeholder]').each(function() {
+			var input = $(this);
+			if (input.val() == input.attr('placeholder')) {
+				input.val('');
+			}
+		})
+	});
 });
 
 init();
@@ -358,12 +378,18 @@ function showPostPopup() {
 		height: promptTextarea.css("height"),
 		maxHeight: promptTextarea.css("max-height"),
 	});
+	textarea.setCursorPosition(0);
+	textarea.focus();
 	textarea.animate(textareaFinalParams, {duration: duration, queue: false, done: function() {
 		// Reset height to smallest value, since it'll be automatically handled by autoresize.
 		textarea.css("height", promptTextarea.css("height"));
 		// Set max-height so that it's set in pixels. Workaround for this bug:
 		// https://github.com/jackmoore/autosize/issues/191
-		textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
+		if (finalMaxHeight.indexOf("px") >= 0) {
+			textarea.css("max-height", finalMaxHeight);
+		} else if (finalMaxHeight.indexOf("%") >= 0) {
+			textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
+		}
 		textarea.autosize({append: ""}).trigger("autosize.resize");
 
 		var scrollDuration = 500 * ANIMATION_FACTOR;
@@ -378,7 +404,7 @@ function showPostPopup() {
 	}});
 
 	// Animate other stuff.
-	$("#darken").fadeTo(duration, 1);
+	$("#darken").fadeTo(duration, 0.75);
 	div.find(".post-popup-footer").fadeTo(duration, 1);
 	promptDiv.css("visibility", "hidden");
 }
@@ -519,6 +545,10 @@ Template.home.events({
 	"click #darken": function (event) {
 		hidePostPopup();
 	},
+	"scroll #post-popup .post-input-textarea": function (event) {
+		var originalOffset = Math.floor(parseFloat($("#post-prompt .post-input-textarea").css("background-position").split(" ")[1]));
+		$(event.currentTarget).css("background-position", "100% " + (originalOffset - $(event.currentTarget).scrollTop()) + "px");
+	},
 	"click #submit-post": function (event) {
 		var textarea = $("#post-popup .post-input-textarea");
 		var text = textarea.val();
@@ -622,7 +652,6 @@ Template.update.events({
 		var fadeIn = function() {
 			$(".b-posts").animate({"opacity": "1"}, {queue: false});
 		}
-
 
 		// TODO: ideally, if we don't have this post and need to fetch it from the
 		// server, we need to do it while we are animating.
