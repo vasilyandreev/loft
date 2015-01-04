@@ -242,8 +242,8 @@ $(window).load(function() {
 	});
 	$(window).scrollTop(0);
 	// For some reason have to set placeholders manually here for them to appear in Firefox.
-	$(".post-input-textarea").attr("placeholder", "What do you want to share?");
-	$(".comment-input-textarea").attr("placeholder", "What do you think?");
+	$(".post-input-textarea").attr("placeholder", $(".post-input-textarea").attr("placeholder") + " ");
+	$(".comment-input-textarea").attr("placeholder", $(".comment-input-textarea").attr("placeholder") + " ");
 });
 
 init();
@@ -683,6 +683,15 @@ Template.post.helpers({
 	}
 });
 
+// Flash the background color of the new comment.
+function flashNewComment(commentId) {
+	Tracker.flush();
+
+	var commentDiv = $("#" + commentId);
+	var originalHeight = commentDiv.css("height");
+	commentDiv.hide().show({queue: false, duration: 400 * ANIMATION_FACTOR});
+}
+
 Template.post.events({
 	"click .love-button": function () {
 		var postId = this._id;
@@ -709,6 +718,7 @@ Template.post.events({
 				// BAD?
 				comments.insert(result);
 				posts.update(postId, {$inc: {commentLimit: 1}});
+				flashNewComment(result._id);
 			} else {
 				console.log("addComment error: " + err);
 			}

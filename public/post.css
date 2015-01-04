@@ -15,11 +15,10 @@
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
-}
-
-.comment p {
+	overflow: hidden;
 	padding-left: 2em;
 	text-indent: -2em;
+	margin: 1em 0 1em 2em;
 }
 
 .postHeader {
@@ -71,7 +70,7 @@ input:focus{
 }
 
 .comment-input-textarea {
-	background-image: linear-gradient(#ccccff .1em, transparent .1em);
+	background-image: linear-gradient(#bbbbff .1em, transparent .1em);
 	background-position: 0em -0.2em;
 	background-size: 100% 1.5em;
 	background-attachment: local;

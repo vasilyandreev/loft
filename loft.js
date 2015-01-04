@@ -78,7 +78,7 @@ Meteor.methods({
 			text: text,
 			createdAt: Date.now()
 		};
-		comments.insert(comment);
+		comment._id = comments.insert(comment);
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 
 		post.commenters.forEach(function(commenterId) {
@@ -109,7 +109,6 @@ Meteor.methods({
 		}
 
 		var post = {
-			_id: new Mongo.ObjectID().toHexString(),
 			userId: Meteor.userId(),
 			text: text,
 			createdAt: Date.now(),
@@ -118,7 +117,7 @@ Meteor.methods({
 			// when someone comments on their post.
 			commenters: [Meteor.userId()]  // list of userIds who have commented on this post
 		};
-		posts.insert(post);
+		post._id = posts.insert(post);
 		return post;
 	},
 	// Check if the given code can be redeemed, and return the whole code object if it can.
