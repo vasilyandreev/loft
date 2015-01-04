@@ -763,14 +763,14 @@ Template.post.events({
 	},
 	"focus .comment-input-textarea": function (event) {
 		var $target = $(event.currentTarget);
-		if ($target.val().length <= 0) {
+		if ($target.val().length <= 0 || $target.val() == $target.attr("placeholder")) {
 			$target.autosize({append: ""}).trigger("autosize.resize");
 			$target.next(".comment-link").fadeIn();
 		}
 	},
 	"blur .comment-input-textarea": function (event) {
 		var $target = $(event.currentTarget);
-		if ($target.val().length <= 0) {
+		if ($target.val().length <= 0 || $target.val() == $target.attr("placeholder")) {
 			$target.trigger("autosize.destroy");
 			$target.next(".comment-link").fadeOut();
 		}

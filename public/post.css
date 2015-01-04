@@ -71,7 +71,7 @@ input:focus{
 
 .comment-input-textarea {
 	background-image: linear-gradient(#bbbbff .1em, transparent .1em);
-	background-position: 0em -0.2em;
+	background-position: 0em -0.1em;
 	background-size: 100% 1.5em;
 	background-attachment: local;
 	border: none;
