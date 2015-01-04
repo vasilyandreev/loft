@@ -664,15 +664,13 @@ Template.post.helpers({
 		return comments.find({postId: this._id}, {limit: this.commentLimit, sort: {createdAt: -1}}).fetch().reverse();
 	},
 	"imageSource": function () {
-		if (this.lovedBy.indexOf(Meteor.userId()) < 0 && Session.get("canLove") === true) {
-			return "images/heart-2x-cleared.png";
-		} 
-		if (this.lovedBy.indexOf(Meteor.userId()) > 0)	{
+		if (this.lovedBy.indexOf(Meteor.userId()) >= 0)	{
 			return "images/heart-2x.png";
 		}
-		if (this.lovedBy.indexOf(Meteor.userId()) < 0 && Session.get("canLove") === false) { 
-			return "images/heart-2x-grey-2.png";
-		}
+		if (Session.get("canLove")) {
+			return "images/heart-2x-cleared.png";
+		} 
+		return "images/heart-2x-grey.png";
 	}
 });
 
