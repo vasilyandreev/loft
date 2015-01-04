@@ -61,6 +61,16 @@ function init() {
 			}
 		});
 	}
+	Meteor.call("getTodaysQuote", function(err, result){
+		if (err == undefined) {
+			Session.set("quoteText", result);
+		} else {
+			console.log("getTodaysQuote" + err);
+		}
+	});
+
+	if (Meteor.userId() === null) return;
+
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
 			Session.set("canLove", result);
@@ -80,13 +90,6 @@ function init() {
 			Session.set("postDraftText", result);
 		} else {
 			console.log("getPostDraftText: " + err);
-		}
-	});
-	Meteor.call("getTodaysQuote", function(err, result){
-		if (err == undefined) {
-			Session.set("quoteText", result);
-		} else {
-			console.log("getTodaysQuote" + err);
 		}
 	});
 
