@@ -457,8 +457,8 @@ function flashNewPost(popupGone, newPost) {
 
 	var postDiv = $("#" + window.newPost._id).hide();
 	window.setTimeout(function() {
-		postDiv.show(1500 * ANIMATION_FACTOR);
-	}, 300);
+		postDiv.fadeIn({queue: false, duration: 1500 * ANIMATION_FACTOR});
+	}, 300 * ANIMATION_FACTOR);
 	window.newPost = undefined;
 	window.popupGone = false;
 }
@@ -480,7 +480,7 @@ Template.home.events({
 			$updates.animate({"left": "0%"}, {queue: false});
 			$updates.animate({"margin-right": "0%"}, {queue: false});
 			$spacers.animate({width: "0%"}, {queue: false});
-			$vLine.fadeIn({ queue: false});
+			$vLine.fadeIn({queue: false});
 			$vLine.animate({"left": updatesWidth}, {queue: false});
 
 			if (findUpdates(true).count() === 1 ) {
@@ -723,7 +723,7 @@ function flashNewComment(commentId) {
 
 	var commentDiv = $("#" + commentId);
 	var originalHeight = commentDiv.css("height");
-	commentDiv.hide().show({queue: false, duration: 400 * ANIMATION_FACTOR});
+	commentDiv.hide().fadeIn({queue: false, duration: 400 * ANIMATION_FACTOR});
 }
 
 Template.post.events({
