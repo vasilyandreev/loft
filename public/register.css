@@ -114,7 +114,7 @@
 	text-align: center;
 	font-family: 'Open Sans';
 	font-style: normal;
-	font-weight: 400;
+	font-weight: 300;
 	background: #ffffff;
 	background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
 	background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
@@ -125,7 +125,7 @@
 	-moz-border-radius: 6;
 	border-radius: 6px;
 	color: #000000;
-	font-size: 23px;
+	font-size: 1.5em;
 	padding: 10px 20px 10px 20px;
 	border: solid #000000 2px;
 	text-decoration: none;
