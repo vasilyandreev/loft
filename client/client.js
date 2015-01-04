@@ -241,7 +241,7 @@ Template.home.helpers({
 	},
 	"postDraftText": function() {
 		return Session.get("postDraftText");
-	}
+	},
 });
 
 function showPostPopup() {
@@ -396,9 +396,19 @@ Template.home.events({
 		var updatesWidth = $(window).width() - $posts.width();
 		if (!Session.get("showUpdates")) {
 			Session.set("showUpdates", true);
+			Tracker.flush();
 			$updates.animate({"left": "0%"}, {queue: false});
 			$updates.animate({"margin-right": "0%"}, {queue: false});
 			$spacers.animate({width: "0%"}, {queue: false});
+			if (findUpdates(true).count() === 1 ) {
+				$(".new-updates").css("font-size","2em");
+			} else if (findUpdates(true).count() === 2) {
+				$(".new-updates").css("font-size","1.15em");
+			} else if (findUpdates(true).count() === 3) {
+				$(".new-updates").css("font-size","1.2em");
+			} else if (findUpdates(true).count() > 3) {
+				$(".new-updates").css("font-size",".95em");
+			}
 		} else {
 			if (Session.get("selectedPost") !== undefined) {
 				$posts.animate({"opacity": "0"}, {queue: false, done: function() {
@@ -466,6 +476,9 @@ Template.updates.helpers({
 	"oldUpdates": function () {
 		return findUpdates(false);
 	},
+	"showOldUpdates": function () {
+		return findUpdates(false).count() > 0;
+	}
 });
 
 
@@ -501,7 +514,7 @@ Template.update.helpers({
 			return "read-update";
 		}
 		return "default-update";
-	}
+	},
 });
 
 Template.update.events({
@@ -525,6 +538,7 @@ Template.update.events({
 		var fadeIn = function() {
 			$(".b-posts").animate({"opacity": "1"}, {queue: false});
 		}
+
 
 		// TODO: ideally, if we don't have this post and need to fetch it from the
 		// server, we need to do it while we are animating.
@@ -567,10 +581,14 @@ Template.post.helpers({
 		return comments.find({postId: this._id}, {sort: {createdAt: 1}});
 	},
 	"imageSource": function () {
-		if (this.lovedBy.indexOf(Meteor.userId()) < 0) {
+		if (this.lovedBy.indexOf(Meteor.userId()) < 0 && Session.get("canLove") === true) {
 			return "images/heart-2x-cleared.png";
-		} else {
+		} 
+		if (this.lovedBy.indexOf(Meteor.userId()) > 0)	{
 			return "images/heart-2x.png";
+		}
+		if (this.lovedBy.indexOf(Meteor.userId()) < 0 && Session.get("canLove") === false) { 
+			return "images/heart-2x-grey-2.png";
 		}
 	}
 });

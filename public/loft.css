@@ -65,6 +65,9 @@
 	bottom: 0.5em;
 	width: 100%;
 	text-align: center;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
 }
 
 .post-prompt-div {
@@ -72,6 +75,9 @@
 }
 
 .post-input-textarea {
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
 	position: relative;
 	background-image: linear-gradient(#ccccff .1em, transparent .1em);
 	background-position: 0em -0.2em;
@@ -138,10 +144,10 @@
 
 .b-updates {
 	position: relative;
-	left: -34%;
+	left: -25%;
 	float: left;
-	width: 34%;
-	margin-right: -34%;
+	width: 25%;
+	margin-right: -25%;
 }
 
 .b-posts-spacer {
@@ -150,29 +156,48 @@
 }
 
 .read-update {
-	background: rgb(252,247,252);
+	color: rgb(220,220,220);
+	/*color: rgb(252,247,252);*/
 	text-decoration: inherit;
-	color: inherit;
 	margin: 0;
 	padding: 0;
 }
 
 .selected-update {
-	background: rgb(233,244,255);
+	color: rgb(136,252,140);
+	/*color: rgb(233,244,255);*/
+	margin-right: 0px;
 }
 
 .b-update {
 	width: 80%;
-	padding: 0.7em 1.5em;
+	padding: 0.7em 10%;
+	margin-right: 0px;
 }
 
 .default-update {
-	background: rgb(250,250,250);
+	color: rgb(82,221,255);
+	margin-right: 0;
 }
 
 .update-link {
-	text-decoration: none;
-	color: #000000;
+	text-decoration: inherit;
+	color: inherit;
 }
 
+.b-updates div {
+	margin-right: 0px;
+}
 
+.verticalLine {
+	position: fixed;
+	border-style: solid;
+	border-color: rgb(230,230,230);
+	border-width: 1px;
+	height: 100%;
+	left: 25%;
+}
+
+.new-updates {
+	font-size: 2em;
+}

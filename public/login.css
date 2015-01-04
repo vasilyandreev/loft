@@ -22,7 +22,7 @@
 }
 
 .login li {
-	margin: 2em;
+	margin: 1.25em;
 }
 
 #login-form{
@@ -35,6 +35,13 @@
 	font-family: 'Open Sans';
 	font-style: bold;
 	font-weight: 300;
+	border: 1px solid #848484; 
+	-webkit-border-radius: 30px; 
+	-moz-border-radius: 30px; 
+	border-radius: 30px; 
+	outline:0;  
+	padding-left:10px; 
+	padding-right:10px; 
 }
 
 #login-password {
@@ -43,6 +50,13 @@
 	font-family: 'Open Sans';
 	font-style: bold;
 	font-weight: 300;
+	border: 1px solid #848484; 
+	-webkit-border-radius: 30px; 
+	-moz-border-radius: 30px; 
+	border-radius: 30px; 
+	outline:0; 
+	padding-left:10px; 
+	padding-right:10px; 
 }
 
 #login-button {;
@@ -62,7 +76,7 @@
 	-moz-border-radius: 6;
 	border-radius: 6px;
 	color: #000000;
-	font-size: 23px;
+	font-size: 1.5em;
 	padding: 10px 20px 10px 20px;
 	border: solid #000000 2px;
 	text-decoration: none;

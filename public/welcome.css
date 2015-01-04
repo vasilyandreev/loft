@@ -46,20 +46,27 @@
 	font-style: normal;
 	font-weight: 300;
 	text-align:center;
-	font-size: 1em;
+	font-size: .75em;
 }
 
 #join-us-button {
 	height: 4em;
 	text-align: center;
 	background-color: rgb(255,255,255);
-	border-style: none;
+	border-left-style: none;
+	border-right-style: none;
+	border-top-style: none;
+	border-bottom-style: solid;
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
 	font-size: 1.5em;
 	left: 0;
-	bottom: 0px;
-	border-width: 0 0 0;
-	border-style: solid;
+	bottom: 2px;
+	border-width: 0 2px 0 0;
+	text-decoration: none;
+}
+
+#joinUsImage{
+	vertical-align: 21.5%;
 }

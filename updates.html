@@ -1,11 +1,13 @@
 <template name="updates">
 <div class="container">
-	<div class="new-updates">
+	<div id="new-updates-div" class="new-updates">
 		{{#each newUpdates}}
 			{{> update}}
 		{{/each}}
 	</div>
-	<h1>Old Updates</h1>
+	{{#if showOldUpdates}}
+	<h1>Old Updates</h1> 
+	{{/if}}
 	{{#each oldUpdates}}
 		{{> update}}
 	{{/each}}
