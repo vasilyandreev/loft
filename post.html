@@ -1,21 +1,30 @@
 <template name="post">
 	<div class="post" id="{{_id}}">
-		<div class = postHeader> <p>{{name}}
-			<!-- <form id = "submitLove">
-			<input type="image" src="images/heart-2x.png" alt="Submit" class="love-button"/>
-		</form> -->
-			<button class="love-button"> <div class = "lovedBy"> {{lovedBy.length}} </div> <input type ="image" img id ="blackHeart" image src={{imageSource}}></button>
-		 </p>  </div>
+		<div class = postHeader>
+			<p>
+				{{name}}
+				<button class="love-button">
+					<div class = "lovedBy">
+						{{lovedBy.length}}
+					</div>
+					<input type ="image" img id ="blackHeart" image src={{imageSource}}>
+				</button>
+			</p>
+		</div>
+
 		<div class = postContent> <p>{{{safeText}}}</p> </div>
 		
-		<div class = commentSection> <p></p>
-		{{#each comments}}
-			{{> comment}}
-		{{/each}}
-		<form class="new-comment"> 
-			<input type="text" name= "text" class="comment-input-textarea" placeholder="What do you think?">
-	  </form>
-		<br><br>
-	</div>
+		<div class = commentSection>
+			{{#if showLoadMoreComments}}
+				<a class="load-more-comments standard-link" href="#">LOAD ALL COMMENTS</a>
+			{{/if}}
+			{{#each comments}}
+				{{> comment}}
+			{{/each}}
+			<div class="new-comment"> 
+				<textarea class="comment-input-textarea" placeholder="What do you think?"></textarea>
+				<a class="comment-link standard-link" href="#">COMMENT</a>
+			</div>
+		</div>
 	</div>
 </template>

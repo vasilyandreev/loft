@@ -12,7 +12,7 @@ quotes = new Mongo.Collection("quotes");
 
 // Returns Date corresponding to the time when "today" started.
 // Note: we define end of a day at 3am Pacific (5am Central).
-function getStartOfToday() {
+getStartOfToday = function() {
 	var startOfToday = new Date(Date.now());
 	startOfToday.setUTCMilliseconds(0);
 	startOfToday.setUTCSeconds(0);
@@ -23,33 +23,11 @@ function getStartOfToday() {
 	}
 	startOfToday.setUTCHours(11);
 	return startOfToday;
-
 }
-
-function getTodaysQuote() {
-	var today = getStartOfToday();
-	var todayStr = (today.getUTCMonth() + 1) + "/" + today.getUTCDate() + "/" + today.getUTCFullYear();
-	var quoteObject = quotes.findOne({"date": todayStr});
-	return quoteObject.quote;
-}
-
-function checkCode(code) {
-	var codeObject = invites.findOne({"code": code});
-	if(codeObject === undefined){
-		throw new Meteor.Error("This invite code doesn't exist.");
-	}
-	if(codeObject.reedemed){
-		throw new Meteor.Error("Your code has already been used.");
-	}
-	// invites.update(codeObject._id, {$set: {"reedemed": true}});
-	return codeObject.code;
-}
-
-
 
 // Returns Date corresponding to the time when the week started.
 // Note: we define end of a week at 3am Pacific on a Monday.
-function getStartOfWeek() {
+getStartOfWeek = function() {
 	var startOfWeek = getStartOfToday();
 	// Get the day of week where Monday is 0 and Sunday is 6.
 	var dayOfWeek = (startOfWeek.getUTCDay() + 6) % 7;
@@ -82,11 +60,10 @@ function canLove() {
 
 Meteor.methods({
 	canLove: canLove,
-	checkCode: checkCode,
-	getTodaysQuote: getTodaysQuote,
 	getPostsLeft: getPostsLeft,
 	// Create a new comment for the given post with the given text.
 	addComment: function (postId, text) {
+		if (Meteor.isClient) return;
 		var post = posts.findOne(postId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
@@ -95,12 +72,13 @@ Meteor.methods({
 			throw new Meteor.Error("No post with this id.");
 		}
 
-		comments.insert({
+		var comment = {
 			postId: postId,
 			userId: Meteor.userId(),
 			text: text,
 			createdAt: Date.now()
-		});
+		};
+		comments.insert(comment);
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 
 		post.commenters.forEach(function(commenterId) {
@@ -117,6 +95,7 @@ Meteor.methods({
 				});
 			}
 		});
+		return comment;
 	},
 	// Create a new post with the given text.
 	// Returns the created post.
@@ -141,6 +120,38 @@ Meteor.methods({
 		};
 		posts.insert(post);
 		return post;
+	},
+	// Check if the given code can be redeemed, and return the whole code object if it can.
+	checkCode: function(code){
+		if (Meteor.isClient) return;
+		var codeObject = invites.findOne({"code": code});
+		if(codeObject === undefined){
+			throw new Meteor.Error("This invite code doesn't exist.");
+		}
+		if(codeObject.reedemed){
+			throw new Meteor.Error("Your code has already been used.");
+		}
+		invites.update(codeObject._id, {$set: {"reedemed": true}});
+		return codeObject;
+	},
+	// Return the number of all updates.
+	countAllUpdates: function(areNew) {
+		if (Meteor.isClient) return 0;
+		return updates.find({
+			$and: [
+				{forUserId: Meteor.userId()},
+				{new: areNew},
+			],
+		}).count(); 
+	},
+	// Return today's quote string.
+	getTodaysQuote: function() {
+		if (Meteor.isClient) return "";
+		var today = getStartOfToday();
+		var todayStr = (today.getUTCMonth() + 1) + "/" + today.getUTCDate() + "/" + today.getUTCFullYear();
+		var quoteObject = quotes.findOne({"date": todayStr});
+		if (quoteObject === undefined) return "";
+		return quoteObject.quote;
 	},
 	// Love the given post.
 	lovePost: function (postId) {
@@ -186,6 +197,7 @@ Meteor.methods({
 	},
 	// Mark the update as read.
 	markUpdateRead: function(updateId) {
+		if (Meteor.isClient) return;
 		var update = updates.findOne(updateId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
@@ -221,10 +233,37 @@ Meteor.methods({
 		if (!Meteor.userId()) return "";
 		return Meteor.user().postDraftText;
 	},
-	// Return "limit" number of posts which we created after startTime.
-	getPosts: function(startTime, limit) {
+	// Return comments for the corresponding posts.
+	loadComments: function(postIds) {
+		if (Meteor.isClient) return null;
+		var result = comments.find({postId: {$in: postIds}}).fetch();
+		return result;
+	},
+	// Returns posts.
+	loadPosts: function(startTime, limit) {
+		if (Meteor.isClient) return null;
 		var result = posts.find({createdAt: {$lt: startTime}}, {sort: {createdAt: -1}, limit: limit}).fetch();
 		return result;
+	},
+	// Return updates.
+	loadUpdates: function(areNew, startTime, limit) {
+		if (Meteor.isClient) return null;
+		var result = updates.find({
+			$and: [
+				{forUserId: Meteor.userId()},
+				{new: areNew},
+				{createdAt: {$lt: startTime}},
+			],
+		}, {
+			limit: limit,
+			sort: {createdAt: -1},
+		}).fetch(); 
+		return result;
+	},
+	// Called after the user read the quote.
+	readQuote: function() {
+		if (!Meteor.userId()) return "";
+		Meteor.users.update(Meteor.userId(), {$set: {readQuoteTime: getStartOfToday().getTime()}});
 	},
 	// Set the text of the post draft.
 	setPostDraftText: function(text) {
@@ -249,5 +288,13 @@ Meteor.methods({
 	    	subject: subject,
 	    	text: text
 	    });
-	}*/
+	},*/
+	// Return true iff we should show the quote to this user.
+	shouldShowQuote: function() {
+		if (!Meteor.userId()) return false;
+		if (Meteor.call("getTodaysQuote").length <= 0) return false;
+		var readQuoteTime = Meteor.user().readQuoteTime;
+		if (readQuoteTime === undefined) return true;
+		return readQuoteTime < getStartOfToday().getTime();
+	},
 });

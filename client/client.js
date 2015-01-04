@@ -1,13 +1,20 @@
 // Number of posts to load initially.
 INITIAL_POSTS = 10;
 // Number of posts to load each time we reach the end.
-INFINITE_SCROLL_POSTS = 5;
+LOAD_MORE_POSTS = 5;
+// Number of comments to show initially for any post.
+INITIAL_COMMENTS = 10;
+// Number of updates to load initially (both for new and old).
+INITIAL_UPDATES = 10;
+// Number of updates to load when user wants to load more.
+LOAD_MORE_UPDATES = 10;
 // How often we save the post draft when the user is editing it.
 SAVE_POST_DRAFT_PERIOD = 5000;  // in milliseconds
 // Percent scroll necessary to load more posts.
 SCROLL_TRIGGER = 0.95;
 // Number used to make all animations slower.
 ANIMATION_FACTOR = 1;
+// Constants for page names.
 PAGES = {
 	WELCOME: "welcome",
 	LOGIN: "login",
@@ -18,15 +25,20 @@ PAGES = {
 	INVITE: "invite",
 };
 
+// Collections.
+var posts = new Mongo.Collection(null);
+var comments = new Mongo.Collection(null);
+var updates = new Mongo.Collection(null);
+
 // Call init when we open the website and also when we login.
 function init() {
 	console.log("init");
 	Session.set("loginError", "");
 	Session.set("registerError", "");
-	Session.set("posts", undefined);  // array of posts we are showing
 	Session.set("loadingMorePosts", false);  // True iff we already asked the server for more posts
 	Session.set("noMorePosts", false);  // True iff there are no more posts to load
 	Session.set("showUpdates", false);  // True iff we are showing updates section
+	Session.set("oldUpdatesCount", 0);  // Number of old updates available on the server
 	Session.set("showingPostPopup", false);  // True iff we are showing the post popup modal
 	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
 	Session.set("selectedUpdate", undefined);  // Id of the update we have selected
@@ -34,9 +46,20 @@ function init() {
 	Session.set("quoteText", "");  // Quote text displayed on the quote page
 	Session.set("codeError", "");  // Error during invite code submission
 	Session.set("showRegistration", false);  // True iff we are showing registration section in register.html
-	Session.set("prefillFirstName", "");
+	Session.set("prefillFirstName", "");  // Value to put into the first name textbox when registering
 	Session.set("prefillLastName", "");
 
+	if (!Session.equals("currentPage", PAGES.QUOTE)) {
+		Meteor.call("shouldShowQuote", function(err, result) {
+			if (err == undefined) {
+				if (result) {
+					goToLoftPage(PAGES.QUOTE);
+				}
+			} else {
+				console.log("shouldShowQuote: " + err);
+			}
+		});
+	}
 	Meteor.call("canLove", function(err, result) {
 		if (err == undefined) {
 			Session.set("canLove", result);
@@ -58,7 +81,18 @@ function init() {
 			console.log("getPostDraftText: " + err);
 		}
 	});
+	Meteor.call("getTodaysQuote", function(err, result){
+		if (err == undefined) {
+			Session.set("quoteText", result);
+		} else {
+			console.log("getTodaysQuote" + err);
+		}
+	});
+
+	Meteor.subscribe("userProfiles");
 	loadMorePosts(INITIAL_POSTS);
+	loadMoreUpdates(true, 0);
+	loadMoreUpdates(false, INITIAL_UPDATES);
 }
 
 // Load "limit" more posts.
@@ -68,38 +102,74 @@ function loadMorePosts(limit) {
 
 	Session.set("loadingMorePosts", true);
 	var cutoffTime = Date.now();
-	var posts = Session.get("posts");
-	if (posts !== undefined && posts.length > 0) {
-		cutoffTime = posts[posts.length - 1].createdAt;
+	if (posts.find({}).count() > 0) {
+		posts.find({}).forEach(function (post){
+			cutoffTime = Math.min(cutoffTime, post.createdAt);
+		});
 	}
 	console.log("Loading more posts with cutoffTime=" + cutoffTime);
-	Meteor.call("getPosts", cutoffTime, limit, function(err, result) {
+
+	Meteor.call("loadPosts", cutoffTime, limit, function(err, result) {
 		Session.set("loadingMorePosts", false);
 		if (err == undefined) {
 			if (result.length < limit) {
 				Session.set("noMorePosts", true);
 			}
-			if (posts !== undefined) {
-				result = $.merge(posts, result);
+			var length = result.length;
+			for (var i = 0; i < length; i++) {
+				result[i].commentLimit = INITIAL_COMMENTS;
+				posts.insert(result[i]);
 			}
-			Session.set("posts", result);
+			var postIds = $.map(result, function(post) { return post._id; });
+			loadComments(postIds);
 		} else {
-			console.log("getPosts: " + err);
-		}
-	});
-	Meteor.call("getTodaysQuote", function(err, result){
-		if (err == undefined) {
-			Session.set("quoteText", result);
-		} else {
-			console.log("getTodaysQuote" + err);
+			console.log("loadPosts: " + err);
 		}
 	});
 }
 
-// Convert em value to px.
-function pxFromEm(input) {
-	var emSize = parseFloat($("body").css("font-size"));
-	return (input * emSize);
+// Load comments for all given post ids.
+function loadComments(postIds) {
+	if (Session.equals("loadingComments", true)) return;
+	Session.set("loadingComments", true);
+	Meteor.call("loadComments", postIds, function(err, result) {
+		Session.set("loadingComments", false);
+		if (err == undefined) {
+			var length = result.length;
+			for (var i = 0; i < length; i++) {
+				comments.insert(result[i]);
+			}
+		} else {
+			console.log("loadComments: " + err);
+		}
+	});
+}
+
+// Load more updates.
+function loadMoreUpdates(areNew, limit){
+	var mutexName = "loadingMoreUpdates-" + areNew;
+	if (Session.equals(mutexName, true)) return;
+
+	Session.set(mutexName, true);
+	var cutoffTime = Date.now();
+	if (updates.find({new: areNew}).count() > 0) {
+		updates.find({new: areNew}).forEach(function (update){
+			cutoffTime = Math.min(cutoffTime, update.createdAt);
+		});
+	}
+	console.log("Loading more updates with cutoffTime=" + cutoffTime);
+
+	Meteor.call("loadUpdates", areNew, cutoffTime, limit, function(err, result) {
+		Session.set(mutexName, false);
+		if (err == undefined) {
+			var length = result.length;
+			for (var i = 0; i < length; i++) {
+				updates.insert(result[i]);
+			}
+		} else {
+			console.log("loadUpdates: " + err);
+		}
+	});
 }
 
 // Return cleaned and safe version of the given string.
@@ -152,12 +222,6 @@ Router.route('/', function () {
 	this.render(Session.get("currentPage"));
 });
 
-Tracker.autorun(function () {
-	Meteor.subscribe("userProfiles");
-	Meteor.subscribe("updates");
-	Meteor.subscribe("comments");
-});
-
 $(window).load(function() {
 	window.savePostDraftHandle = undefined;
 	window.popupGone = false;
@@ -176,13 +240,14 @@ $(window).load(function() {
 	$(window).on("scroll", function(e) {
 		var winTop = $(window).scrollTop(), docHeight = $(document).height(), winHeight = $(window).height();
 		if (winTop / (docHeight - winHeight) > SCROLL_TRIGGER) {
-			loadMorePosts(INFINITE_SCROLL_POSTS);
+			loadMorePosts(LOAD_MORE_POSTS);
 		}
 	});
 	$(window).scrollTop(0);
 });
 
 init();
+
 
 // WELCOME
 Template.welcome.events({
@@ -194,27 +259,32 @@ Template.welcome.events({
 	},
 });
 
+
 // WAY 
 Template.way.events({
 	"click #way-button": function (event) {
 		goToLoftPage(PAGES.HOME);
 	},
 })
+
+
 // QUOTE
 Template.quote.helpers({
 	"firstName": function () {
 		return getFirstName(Meteor.userId());
 	},
 	"quoteText": function(){
-		return Session.get("quoteText");
+		return escapeHtml(Session.get("quoteText"));
 	}
 })
 
 Template.quote.events({
 	"click #quote-enter": function(event){
+		Meteor.call("readQuote");
 		goToLoftPage(PAGES.HOME);
 	}
 })
+
 
 // HOME
 Template.home.helpers({
@@ -225,7 +295,7 @@ Template.home.helpers({
 		return Session.get("showUpdates");
 	},
 	"posts": function () {
-		return Session.get("posts");
+		return posts.find({}, {sort: {createdAt: -1}});
 	},
 	"noMorePosts": function () {
 		return Session.get("noMorePosts");
@@ -371,9 +441,7 @@ function flashNewPost(popupGone, newPost) {
 	}
 	if (window.newPost === undefined || !window.popupGone) return false;
 
-	var posts = Session.get("posts");
-	posts.unshift(window.newPost);
-	Session.set("posts", posts);
+	posts.insert(window.newPost);
 	Tracker.flush();
 
 	var postDiv = $("#" + window.newPost._id).hide();
@@ -400,6 +468,7 @@ Template.home.events({
 			$updates.animate({"left": "0%"}, {queue: false});
 			$updates.animate({"margin-right": "0%"}, {queue: false});
 			$spacers.animate({width: "0%"}, {queue: false});
+
 			if (findUpdates(true).count() === 1 ) {
 				$(".new-updates").css("font-size","2em");
 			} else if (findUpdates(true).count() === 2) {
@@ -409,6 +478,14 @@ Template.home.events({
 			} else if (findUpdates(true).count() > 3) {
 				$(".new-updates").css("font-size",".95em");
 			}
+
+			Meteor.call("countAllUpdates", false, function(err, result) {
+				if (err == undefined) {
+					Session.set("oldUpdatesCount", result);
+				} else {
+					console.log("countAllUpdates error: " + err);
+				}
+			});
 		} else {
 			if (Session.get("selectedPost") !== undefined) {
 				$posts.animate({"opacity": "0"}, {queue: false, done: function() {
@@ -419,6 +496,8 @@ Template.home.events({
 			}
 			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, done: function() {
 				Session.set("showUpdates", false);
+				// BAD?
+				updates.update({forUserId: Meteor.userId()}, {$set: {new: false}}, {multi: true});
 				Meteor.call("markAllUpdatesOld", function (result, err) {
 					if (err != undefined) {
 						console.log("markAllUpdatesOld error: " + err);
@@ -451,20 +530,6 @@ Template.home.events({
 		hidePostPopup();
 		return false;
 	},
-	"submit .new-comment": function (event) {
-		Meteor.call("addComment", this._id, event.target.text.value, function(err, result) {
-			if (err == undefined) {
-			} else {
-				console.log("addComment error: " + err);
-			}
-		});
-
-		// Clear form
-		event.target.text.value = "";
-
-		// Prevent default form submit
-		return false;
-	},
 });
 
 
@@ -479,6 +544,18 @@ Template.updates.helpers({
 	"showOldUpdates": function () {
 		return findUpdates(false).count() > 0;
 	}
+	"showLoadMoreNewUpdates": function() {
+		return false;
+	},
+	"showLoadMoreOldUpdates": function() {
+		return findUpdates(false).count() < Session.get("oldUpdatesCount");
+	},
+});
+
+Template.updates.events({
+	"click #load-old-updates": function(event) {
+		loadMoreUpdates(false, LOAD_MORE_UPDATES);
+	},
 });
 
 
@@ -528,6 +605,8 @@ Template.update.events({
 
 		// Mark as read.
 		if (!this.read) {
+			// BAD?
+			updates.update(this._id, {$set: {read: true}});
 			Meteor.call("markUpdateRead", this._id, function(err, result) {
 				if (err != undefined) {
 					console.log("Error setPostRead: " + err);
@@ -577,8 +656,12 @@ Template.post.helpers({
 			Session.get("canLove") &&
 			this.lovedBy.indexOf(Meteor.userId()) == -1;
 	},
+	"showLoadMoreComments": function() {
+		var commentCount = comments.find({postId: this._id}).count();
+		return this.commentLimit < commentCount;
+	},
 	"comments": function() {
-		return comments.find({postId: this._id}, {sort: {createdAt: 1}});
+		return comments.find({postId: this._id}, {limit: this.commentLimit, sort: {createdAt: -1}}).fetch().reverse();
 	},
 	"imageSource": function () {
 		if (this.lovedBy.indexOf(Meteor.userId()) < 0 && Session.get("canLove") === true) {
@@ -599,21 +682,48 @@ Template.post.events({
 		Meteor.call("lovePost", this._id, function (err, result) {
 			if (err == undefined) {
 				Session.set("canLove", false);
-				var posts = Session.get("posts");
-				var post = $.grep(posts, function(p){ return p._id == postId; })[0];
-				post.lovedBy.push(Meteor.userId());
-				Session.set("posts", posts);
+				// BAD?
+				posts.update({"_id": postId}, {$addToSet: {lovedBy: Meteor.userId()}});
 			} else {
 				console.log("lovePost error: " + err);
 			}
 		});
 	},
-	
-	//"focus .comment-input-textarea": function (event, target) {
-	//	console.log(target);
-	//	console.log(event.currentTarget);
-	//	$(event.currentTarget).autosize({append: ""}).trigger("autosize.resize");
-	//}
+	"click .load-more-comments": function(event){
+		// TODO: fix this hack
+		posts.update(this._id, {$set: {commentLimit: 10000}});
+	},
+	"click .comment-link": function (event) {
+		var $target = $(event.currentTarget).prev(".comment-input-textarea");
+		var postId = this._id;
+		var limit = this.commentLimit;
+		Meteor.call("addComment", this._id, $target.val(), function(err, result) {
+			if (err == undefined) {
+				// BAD?
+				comments.insert(result);
+				posts.update(postId, {$inc: {commentLimit: 1}});
+			} else {
+				console.log("addComment error: " + err);
+			}
+		});
+
+		$target.val("");
+		$target.blur();
+	},
+	"focus .comment-input-textarea": function (event) {
+		var $target = $(event.currentTarget);
+		if ($target.val().length <= 0) {
+			$target.autosize({append: ""}).trigger("autosize.resize");
+			$target.next(".comment-link").fadeIn();
+		}
+	},
+	"blur .comment-input-textarea": function (event) {
+		var $target = $(event.currentTarget);
+		if ($target.val().length <= 0) {
+			$target.trigger("autosize.destroy");
+			$target.next(".comment-link").fadeOut();
+		}
+	}
 });
 
 
@@ -633,13 +743,14 @@ Template.login.helpers({
 	"loginError": function() {
 		return Session.get("loginError");
 	},
-	"registerError": function() {
-		return Session.get("registerError");
-	}
+	"firstName": function() {
+	},
+	"lastName": function() {
+	},
 });
 
 Template.login.events({
-	"submit #login-form" : function(event, target){
+	"submit #login-form": function(event, target){
 		// retrieve the input field values
 		var email = target.find("#login-email").value;
 		var password = target.find("#login-password").value;
@@ -683,10 +794,14 @@ Template.register.events({
 		return false;
 	},
 	"submit #invite-form": function(event, target) {
-		Meteor.call("checkCode", target.find("#invite-code").value, function(err, result) {
+		var code = target.find("#invite-code").value;
+		Meteor.call("checkCode", code, function(err, result) {
 			if (err == undefined) {
+				if (result.firstName !== undefined) {
+					Session.set("prefillFirstName", result.firstName);
+					Session.set("prefillLastName", result.lastName);
+				}
 				Session.set("showRegistration", true);
-
 			} else {
 				console.log("checkCode: " + err);
 				Session.set("codeError", String(err));
@@ -706,6 +821,9 @@ Template.register.helpers({
 	"codeErr": function() {
 		return Session.get("codeError");
 	},
+	"registerError": function() {
+		return Session.get("registerError");
+	},
 	"showRegistration": function() {
 		return Session.get("showRegistration");
 	},
@@ -716,6 +834,6 @@ Template.register.helpers({
 		return Session.get("prefillFirstName");
 	},
 	"prefillLastName": function(){
-		return Session.get(prefillLastName);
+		return Session.get("prefillLastName");
 	}
 })

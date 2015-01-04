@@ -2,18 +2,7 @@ if (Meteor.isServer) {
 	Meteor.publish("userProfiles", function () {
 		return Meteor.users.find({});
 	});
-	Meteor.publish("updates", function () {
-		return updates.find({
-			forUserId: this.userId
-		});
-	});
-	// Publish a "count" number of posts to each user.
-	Meteor.publish("posts", function (count) {
-		return posts.find({}, {limit: count, sort: {createdAt: -1}});
-	});
-	Meteor.publish("comments", function () {
-		return comments.find({});
-	});
+
 	// Don't allow users to update their profiles.
 	Meteor.users.deny({update: function () { return true; }});
 
@@ -34,6 +23,7 @@ if (Meteor.isServer) {
 			new: true,
 			read: false,
 		});
+		user.readQuoteTime = getStartOfToday().getTime();
 		return user;
 	});
 }
