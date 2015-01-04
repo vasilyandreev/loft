@@ -72,12 +72,13 @@ Meteor.methods({
 			throw new Meteor.Error("No post with this id.");
 		}
 
-		comments.insert({
+		var comment = {
 			postId: postId,
 			userId: Meteor.userId(),
 			text: text,
 			createdAt: Date.now()
-		});
+		};
+		comments.insert(comment);
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 
 		post.commenters.forEach(function(commenterId) {
@@ -94,6 +95,7 @@ Meteor.methods({
 				});
 			}
 		});
+		return comment;
 	},
 	// Create a new post with the given text.
 	// Returns the created post.
@@ -195,6 +197,7 @@ Meteor.methods({
 	},
 	// Mark the update as read.
 	markUpdateRead: function(updateId) {
+		if (Meteor.isClient) return;
 		var update = updates.findOne(updateId);
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
@@ -230,13 +233,31 @@ Meteor.methods({
 		if (!Meteor.userId()) return "";
 		return Meteor.user().postDraftText;
 	},
-	// Return "limit" number of posts which we created after startTime.
-	getPosts: function(startTime, limit) {
+	// Return comments for the corresponding posts.
+	loadComments: function(postIds) {
+		if (Meteor.isClient) return null;
+		var result = comments.find({postId: {$in: postIds}}).fetch();
+		return result;
+	},
+	// Returns posts.
+	loadPosts: function(startTime, limit) {
+		if (Meteor.isClient) return null;
 		var result = posts.find({createdAt: {$lt: startTime}}, {sort: {createdAt: -1}, limit: limit}).fetch();
-		Meteor.publish("comments", function () {
-			return comments.find({});
-		});
-
+		return result;
+	},
+	// Return updates.
+	loadUpdates: function(areNew, startTime, limit) {
+		if (Meteor.isClient) return null;
+		var result = updates.find({
+			$and: [
+				{forUserId: Meteor.userId()},
+				{new: areNew},
+				{createdAt: {$lt: startTime}},
+			],
+		}, {
+			limit: limit,
+			sort: {createdAt: -1},
+		}).fetch(); 
 		return result;
 	},
 	// Called after the user read the quote.

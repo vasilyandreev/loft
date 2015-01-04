@@ -25,12 +25,16 @@ PAGES = {
 	INVITE: "invite",
 };
 
+// Collections.
+var posts = new Mongo.Collection(null);
+var comments = new Mongo.Collection(null);
+var updates = new Mongo.Collection(null);
+
 // Call init when we open the website and also when we login.
 function init() {
 	console.log("init");
 	Session.set("loginError", "");
 	Session.set("registerError", "");
-	Session.set("posts", undefined);  // array of posts we are showing
 	Session.set("loadingMorePosts", false);  // True iff we already asked the server for more posts
 	Session.set("noMorePosts", false);  // True iff there are no more posts to load
 	Session.set("showUpdates", false);  // True iff we are showing updates section
@@ -84,7 +88,11 @@ function init() {
 			console.log("getTodaysQuote" + err);
 		}
 	});
+
+	Meteor.subscribe("userProfiles");
 	loadMorePosts(INITIAL_POSTS);
+	loadMoreUpdates(true, 0);
+	loadMoreUpdates(false, INITIAL_UPDATES);
 }
 
 // Load "limit" more posts.
@@ -94,31 +102,74 @@ function loadMorePosts(limit) {
 
 	Session.set("loadingMorePosts", true);
 	var cutoffTime = Date.now();
-	var posts = Session.get("posts");
-	if (posts !== undefined && posts.length > 0) {
-		cutoffTime = posts[posts.length - 1].createdAt;
+	if (posts.find({}).count() > 0) {
+		posts.find({}).forEach(function (post){
+			cutoffTime = Math.min(cutoffTime, post.createdAt);
+		});
 	}
 	console.log("Loading more posts with cutoffTime=" + cutoffTime);
-	Meteor.call("getPosts", cutoffTime, limit, function(err, result) {
+
+	Meteor.call("loadPosts", cutoffTime, limit, function(err, result) {
 		Session.set("loadingMorePosts", false);
 		if (err == undefined) {
 			if (result.length < limit) {
 				Session.set("noMorePosts", true);
 			}
-			if (posts !== undefined) {
-				result = $.merge(posts, result);
+			var length = result.length;
+			for (var i = 0; i < length; i++) {
+				result[i].commentLimit = INITIAL_COMMENTS;
+				posts.insert(result[i]);
 			}
-			Session.set("posts", result);
+			var postIds = $.map(result, function(post) { return post._id; });
+			loadComments(postIds);
 		} else {
-			console.log("getPosts: " + err);
+			console.log("loadPosts: " + err);
 		}
 	});
 }
 
-// Convert em value to px.
-function pxFromEm(input) {
-	var emSize = parseFloat($("body").css("font-size"));
-	return (input * emSize);
+// Load comments for all given post ids.
+function loadComments(postIds) {
+	if (Session.equals("loadingComments", true)) return;
+	Session.set("loadingComments", true);
+	Meteor.call("loadComments", postIds, function(err, result) {
+		Session.set("loadingComments", false);
+		if (err == undefined) {
+			var length = result.length;
+			for (var i = 0; i < length; i++) {
+				comments.insert(result[i]);
+			}
+		} else {
+			console.log("loadComments: " + err);
+		}
+	});
+}
+
+// Load more updates.
+function loadMoreUpdates(areNew, limit){
+	var mutexName = "loadingMoreUpdates-" + areNew;
+	if (Session.equals(mutexName, true)) return;
+
+	Session.set(mutexName, true);
+	var cutoffTime = Date.now();
+	if (updates.find({new: areNew}).count() > 0) {
+		updates.find({new: areNew}).forEach(function (update){
+			cutoffTime = Math.min(cutoffTime, update.createdAt);
+		});
+	}
+	console.log("Loading more updates with cutoffTime=" + cutoffTime);
+
+	Meteor.call("loadUpdates", areNew, cutoffTime, limit, function(err, result) {
+		Session.set(mutexName, false);
+		if (err == undefined) {
+			var length = result.length;
+			for (var i = 0; i < length; i++) {
+				updates.insert(result[i]);
+			}
+		} else {
+			console.log("loadUpdates: " + err);
+		}
+	});
 }
 
 // Return cleaned and safe version of the given string.
@@ -169,13 +220,6 @@ function savePostDraft() {
 // Router setup.
 Router.route('/', function () {
 	this.render(Session.get("currentPage"));
-});
-
-Tracker.autorun(function () {
-	Meteor.subscribe("userProfiles");
-	Meteor.subscribe("newUpdates");
-	Meteor.subscribe("oldUpdates", INITIAL_UPDATES);
-	Meteor.subscribe("comments");
 });
 
 $(window).load(function() {
@@ -251,7 +295,7 @@ Template.home.helpers({
 		return Session.get("showUpdates");
 	},
 	"posts": function () {
-		return Session.get("posts");
+		return posts.find({}, {sort: {createdAt: -1}});
 	},
 	"noMorePosts": function () {
 		return Session.get("noMorePosts");
@@ -397,9 +441,7 @@ function flashNewPost(popupGone, newPost) {
 	}
 	if (window.newPost === undefined || !window.popupGone) return false;
 
-	var posts = Session.get("posts");
-	posts.unshift(window.newPost);
-	Session.set("posts", posts);
+	posts.insert(window.newPost);
 	Tracker.flush();
 
 	var postDiv = $("#" + window.newPost._id).hide();
@@ -443,6 +485,8 @@ Template.home.events({
 			}
 			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, done: function() {
 				Session.set("showUpdates", false);
+				// BAD?
+				updates.update({forUserId: Meteor.userId()}, {$set: {new: false}}, {multi: true});
 				Meteor.call("markAllUpdatesOld", function (result, err) {
 					if (err != undefined) {
 						console.log("markAllUpdatesOld error: " + err);
@@ -496,8 +540,7 @@ Template.updates.helpers({
 
 Template.updates.events({
 	"click #load-old-updates": function(event) {
-		var newCount = findUpdates(false).count() + LOAD_MORE_UPDATES;
-		Meteor.subscribe("oldUpdates", newCount);
+		loadMoreUpdates(false, LOAD_MORE_UPDATES);
 	},
 });
 
@@ -548,6 +591,8 @@ Template.update.events({
 
 		// Mark as read.
 		if (!this.read) {
+			// BAD?
+			updates.update(this._id, {$set: {read: true}});
 			Meteor.call("markUpdateRead", this._id, function(err, result) {
 				if (err != undefined) {
 					console.log("Error setPostRead: " + err);
@@ -597,20 +642,11 @@ Template.post.helpers({
 			this.lovedBy.indexOf(Meteor.userId()) == -1;
 	},
 	"showLoadMoreComments": function() {
-		var limit = INITIAL_COMMENTS;
-		if (this.showAllComments !== undefined) return this.showAllComments;
-		if (this.commentLimit !== undefined) limit = this.commentLimit;
-		var totalCount = comments.find({postId: this._id}).count();
-		return limit < totalCount;
+		var commentCount = comments.find({postId: this._id}).count();
+		return this.commentLimit < commentCount;
 	},
 	"comments": function() {
-		var limit = INITIAL_COMMENTS;
-		if (this.showAllComments) {
-			limit = -1;
-		} else if (this.commentLimit !== undefined) {
-			limit = this.commentLimit;
-		}
-		return comments.find({postId: this._id}, {limit: limit, sort: {createdAt: -1}}).fetch().reverse();
+		return comments.find({postId: this._id}, {limit: this.commentLimit, sort: {createdAt: -1}}).fetch().reverse();
 	},
 	"imageSource": function () {
 		if (this.lovedBy.indexOf(Meteor.userId()) < 0) {
@@ -627,17 +663,16 @@ Template.post.events({
 		Meteor.call("lovePost", this._id, function (err, result) {
 			if (err == undefined) {
 				Session.set("canLove", false);
-				var posts = Session.get("posts");
-				var post = $.grep(posts, function(p){ return p._id == postId; })[0];
-				post.lovedBy.push(Meteor.userId());
-				Session.set("posts", posts);
+				// BAD?
+				posts.update({"_id": postId}, {$addToSet: {lovedBy: Meteor.userId()}});
 			} else {
 				console.log("lovePost error: " + err);
 			}
 		});
 	},
 	"click .load-more-comments": function(event){
-		this.showAllComments = true;
+		// TODO: fix this hack
+		posts.update(this._id, {$set: {commentLimit: 10000}});
 	},
 	"click .comment-link": function (event) {
 		var $target = $(event.currentTarget).prev(".comment-input-textarea");
@@ -645,11 +680,9 @@ Template.post.events({
 		var limit = this.commentLimit;
 		Meteor.call("addComment", this._id, $target.val(), function(err, result) {
 			if (err == undefined) {
-				var posts = Session.get("posts");
-				var post = $.grep(posts, function(p){ return p._id == postId; })[0];
-				if (limit === undefined) limit = INITIAL_COMMENTS;
-				post.commentLimit = limit + 1;
-				Session.set("posts", posts);
+				// BAD?
+				comments.insert(result);
+				posts.update(postId, {$inc: {commentLimit: 1}});
 			} else {
 				console.log("addComment error: " + err);
 			}

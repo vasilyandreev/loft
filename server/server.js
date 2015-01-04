@@ -2,29 +2,6 @@ if (Meteor.isServer) {
 	Meteor.publish("userProfiles", function () {
 		return Meteor.users.find({});
 	});
-	Meteor.publish("newUpdates", function () {
-		return updates.find({
-			$and: [
-				{forUserId: this.userId},
-				{new: true},
-			],
-		}, {
-		});
-	});
-	Meteor.publish("oldUpdates", function (limit) {
-		return updates.find({
-			$and: [
-				{forUserId: this.userId},
-				{new: false},
-			],
-		}, {
-			limit: limit,
-			sort: {createdAt: -1},
-		});
-	});
-	Meteor.publish("comments", function () {
-		return comments.find({});
-	});
 
 	// Don't allow users to update their profiles.
 	Meteor.users.deny({update: function () { return true; }});
