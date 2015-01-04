@@ -40,6 +40,7 @@ function init() {
 	Session.set("showUpdates", false);  // True iff we are showing updates section
 	Session.set("oldUpdatesCount", 0);  // Number of old updates available on the server
 	Session.set("showingPostPopup", false);  // True iff we are showing the post popup modal
+	Session.set("postDraftText", "");  // Text stored from a drafted post
 	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
 	Session.set("selectedUpdate", undefined);  // Id of the update we have selected
 	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
@@ -96,20 +97,15 @@ function init() {
 }
 
 // Load "limit" more posts.
+var postsCutoffTime = Date.now();
 function loadMorePosts(limit) {
 	if (Session.equals("loadingMorePosts", true)) return;
 	if (Session.equals("noMorePosts", true)) return;
 
 	Session.set("loadingMorePosts", true);
-	var cutoffTime = Date.now();
-	if (posts.find({}).count() > 0) {
-		posts.find({}).forEach(function (post){
-			cutoffTime = Math.min(cutoffTime, post.createdAt);
-		});
-	}
-	console.log("Loading more posts with cutoffTime=" + cutoffTime);
+	console.log("Loading more posts with postsCutoffTime=" + postsCutoffTime);
 
-	Meteor.call("loadPosts", cutoffTime, limit, function(err, result) {
+	Meteor.call("loadPosts", postsCutoffTime, limit, function(err, result) {
 		Session.set("loadingMorePosts", false);
 		if (err == undefined) {
 			if (result.length < limit) {
@@ -118,8 +114,12 @@ function loadMorePosts(limit) {
 			var length = result.length;
 			for (var i = 0; i < length; i++) {
 				result[i].commentLimit = INITIAL_COMMENTS;
-				posts.insert(result[i]);
+				posts.upsert(result[i]._id, result[i]);
+				postsCutoffTime = Math.min(postsCutoffTime, result[i].createdAt);
 			}
+			Tracker.flush();
+			$('[placeholder]').blur();
+
 			var postIds = $.map(result, function(post) { return post._id; });
 			loadComments(postIds);
 		} else {
@@ -137,8 +137,10 @@ function loadComments(postIds) {
 		if (err == undefined) {
 			var length = result.length;
 			for (var i = 0; i < length; i++) {
-				comments.insert(result[i]);
+				comments.upsert(result[i]._id, result[i]);
 			}
+			Tracker.flush();
+			$('[placeholder]').blur();
 		} else {
 			console.log("loadComments: " + err);
 		}
@@ -237,13 +239,13 @@ $(window).load(function() {
 			Session.set("currentPage", state.currentPage);
 		}
 	});
+	$(window).scrollTop(0);
 	$(window).on("scroll", function(e) {
 		var winTop = $(window).scrollTop(), docHeight = $(document).height(), winHeight = $(window).height();
 		if (winTop / (docHeight - winHeight) > SCROLL_TRIGGER) {
 			loadMorePosts(LOAD_MORE_POSTS);
 		}
 	});
-	$(window).scrollTop(0);
 });
 
 init();
@@ -358,12 +360,18 @@ function showPostPopup() {
 		height: promptTextarea.css("height"),
 		maxHeight: promptTextarea.css("max-height"),
 	});
+	textarea.setCursorPosition(0);
+	textarea.focus();
 	textarea.animate(textareaFinalParams, {duration: duration, queue: false, done: function() {
 		// Reset height to smallest value, since it'll be automatically handled by autoresize.
 		textarea.css("height", promptTextarea.css("height"));
 		// Set max-height so that it's set in pixels. Workaround for this bug:
 		// https://github.com/jackmoore/autosize/issues/191
-		textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
+		if (finalMaxHeight.indexOf("px") >= 0) {
+			textarea.css("max-height", finalMaxHeight);
+		} else if (finalMaxHeight.indexOf("%") >= 0) {
+			textarea.css("max-height", div.height() * parseFloat(finalMaxHeight) / 100.0);
+		}
 		textarea.autosize({append: ""}).trigger("autosize.resize");
 
 		var scrollDuration = 500 * ANIMATION_FACTOR;
@@ -378,7 +386,7 @@ function showPostPopup() {
 	}});
 
 	// Animate other stuff.
-	$("#darken").fadeTo(duration, 1);
+	$("#darken").fadeTo(duration, 0.75);
 	div.find(".post-popup-footer").fadeTo(duration, 1);
 	promptDiv.css("visibility", "hidden");
 }
@@ -413,6 +421,9 @@ function hidePostPopup() {
 			fontSize: promptTextarea.css("font-size"),
 			height: promptTextarea.css("height"),
 		}, {duration: duration, queue: false, done: function() {
+			if (textarea.val() == textarea.attr('placeholder')) {
+				textarea.val("");
+			}
 			savePostDraft();
 			div.removeAttr("style");
 			textarea.removeAttr("style");
@@ -446,8 +457,8 @@ function flashNewPost(popupGone, newPost) {
 
 	var postDiv = $("#" + window.newPost._id).hide();
 	window.setTimeout(function() {
-		postDiv.show(1500 * ANIMATION_FACTOR);
-	}, 300);
+		postDiv.fadeIn({queue: false, duration: 1500 * ANIMATION_FACTOR});
+	}, 300 * ANIMATION_FACTOR);
 	window.newPost = undefined;
 	window.popupGone = false;
 }
@@ -461,13 +472,16 @@ Template.home.events({
 		var $updates = $(".b-updates");
 		var $spacers = $(".b-posts-spacer");
 		var $posts = $(".b-posts");
-		var updatesWidth = $(window).width() - $posts.width();
+		var $vLine = $("#vertical-line");
+		var updatesWidth = $updates.width();
 		if (!Session.get("showUpdates")) {
 			Session.set("showUpdates", true);
 			Tracker.flush();
 			$updates.animate({"left": "0%"}, {queue: false});
 			$updates.animate({"margin-right": "0%"}, {queue: false});
 			$spacers.animate({width: "0%"}, {queue: false});
+			$vLine.fadeIn({queue: false});
+			$vLine.animate({"left": updatesWidth}, {queue: false});
 
 			if (findUpdates(true).count() === 1 ) {
 				$(".new-updates").css("font-size","2em");
@@ -492,6 +506,8 @@ Template.home.events({
 					Session.set("selectedPost", undefined);
 					Session.set("selectedUpdate", undefined);
 					$posts.animate({"opacity": "1"}, {queue: false});
+					Tracker.flush();
+					$('[placeholder]').blur();
 				}});
 			}
 			$updates.animate({"left": "-=" + updatesWidth}, {queue: false, done: function() {
@@ -506,6 +522,8 @@ Template.home.events({
 			}});
 			$updates.animate({"margin-right": "-=" + updatesWidth}, {queue: false});
 			$spacers.animate({width: Math.floor(updatesWidth / 2.0)}, {queue: false});
+			$vLine.fadeOut({queue: false});
+			$vLine.animate({"left": "-=" + updatesWidth}, {queue: false});
 		}
 	},
 	"focus #post-prompt .post-input-textarea": function (event) {
@@ -513,6 +531,10 @@ Template.home.events({
 	},
 	"click #darken": function (event) {
 		hidePostPopup();
+	},
+	"scroll #post-popup .post-input-textarea": function (event) {
+		var originalOffset = Math.floor(parseFloat($("#post-prompt .post-input-textarea").css("background-position").split(" ")[1]));
+		$(event.currentTarget).css("background-position", "100% " + (originalOffset - $(event.currentTarget).scrollTop()) + "px");
 	},
 	"click #submit-post": function (event) {
 		var textarea = $("#post-popup .post-input-textarea");
@@ -529,6 +551,21 @@ Template.home.events({
 		textarea.val("");
 		hidePostPopup();
 		return false;
+	},
+	// Placeholder jQuery implementation, since we can't get it to show up in Firefox.
+	"focus .placeholder": function(event) {
+		var input = $(event.currentTarget);
+		if (input.val() == input.attr('placeholder')) {
+			input.val('');
+		}
+		input.removeClass('placeholder');
+	},
+	"blur .placeholder": function(event) {
+		var input = $(event.currentTarget);
+		if (input.val() == '' || input.val() == input.attr('placeholder')) {
+			input.addClass('placeholder');
+			input.val(input.attr('placeholder'));
+		}
 	},
 });
 
@@ -615,9 +652,11 @@ Template.update.events({
 		}
 
 		var fadeIn = function() {
-			$(".b-posts").animate({"opacity": "1"}, {queue: false});
+			$(".b-posts").animate({"opacity": "1"}, {queue: false, done: function(){
+				Tracker.flush();
+				$('[placeholder]').blur();
+			}});
 		}
-
 
 		// TODO: ideally, if we don't have this post and need to fetch it from the
 		// server, we need to do it while we are animating.
@@ -625,16 +664,20 @@ Template.update.events({
 		// Set selectedPost to a temp stub, so that the update gets highlighted.
 		$(".b-posts").animate({"opacity": "0"}, {queue: false, done: function() {
 			var post = posts.findOne({"_id": postId});
-			if (post != undefined) {
+			if (post !== undefined) {
 				Session.set("selectedPost", post);
 				fadeIn();
 			} else {
 				Meteor.call("getPost", postId, function(err, result) {
-					if (err != undefined) {
+					if (err === undefined) {
+						//  BAD?
+						posts.insert(result);
+						loadComments([result._id]);
+						Session.set("selectedPost", result);
+						fadeIn();
+					} else {
 						console.log("Error getPost: " + err);
 					}
-					Session.set("selectedPost", result);
-					fadeIn();
 				});
 			}
 		}});
@@ -664,17 +707,24 @@ Template.post.helpers({
 		return comments.find({postId: this._id}, {limit: this.commentLimit, sort: {createdAt: -1}}).fetch().reverse();
 	},
 	"imageSource": function () {
-		if (this.lovedBy.indexOf(Meteor.userId()) < 0 && Session.get("canLove") === true) {
-			return "images/heart-2x-cleared.png";
-		} 
-		if (this.lovedBy.indexOf(Meteor.userId()) > 0)	{
+		if (this.lovedBy.indexOf(Meteor.userId()) >= 0)	{
 			return "images/heart-2x.png";
 		}
-		if (this.lovedBy.indexOf(Meteor.userId()) < 0 && Session.get("canLove") === false) { 
-			return "images/heart-2x-grey-2.png";
-		}
+		if (Session.get("canLove")) {
+			return "images/heart-2x-cleared.png";
+		} 
+		return "images/heart-2x-grey.png";
 	}
 });
+
+// Flash the background color of the new comment.
+function flashNewComment(commentId) {
+	Tracker.flush();
+
+	var commentDiv = $("#" + commentId);
+	var originalHeight = commentDiv.css("height");
+	commentDiv.hide().fadeIn({queue: false, duration: 400 * ANIMATION_FACTOR});
+}
 
 Template.post.events({
 	"click .love-button": function () {
@@ -702,6 +752,7 @@ Template.post.events({
 				// BAD?
 				comments.insert(result);
 				posts.update(postId, {$inc: {commentLimit: 1}});
+				flashNewComment(result._id);
 			} else {
 				console.log("addComment error: " + err);
 			}
@@ -712,14 +763,14 @@ Template.post.events({
 	},
 	"focus .comment-input-textarea": function (event) {
 		var $target = $(event.currentTarget);
-		if ($target.val().length <= 0) {
+		if ($target.val().length <= 0 || $target.val() == $target.attr("placeholder")) {
 			$target.autosize({append: ""}).trigger("autosize.resize");
 			$target.next(".comment-link").fadeIn();
 		}
 	},
 	"blur .comment-input-textarea": function (event) {
 		var $target = $(event.currentTarget);
-		if ($target.val().length <= 0) {
+		if ($target.val().length <= 0 || $target.val() == $target.attr("placeholder")) {
 			$target.trigger("autosize.destroy");
 			$target.next(".comment-link").fadeOut();
 		}

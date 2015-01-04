@@ -78,7 +78,7 @@ Meteor.methods({
 			text: text,
 			createdAt: Date.now()
 		};
-		comments.insert(comment);
+		comment._id = comments.insert(comment);
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 
 		post.commenters.forEach(function(commenterId) {
@@ -100,16 +100,15 @@ Meteor.methods({
 	// Create a new post with the given text.
 	// Returns the created post.
 	addPost: function (text) {
-		if (Meteor.isClient) return;
+		if (Meteor.isClient) return null;
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
-		if (getPostsLeft() <= 0) {
+		if (!Meteor.userId()) {
 			throw new Meteor.Error("Can't make any more posts this week.");
 		}
 
 		var post = {
-			_id: new Mongo.ObjectID().toHexString(),
 			userId: Meteor.userId(),
 			text: text,
 			createdAt: Date.now(),
@@ -118,7 +117,7 @@ Meteor.methods({
 			// when someone comments on their post.
 			commenters: [Meteor.userId()]  // list of userIds who have commented on this post
 		};
-		posts.insert(post);
+		post._id = posts.insert(post);
 		return post;
 	},
 	// Check if the given code can be redeemed, and return the whole code object if it can.
@@ -223,10 +222,15 @@ Meteor.methods({
 	// Return post with the given id. Used to fetch the selected post if it's not
 	// already loaded on the client.
 	getPost: function (postId) {
+		if (Meteor.isClient) return null;
 		if (!Meteor.userId()) {
 			throw new Meteor.Error("Not logged in.");
 		}
-		return posts.findOne({"_id": postId});
+		var result = posts.findOne(postId);
+		if (result === undefined) {
+			throw new Meteor.Error("No such post.");
+		}
+		return result;
 	},
 	// Get the text of the post draft.
 	getPostDraftText: function() {
