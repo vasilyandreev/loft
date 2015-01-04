@@ -543,7 +543,7 @@ Template.updates.helpers({
 	},
 	"showOldUpdates": function () {
 		return findUpdates(false).count() > 0;
-	}
+	},
 	"showLoadMoreNewUpdates": function() {
 		return false;
 	},
