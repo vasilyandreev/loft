@@ -127,10 +127,10 @@ Meteor.methods({
 		if(codeObject === undefined){
 			throw new Meteor.Error("This invite code doesn't exist.");
 		}
-		if(codeObject.reedemed){
+		if(codeObject.redeemed){
 			throw new Meteor.Error("Your code has already been used.");
 		}
-		invites.update(codeObject._id, {$set: {"reedemed": true}});
+		invites.update(codeObject._id, {$set: {"redeemed": true}});
 		return codeObject;
 	},
 	// Return the number of all updates.
