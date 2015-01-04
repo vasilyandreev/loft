@@ -459,14 +459,15 @@ Template.home.events({
 		var $spacers = $(".b-posts-spacer");
 		var $posts = $(".b-posts");
 		var $vLine = $("#vertical-line");
-		var updatesWidth = $(window).width() - $posts.width();
+		var updatesWidth = $updates.width();
 		if (!Session.get("showUpdates")) {
 			Session.set("showUpdates", true);
 			Tracker.flush();
 			$updates.animate({"left": "0%"}, {queue: false});
 			$updates.animate({"margin-right": "0%"}, {queue: false});
 			$spacers.animate({width: "0%"}, {queue: false});
-			$vLine.fadeIn({easing: "easeInExpo", queue: false});
+			$vLine.fadeIn({ queue: false});
+			$vLine.animate({"left": updatesWidth}, {queue: false});
 
 			if (findUpdates(true).count() === 1 ) {
 				$(".new-updates").css("font-size","2em");
@@ -505,7 +506,8 @@ Template.home.events({
 			}});
 			$updates.animate({"margin-right": "-=" + updatesWidth}, {queue: false});
 			$spacers.animate({width: Math.floor(updatesWidth / 2.0)}, {queue: false});
-			$vLine.fadeOut({easing: "easeOutExpo", queue: false});
+			$vLine.fadeOut({queue: false});
+			$vLine.animate({"left": "-=" + updatesWidth}, {queue: false});
 		}
 	},
 	"focus #post-prompt .post-input-textarea": function (event) {

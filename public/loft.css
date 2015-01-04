@@ -188,6 +188,10 @@
 	margin-right: 0px;
 }
 
+.load-more-updates {
+	padding: 0.7em 10%;
+}
+
 #vertical-line {
 	display: none;
 	position: fixed;
@@ -195,7 +199,6 @@
 	border-color: rgb(230,230,230);
 	border-width: 1px;
 	height: 100%;
-	left: 25%;
 }
 
 .new-updates {
