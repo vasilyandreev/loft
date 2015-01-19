@@ -18,23 +18,20 @@
 
 #quote-body{
 	top: 40%;
-	width: 25em;
+	width: 100%;
 	position: absolute;
-	text-align: left;
+	text-align: center;
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
 	font-size: 1.5em;
 }
 
-.quote-enter {
-	 margin-top: 3em;
-	 margin-left: 7.9em;
-}
-
-#quote-enter {
+#quote-button {
+	margin-left: 37.5%;
+	margin-right: 62.5%;
 	width: 5em;
-	margin-top: 1.0em;
+	margin-top: 3.0em;
 	text-align: center;
 	font-family: 'Open Sans';
 	font-style: normal;
@@ -49,7 +46,7 @@
 	-moz-border-radius: 6;
 	border-radius: 6px;
 	color: #000000;
-	font-size: 1.5em;
+	font-size: 1em;
 	/*padding: 10px 20px 10px 20px;*/
 	border: solid #000000 2px;
 	text-decoration: none;

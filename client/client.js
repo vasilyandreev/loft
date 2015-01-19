@@ -202,14 +202,17 @@ function goToLoftPage(page) {
 	var obj = {currentPage: page};
 	console.log("Pushing history: " + JSON.stringify(obj));
 	history.pushState(obj, "", window.location.href);
-	Session.set("currentPage", page);
+	Session.set("currentPage", page); 
 }
 
 // Return all user's updates that are new (or not).
 function findUpdates(areNew) {
 	// Filter out updates that are created by this user as a workaround the
 	// Meteor bug where the update flashes for a second when the user comments/loves.
-	return updates.find({$and: [{byUserId: {$ne : Meteor.userId()}}, {new: areNew}]}, {sort: {createdAt: -1}});
+
+	return updates.find({new: areNew}, {sort: {createdAt: -1}});
+
+
 }
 
 // Save the post draft text.
@@ -487,11 +490,11 @@ Template.home.events({
 			$vLine.animate({"left": updatesWidth}, {queue: false});
 
 			if (findUpdates(true).count() === 1 ) {
-				$(".new-updates").css("font-size","2em");
+				$(".new-updates").css("font-size",".95em");
 			} else if (findUpdates(true).count() === 2) {
-				$(".new-updates").css("font-size","1.15em");
+				$(".new-updates").css("font-size",".95em");
 			} else if (findUpdates(true).count() === 3) {
-				$(".new-updates").css("font-size","1.2em");
+				$(".new-updates").css("font-size",".95em");
 			} else if (findUpdates(true).count() > 3) {
 				$(".new-updates").css("font-size",".95em");
 			}
@@ -608,16 +611,39 @@ Template.update.helpers({
 				text = "Welcome to Loft.";
 				break;
 			case UPDATE_TYPE.COMMENT:
-				if (this.postOwnerId == Meteor.userId()) {
-					text = getFullName(this.byUserId) + " commented on your post.";
-				} if (this.byUserId == this.postOwnerId) {
-					text = getFullName(this.byUserId) + " commented on their post.";
-				} else {
-					text = getFullName(this.byUserId) + " also commented on " + getFullName(this.postOwnerId) + "’s post.";
+			// Matching text to the appropriate number of commentators.
+				if (this.byUserIds.length === 1) {
+					if (this.postOwnerId == Meteor.userId()) {
+						text = getFullName(this.byUserIds[0]) + " commented on your post.";
+					}
+					if (this.byUserIds[0] == this.postOwnerId) {
+						text = getFullName(this.byUserIds[0]) + " commented on their post.";
+					}
+					if (this.byUserIds[0] != Meteor.userId() && this.postOwnerId != Meteor.userId() ) {
+						text = getFullName(this.byUserIds[0]) + " also commented on " + getFullName(this.postOwnerId) + "’s post."
+					}
+				} else if (this.byUserIds.length === 2) {
+					if (this.postOwnerId == Meteor.userId() && this.byUserIds.indexOf(Meteor.userId()) === -1) {
+						text = getFullName(this.byUserIds[0]) + " and " + getFullName(this.byUserIds[1]) + " commented on your post."
+					}  else {
+						text = getFullName(this.byUserIds[0]) + " and " + getFullName(this.byUserIds[1]) + " also commented on " + getFullName(this.postOwnerId) + "’s post.";
+					}
+				} else if(this.byUserIds.length > 2) {
+					if (this.postOwnerId == Meteor.userId()) {
+						if( this.byUserIds.length === 3) {
+							text = getFullName(this.byUserIds[0]) + ", " + getFullName(this.byUserIds[1]) + ", and 1 other commented on your post.";
+						} else {
+							text = getFullName(this.byUserIds[0]) + ", " + getFullName(this.byUserIds[1]) + ", and" + String((this.byUserIds.length - 2)) + "others also commented on your post.";
+						}
+					} else if (this.byUserIds.length === 3){
+						text = getFullName(this.byUserIds[0]) + ", " + getFullName(this.byUserIds[1]) + ", and 1 other also commented on " + getFullName(this.postOwnerId) + "’s post.";
+					} else {
+						text = getFullName(this.byUserIds[0]) + ", " + getFullName(this.byUserIds[1]) + ", and " + String((this.byUserIds.length - 2)) + " others also commented on " + getFullName(this.postOwnerId) + "’s post.";
+					}
 				}
 				break;
 			case UPDATE_TYPE.LOVE:
-				text = getFullName(this.byUserId) + " loved your post.";
+				text = getFullName(this.byUserIds[0]) + " loved your post.";
 				break;
 			default:
 				text = "Error: unknown update type.";

@@ -57,8 +57,49 @@ function canLove() {
 	return Meteor.user().profile.lastLoveTime < startOfToday.getTime();
 }
 
+// Inserts an update if it can't merge with one. 
+function insertUpdate(postUserId, postId, recipientId) {
+	console.log ("insertComment was called.");
+	var commentObject = updates.findOne({
+		$and: [
+		{forUserId: recipientId},
+		{new: true},
+		{read: false},
+		{postId: postId},
+		{type: UPDATE_TYPE.COMMENT}
+		]
+	});
+	// Checking if we can merge with an update
+	if (commentObject){ 
+		updates.update(
+			commentObject._id, 
+			{
+				$addToSet: {
+					byUserIds: Meteor.userId(),
+				},
+				$set: {
+					createdAt: Date.now()
+				}
+			});
+		console.log("Update: success"); 
+	}else {
+		updates.insert({
+			type: UPDATE_TYPE.COMMENT,
+			forUserId: recipientId,
+			postId: postId,
+			postOwnerId: postUserId,
+			createdAt: Date.now(),
+			new: true,
+			read: false,
+			byUserIds: [Meteor.userId()],
+		});
+		console.log("Else: success");
+	}
+}
+
 
 Meteor.methods({
+	 insertUpdate: insertUpdate,
 	canLove: canLove,
 	getPostsLeft: getPostsLeft,
 	// Create a new comment for the given post with the given text.
@@ -76,27 +117,25 @@ Meteor.methods({
 			postId: postId,
 			userId: Meteor.userId(),
 			text: text,
-			createdAt: Date.now()
+			createdAt: Date.now(),
+			forUserId: post.userId,
+
 		};
 		comment._id = comments.insert(comment);
 		posts.update(postId, {$addToSet: {commenters: Meteor.userId()}});
 
 		post.commenters.forEach(function(commenterId) {
 			if (commenterId != Meteor.userId()) {
-				updates.insert({
-					type: UPDATE_TYPE.COMMENT,
-					forUserId: commenterId,
-					byUserId: Meteor.userId(),
-					postId: postId,
-					postOwnerId: post.userId,
-					createdAt: Date.now(),
-					new: true,
-					read: false,
-				});
+				insertUpdate(post.userId, postId, commenterId);
 			}
 		});
+			
+			
+		console.log("Before return comment: success")
 		return comment;
-	},
+	 
+},
+
 	// Create a new post with the given text.
 	// Returns the created post.
 	addPost: function (text) {
@@ -179,12 +218,12 @@ Meteor.methods({
 		updates.insert({
 			type: UPDATE_TYPE.LOVE,
 			forUserId: post.userId,
-			byUserId: Meteor.userId(),
 			postId: postId,
 			postOwnerId: post.userId,
 			createdAt: Date.now(),
 			new: true,
 			read: false,
+			byUserIds: [Meteor.userId()],
 		});
 	},
 	// Mark all updates as old.
