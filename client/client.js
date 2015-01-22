@@ -23,12 +23,21 @@ PAGES = {
 	WAY: "way",
 	QUOTE: "quote",
 	INVITE: "invite",
+	FORGOT: "forgotPassword",
 };
 
 // Collections.
 var posts = new Mongo.Collection(null);
 var comments = new Mongo.Collection(null);
 var updates = new Mongo.Collection(null);
+
+Accounts.onResetPasswordLink(function (token, done) {
+	  goToLoftPage(PAGES.FORGOT);
+  Session.set("resetPassword", token);
+  doneCallback = done;
+  preventDefault();
+
+});
 
 // Call init when we open the website and also when we login.
 function init() {
@@ -49,6 +58,10 @@ function init() {
 	Session.set("showRegistration", false);  // True iff we are showing registration section in register.html
 	Session.set("prefillFirstName", "");  // Value to put into the first name textbox when registering
 	Session.set("prefillLastName", "");
+	Session.set("passwordReset", false);
+	Session.set("linkSent", false);
+	Session.set("showResetForm", true);
+	Session.set("resetPassword", false);
 
 	if (!Session.equals("currentPage", PAGES.QUOTE)) {
 		Meteor.call("shouldShowQuote", function(err, result) {
@@ -256,6 +269,66 @@ $(window).load(function() {
 
 init();
 
+//FORGOT
+
+
+Template.forgotPassword.events({
+	"submit #forgot-form": function (event, target) {
+		var email = target.find("#forgot-password-email").value;
+		console.log(email);
+		Accounts.forgotPassword({email: email}, function(err) {
+			if (err === undefined) {
+				console.log(email);
+			} else {
+				console.log("resetting password error" + err )
+			}
+		})
+		Session.set("linkSent", true);
+		Session.set("showResetForm", false)
+		return false;
+	},
+	"submit #login-new-password" : function(event, target) {
+		var email = target.find("#new-password-email").value;
+		var pw = target.find("#new-password-login").value;
+		Accounts.resetPassword(Session.get('resetPassword'), pw, function(err){
+			if (err === undefined){
+				console.log(pw)
+				init();
+				goToLoftPage(PAGES.HOME);
+			}
+			else {
+				console.log("resetting password error" + err )
+			}
+			Session.set('loading', false);
+		});
+		return false; 
+	}
+});
+
+
+
+
+Template.forgotPassword.helpers({
+	resetPassword : function(t) {
+		return Session.get("resetPassword");
+	},
+	loginNewPassword : function (){
+		return Session.get("passwordReset")
+	},
+	forgotPassword: function (){
+		return  (Sesion.get("resetPassword") === false && Session.get("passwordReset") === false)
+	},
+	linkSent: function (){
+		return Session.get("linkSent")
+	},
+	showForm: function (){
+		if(Session.get("resetPassword") === false && Session.get("showResetForm") === true){
+			return Session.get("showResetForm")
+		}else {
+			return false;
+		}
+	}
+});
 
 // WELCOME
 Template.welcome.events({
@@ -847,6 +920,9 @@ Template.login.events({
 		});
 		return false; 
 	},
+	"click #forgot-password" :function (event) {
+		goToLoftPage(PAGES.FORGOT);
+	}
 });
 
 // REGISTER

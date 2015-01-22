@@ -133,7 +133,7 @@
 }
 
 #create-account:hover {
-	background: #fafafa;
+	background: rgb(255,255,255);
 	text-decoration: none;
 }
 

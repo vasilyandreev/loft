@@ -10,6 +10,10 @@ comments = new Mongo.Collection("comments");
 invites = new Mongo.Collection("invites");
 quotes = new Mongo.Collection("quotes");
 
+
+
+
+
 // Returns Date corresponding to the time when "today" started.
 // Note: we define end of a day at 3am Pacific (5am Central).
 getStartOfToday = function() {
@@ -99,7 +103,7 @@ function insertUpdate(postUserId, postId, recipientId) {
 
 
 Meteor.methods({
-	 insertUpdate: insertUpdate,
+	insertUpdate: insertUpdate,
 	canLove: canLove,
 	getPostsLeft: getPostsLeft,
 	// Create a new comment for the given post with the given text.

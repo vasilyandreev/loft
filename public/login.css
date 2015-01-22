@@ -5,6 +5,7 @@
 	height: 50%;
 	top: 15%;
 	position: absolute;
+	list
 }
 
 .login h1 {
@@ -21,9 +22,7 @@
 	margin-right: 3em;
 }
 
-.login li {
-	margin: 1.25em;
-}
+
 
 #login-form{
 	margin: 0 auto;
@@ -31,7 +30,7 @@
 
 #login-email {
 	width: 15em;
-	margin: .5em;
+	margin: 1.25em;
 	font-family: 'Open Sans';
 	font-style: bold;
 	font-weight: 300;
@@ -46,7 +45,7 @@
 
 #login-password {
 	width: 15em;
-	margin: .5em;
+	margin: .5em 0em .3em 0em;
 	font-family: 'Open Sans';
 	font-style: bold;
 	font-weight: 300;
@@ -59,7 +58,7 @@
 	padding-right:10px; 
 }
 
-#login-button {;
+#login-button {
 	width: 5em;
 	margin: 1.0em;
 	text-align: center;
@@ -81,4 +80,16 @@
 	border: solid #000000 2px;
 	text-decoration: none;
 	border: none;
+}
+
+#forgot-password {
+	width: 22.15em;
+	margin: 0em;
+	font-size: .75em;
+	text-align: left;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	background-color: rgb(255,255,255);
+	border-style: none;
 }

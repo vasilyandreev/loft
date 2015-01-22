@@ -39,6 +39,7 @@
 	outline: 0;
 	height: 1.7em;
 	width: 1.7em;
+	border-radius:.25em;
 }
 
 #update-button:hover {
