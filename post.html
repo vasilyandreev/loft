@@ -12,14 +12,20 @@
 			</p>
 		</div>
 
-		<div class = postContent> <p>{{{safeText}}}</p> </div>
+		<div class = postContent> <p>{{#autolink}}{{{safeText}}}{{/autolink}}</p> </div>
 		
 		<div class = commentSection>
 			{{#if showLoadMoreComments}}
 				<a class="load-more-comments standard-link" href="#">LOAD ALL COMMENTS</a>
 			{{/if}}
 			{{#each comments}}
-				{{> comment}}
+				{{#autolink}}{{> comment}}{{/autolink}}
+				<!-- {{#if showCommentInput}}
+				<div class="new-comment"> 
+				<textarea class="comment-input-textarea placeholder" placeholder="What do you think?"></textarea>
+				<a class="comment-link standard-link" href="#">COMMENT</a>
+			</div>
+			{{/if}} -->
 			{{/each}}
 			<div class="new-comment"> 
 				<textarea class="comment-input-textarea placeholder" placeholder="What do you think?"></textarea>

@@ -132,9 +132,7 @@ Meteor.methods({
 			if (commenterId != Meteor.userId()) {
 				insertUpdate(post.userId, postId, commenterId);
 			}
-		});
-			
-			
+		});	
 		console.log("Before return comment: success")
 		return comment;
 	 

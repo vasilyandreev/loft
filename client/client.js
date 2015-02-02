@@ -153,6 +153,7 @@ function loadComments(postIds) {
 		if (err == undefined) {
 			var length = result.length;
 			for (var i = 0; i < length; i++) {
+				//comments is a mongo collection on the client side so mini mongo
 				comments.upsert(result[i]._id, result[i]);
 			}
 			Tracker.flush();
@@ -806,6 +807,7 @@ Template.post.helpers({
 		return this.commentLimit < commentCount;
 	},
 	"comments": function() {
+		// for this post returns all its comments; here we're gonna say that post id and this not a reply to anything
 		return comments.find({postId: this._id}, {limit: this.commentLimit, sort: {createdAt: -1}}).fetch().reverse();
 	},
 	"imageSource": function () {
@@ -816,7 +818,11 @@ Template.post.helpers({
 			return "images/heart-2x-cleared.png";
 		} 
 		return "images/heart-2x-grey.png";
+	},
+	"showCommentInput": function (commentId) {
+		return true;
 	}
+
 });
 
 // Flash the background color of the new comment.
@@ -876,14 +882,21 @@ Template.post.events({
 			$target.trigger("autosize.destroy");
 			$target.next(".comment-link").fadeOut();
 		}
+	},
+	"click .comment": function (event, target, thisId) {
+		console.log(target)
 	}
 });
 
 
 // COMMENT
+// add a new helper called replies which is gonna return (will look similar to what comments does for posts) we will do comments.find and find all 
+// the comments that are in reply to this comment, comments.find(inreplytoid: this._id) will have to sort and do fetch just like comments helper
+//might have to apply the limit -- pay attention to how comments are done for post
 Template.comment.helpers({
 	"safeText": function() {
-		return escapeHtml(this.text);
+		 return escapeHtml(this.text);
+
 	},
 	"name": function() {
 		return getFullName(this.userId);
