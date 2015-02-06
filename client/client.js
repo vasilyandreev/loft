@@ -50,7 +50,7 @@ function init() {
 	Session.set("oldUpdatesCount", 0);  // Number of old updates available on the server
 	Session.set("showingPostPopup", false);  // True iff we are showing the post popup modal
 	Session.set("postDraftText", "");  // Text stored from a drafted post
-	Session.set("selectedPost", undefined);  // Id of the post we have selected on the right
+	Session.set("selectedPostId", undefined);  // Id of the post we have selected on the right
 	Session.set("selectedUpdate", undefined);  // Id of the update we have selected
 	Session.set("currentPage", Meteor.userId() ? PAGES.HOME : PAGES.WELCOME);
 	Session.set("quoteText", "");  // Quote text displayed on the quote page
@@ -383,7 +383,9 @@ Template.home.helpers({
 		return Session.get("noMorePosts");
 	},
 	"selectedPost": function () {
-		return Session.get("selectedPost");
+	return posts.findOne({"_id": Session.get("selectedPostId")});
+
+	//return Session.get("selectedPostId");
 	},
 	"canPost": function() {
 		return Session.get("postsLeft") > 0;
@@ -581,9 +583,9 @@ Template.home.events({
 				}
 			});
 		} else {
-			if (Session.get("selectedPost") !== undefined) {
+			if (Session.get("selectedPostId") !== undefined) {
 				$posts.animate({"opacity": "0"}, {queue: false, done: function() {
-					Session.set("selectedPost", undefined);
+					Session.set("selectedPostId", undefined);
 					Session.set("selectedUpdate", undefined);
 					$posts.animate({"opacity": "1"}, {queue: false});
 					Tracker.flush();
@@ -768,15 +770,17 @@ Template.update.events({
 		$(".b-posts").animate({"opacity": "0"}, {queue: false, done: function() {
 			var post = posts.findOne({"_id": postId});
 			if (post !== undefined) {
-				Session.set("selectedPost", post);
+				Session.set("selectedPostId", post._id);
 				fadeIn();
+				console.log("if 1==undefined" + Session.get("selectedPostId"));
 			} else {
 				Meteor.call("getPost", postId, function(err, result) {
+					console.log("if err==undefined" + Session.get("selectedPostId"));
 					if (err === undefined) {
 						//  BAD?
 						posts.insert(result);
 						loadComments([result._id]);
-						Session.set("selectedPost", result);
+						Session.set("selectedPostId", result._id);
 						fadeIn();
 					} else {
 						console.log("Error getPost: " + err);

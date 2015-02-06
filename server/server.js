@@ -26,4 +26,5 @@ if (Meteor.isServer) {
 		user.readQuoteTime = getStartOfToday().getTime();
 		return user;
 	});
+	Kadira.connect('6GRd5Q4TKcvamZH8Q', '51d0b8b3-ea7b-4a53-a5df-a37f4e640428');
 }
