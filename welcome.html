@@ -6,12 +6,131 @@
 	</div>
 	<div id="body-text">
 		<h1> Loft </h1>
+	<div class  = "main-body-text">	
 		<p>
-			If you crave simplicity, <br>
-			If your thoughts need space to breathe, <br>
-			If you are ready to create, listen, and connect, <br>
-			If you want to reimagine the course of social networks, <br>
+			
+			At Loft, we believe everyone has a genius side. And we tried to create a space where that genius can roam free, a space where you can have meaningful conversations about the things that really matter to you with people you’ve always known and those you've yet to meet.
+
+No Buzzfeed links. No pictures you don’t care about. No noise. 
+
+
+
+Loft is just a beautiful and minimalistic place to be who you really are, to share the things important to you: your goals, your crazy thoughts, your complex life , your relationships, your latest project, how you really feel, the song you think is the most beautiful piece in the world, a  story from your childhood. <br>
+
+On Loft, we’ll love you for who you are, because we’re all just as strange. <br>
+
+So come on already, join us in the Loft.
 		</p>
-		<div class="join"><button id="join-us-button"> Then join us in the Loft </button> <input type ="image" img id ="joinUsImage" image src="images/chevron-right-2x.png"></div>
+		<!-- <p>
+			Doors open 12:00 3/14/15
+			<div class = "not-found"> Your email wasn't found. Please go back and try again. </div>
+		</p> -->
 	</div>
+		<div class="join">
+			<div class = "welcome-login-email-link">
+					<a id="accept-request-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
+						Sign up with e-mail
+					</a>
+					
+				</div>
+
+			<div class = "welcome-login-invite-link">
+					<a id="maybe-later-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
+						Login with invite code
+					</a>
+					
+				</div>
+			<div class = "welcome-email-sign-up">
+				<div class = "welcome-sign-up-div" id ="welcome-sign-up-email-div"> 
+						<div class = "welcome-sign-up-header"> Enter your Loft e-mail  </div>
+					 <textarea class = "welcome-sign-up" id = "welcome-enter-email" placeholder=""></textarea> 
+				</div>
+				<div class = "welcome-sign-up-div"  id ="welcome-sign-up-first-name-div"> 
+					<div class = "welcome-sign-up-header"> First Name </div>
+					<textarea class = "welcome-sign-up" id = "welcome-enter-first-name" placeholder=""></textarea>
+				</div>
+				<div class = "welcome-sign-up-div" id ="welcome-sign-up-last-name-div"> 
+					<div class = "welcome-sign-up-header">  Last Name  </div>
+					<textarea class = "welcome-sign-up" id = "welcome-enter-last-name" placeholder=""></textarea> 
+				</div>
+				<div class = "welcome-sign-up-div"  id ="welcome-sign-up-why-div"> 
+					<div class = "welcome-sign-up-header"> Share a thought, story, something you love, or something you made.  </div>
+					 <textarea class = "welcome-sign-up" id = "welcome-enter-why" placeholder=""></textarea> 
+				</div>
+				<div class = "welcome-sign-up-div"  id ="welcome-sign-up-thanks-div"> 
+					<div class = "welcome-sign-up-header-thanks"> Thank you. <i>We'll send you an email with your invite code shortly.</i> <br> In the mean time, share the good word of Loft:  </div>
+					<div class = "thank-you-text">
+					<p>
+			
+							At Loft, we believe everyone has a genius side. And we tried to create a space where that genius can roam free, a space where you can have meaningful conversations about the things that really matter to you with people you’ve always known and those you've yet to meet.
+
+				No Buzzfeed links. No pictures you don’t care about. No noise. 
+
+
+
+				Loft is just a beautiful and minimalistic place to be who you really are, to share the things important to you: your goals, your crazy thoughts, your complex life , your relationships, your latest project, how you really feel, the song you think is the most beautiful piece in the world, a story from your childhood. <br>
+
+				On Loft, we’ll love you for who you are, because we’re all just as strange.
+
+				
+						</p>
+					</div>
+					<div class = "sharing-icons">
+						<div class = "facebook-share">
+							 <a id="facebook-invite" class="standard-link invite-link" divId = "8" href="on.fb.me/1b8RxVf"> 
+				 			<input type="image" id="fb-xyz" src="/images/FB-f-Logo__blue_72.png">
+							</a>
+						</div>
+						<div class = "twitter-share">
+							<a id="twitter-invite" class="standard-link invite-link" divId = "8" href="bit.ly/1EkM5YZ"> 
+				 			<input type="image" id="twitter-invite-input" src="/images/Twitter_logo_blue_edited_5.png">
+							</a>
+						</div>
+						
+		 			 </div>
+				</div>
+			</div>
+		</div>
+	</div>
+<div class = "enter-invite-code">
+	{{#if showRegistration}}
+		<div class="register">
+			<!-- <h1> Loft</h1> -->
+			<form id="register-form">
+				<ul>
+					<li><label> First name: </label><span><input type="text" id="account-first-name" value="{{prefillFirstName}}" placeholder="" /></span></li>
+					<li><label><span> Last name: </span><input type="text" id="account-last-name" value="{{prefillLastName}}" placeholder="" /></label></li>
+					<li><label><span> E-mail: &nbsp; &nbsp; &nbsp; &nbsp; </span><input type="email" id="account-email" placeholder=""/></label></li>
+					<li><label><span> Password: &nbsp; </span><input type="password" id="account-password" placeholder=""/></label></li>
+					<label> <input type="submit" id="create-account" value="Enter"/></label>
+				</ul> 
+			</form>
+			<p>{{registerError}}</p>
+		</div>
+		<!-- <div id = "footer">
+			<ul>
+				<div class="steps"><p> 2/3 </p> </div>
+			</ul>
+		</div> -->
+	{{else}}
+		<div class="invite">
+			<form id ="invite-form">
+				<ul>
+					<li><label> Please enter your invite code: <br><br> </label><span><input type="text" id="invite-code" placeholder=""/>
+					<script type="text/javascript">
+						document.getElementById('invite-code').focus()
+					</script></span></li>
+					<!-- <label> <input type="submit" id="submit-code" value="Submit"/></label> -->
+				</ul>
+				<p>{{codeErr}}</p>
+			</form>
+		</div>
+		<!-- <div id = "footer">
+		<ul>
+			<div class="steps"><p> 1/3 </p> </div>
+		</ul>
+	</div> -->
+
+	{{/if}}
+</div>
 </template>

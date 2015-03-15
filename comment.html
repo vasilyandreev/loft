@@ -1,6 +1,6 @@
 <template name="comment">
 	<div id="{{_id}}" class="comment"> 
-		<b>{{name}}:</b> {{{safeText}}}
+		<a id = "comment-name-link" class = "standard-link" href ="/{{getFirstName}}_{{getLastName}}"> <b>{{name}}</b></a>: {{{safeText}}}
 	</div>
 	<!-- Add a div called replies with class replies ; inside this div do handlebars #each replies and you output the comment template {{#each comments}}
 				{{> comment}}

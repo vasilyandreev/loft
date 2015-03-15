@@ -16,6 +16,7 @@
 #invite-code {
 	text-align: center;
 	width: 7em;
+	font-family: 'Open Sans';
 }
 
 .invite input:focus{

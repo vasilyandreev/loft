@@ -1,0 +1,54 @@
+<template name="followers">
+	<!-- <div id="{{_id}}" class="followers ">  -->
+		<div class = "followers-navigation">
+	<span id = "followers-navigation">
+		 <a id = "following" class="standard-link" href="#"> FOLLOWERS &nbsp; | </a>
+		  <a id = "discover" class="standard-link" href="#"> &nbsp; DISCOVER </a>
+		</span>
+		<!-- <div class = "search"> <textarea class = "follower-search" placeholder="Find who else is in Loft."></textarea> </div> -->
+	</div>
+	{{#if discover}}
+	<div class ="discovering-users">
+		<div class = "find-others"> Find other interesting people on Loft. </div>
+		<!-- <hr style = "height: 20px" >  -->
+		{{#each findUsers}}
+
+			{{> follower}}
+		{{/each}}
+		<!-- <hr style = "height: 20px" >  -->
+	</div>
+	{{/if}}
+	{{#if showingFollowers}}
+		{{#if requests}}
+		<div class = "follower-requests"> 
+			<div class = "requests-header"> <u> Follower Requests </u> </div>
+		
+		{{#each followerRequests}}
+			{{> followerRequest}}
+		{{/each}}
+		</div>
+		{{/if}}
+	
+		<div class = "current-followers">
+			<div class = "current-followers-header"> <u> Followers </u> </div>
+		{{#if followerCount}}
+		{{#each followers}}
+			{{> followerList}}
+		{{/each}}
+		{{else}}
+			<div class = "current-followers-sub-header">  You don't have any followers (yet). Try inviting your friends and posting in the public Loft. 
+			 </div>
+			{{/if}}
+		</div>
+		
+		{{#if oldRequestsCount}}
+		<div class = "old-follower-requests">
+			<div class = "old-requests-header"> <u> Old Follower Requests </u> </div>
+			{{#each oldRequests}}
+				{{> followerRequest}}
+			{{/each}}
+		</div>
+		{{/if}}
+	{{/if}}
+	<!-- </div> -->
+</template>

@@ -1,0 +1,175 @@
+<template name="userLoft"> <!-- -{{userId}}"> -->
+
+{{#with getUserId}}
+
+<!-- Absolute elements -->
+<!-- Rectangle used to darken the whole screen when composing a post. -->
+
+<div id="darken"></div>
+<div id="vertical-line"></div>
+
+
+
+
+
+<header>
+	<!-- <span id="loft-logo">Loft&nbsp;&nbsp;&nbsp;</span><button id="update-button"> {{newUpdates.count}}</button> -->
+	<button id="loft-logo"><a id = "loft-logo-link" href="/"> Loft </a>
+		{{#if showUpdateButton}}
+		<div id="update-button"> {{newUpdates.count}}</div>
+		{{/if}}
+	</button>
+	<!-- <span id = "profile-info">
+		
+	</span> -->
+	<span id="loft-logout-span">
+		  <a id="loft-settings" class="standard-link" href="#"> 
+				<img src="/images/menu-3x.png">
+				<!-- <img src="/images/Icon-Small-40.png"> -->
+		 </a>
+	 	<li>
+	        <ul class="sub-menu">
+	            <li><a class = "sub-menu-link standard-link" id ="sub-menu-link-edit" href="/profile/edit/{{getId}}"> EDIT </a></li>
+	             <!-- <li><a class = "sub-menu-link" href="#"> SETTINGS </a></li> -->
+	             <li><a class = "sub-menu-link sub-menu-link-invites"  href="/"> INVITES </a></li>
+	            <li><a class = "sub-menu-link" id ="loft-logout" href="#"> LOGOUT </a></li>
+	        </ul>
+
+	    </li>
+	</span>
+{{#if owner}}
+	{{#if following}}
+	<div id = "profile-navigation-header">
+			
+						{{#if requestSent}}
+						<a class = "profile-request-sent" href="#">
+						Request Sent
+					</a>
+					{{else}}
+					<a class = "profile-follow-user" id = "profile-follow-user-{{getOwnerId}}" userid = "{{getOwnerId}}" href="#">
+						Follow {{getFirstName}} &nbsp;   + 
+					</a>
+					<div id = "profile-message-text-area">
+					<textarea  id = "profile-send-user-message-{{getOwnerId}}"  class="profile-message-input-textarea placeholder" placeholder="Optional: Send {{firstName}} a message. People like getting messages."></textarea>
+					<a class = "profile-send-request-link" id = "profile-send-request-link-{{getOwnerId}}" userid = "{{getOwnerId}}" href="#"> SEND REQUEST </a>
+					</div>
+					{{/if}}
+
+		
+		</div>	 
+		{{/if}}
+{{/if}}
+	
+		<!-- <button id="show-loved-posts">
+			<input type="image" src={{imageSource}}>
+		</button>
+		<button id="show-global-posts">
+			<input type="image" src={{globeImageSource}}>
+		</button> -->
+		
+	<!-- </span> -->
+	
+</header>
+<div class = "userAboutMe"> 
+	<!-- there will be a helper like get about me tab & it'll return the session variable of current question if it's about me and about me is empty then we toggle back up question  -->
+			 
+			<div id = "loftOwnerName">{{getFullName}}</div>
+			<div id = "about-me-xyz"> {{aboutMe}}  <!-- Especially Money Power Glory (youtube link) I've been listenong to Lana del Rey. Especially Money Power Glory (youtube linkI've been listenong to Lana del Rey. Especially Money Power Glory (youtube linkI've been listenong to Lana del Rey. Especially Money Power Glory (youtube linI've been listenong to Lana del Rey.  --> </div>
+			<!-- {{#if aboutMeTabIs "thinking"}} -->
+			<div id = "thinking-question" class = "question"  style = "{{#if aboutMe}} display: none {{/if}}" > What have you been thinking about? </div>
+			<div id = "thinking-answer" class = "answer" style = "{{#if aboutMe}} display: none {{/if}}"> {{getThinking}}  </div>
+			<!-- {{/if}} -->
+			
+			
+			<div id = "listening-question" class = "question" hidden > What are you listening to? </div>
+			<div id = "listening-answer" class = "answer" hidden > {{getListeningTo}}  </div>
+			
+
+			
+			<div id = "reading-question" class = "question" hidden > What are you reading? </div>
+			<div id = "reading-answer" class = "answer" hidden > {{getReading}}  </div>
+			
+
+
+			<div id = "working-question" class = "question" hidden > What have you been working on? </div>
+			<div id = "working-answer" class = "answer" hidden > {{getWorking}}  </div>
+				
+			<div id = "more-profile-info"> 
+				<!-- <a id="about-me-link" href="#"> 
+				<img src="/images/person-3x.png">
+		 		</a>  -->
+				<a id="listening-to-link" href="#"> 
+				<img src="/images/headphones-3x.png">
+		 		</a> 
+				<a id="reading-link" class="standard-link" href="#"> 
+				<img src="/images/book-3x.png">
+		 		</a> 
+				<a id="thinking-link" class="standard-link" href="#"> 
+				<img src="/images/question-mark-3x.png">
+		 		</a> 
+		 		<a id="working-link" class="standard-link" href="#"> 
+				<img src="/images/brush-3x.png">
+		 		</a> 
+			 </div>
+			<!--  <div id = "shared-followers">
+			 	SHARED FOLLOWERS: 10
+			 	</div> -->
+
+
+</div>
+
+<div class="b-updates">
+	{{#if showUpdates}}
+		{{> updates}}
+	{{/if}}
+</div>
+<div class ="clearfix">
+</div>
+<div class="b-posts-spacer">&nbsp;</div>
+<div class="b-posts-profile">
+	<!-- {{#if followersSelected}}
+	 	{{>followers}}
+	{{else}}
+		{{#if selectedPost}}
+			{{#with selectedPost}}
+				{{> post}}
+			{{/with}}
+		{{else}} -->
+			<!-- <div>
+				{{#if canPost}}
+					<div id="post-prompt" class="post-prompt-div">
+						<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?">{{postDraftText}}</textarea>
+					</div>
+				{{/if}}
+			</div> -->
+			<!-- <br>
+			{{#if filtered}}
+				{{#if showingLovedPosts}}
+					{{#each lovedPosts}}
+					{{>post}}
+					{{/each}}
+				{{else}}
+					{{#if showingGlobalPosts}}
+						{{#each globalPosts}}
+						{{>post}}
+						{{/each}}
+					{{/if}}
+				{{/if}}
+			{{else}} -->
+				{{#each posts}}
+					{{> post}}
+				{{/each}}
+			<!-- {{/if}}
+			{{#if noMorePosts}}
+				<span id="no-more-posts"></span>
+			{{/if}}
+		{{/if}}
+	{{/if}} -->
+	<!-- 	{{/if}} -->
+	<!-- {{/if}} -->
+</div>
+<div class="b-posts-spacer">&nbsp;</div>
+{{/with}}
+</template>
+
+

@@ -1,0 +1,8 @@
+<template name="message">
+	<div id="{{_id}}" class="message"> 
+		<b>{{name}}:</b> {{{safeText}}}
+	</div>
+	<!-- Add a div called replies with class replies ; inside this div do handlebars #each replies and you output the comment template {{#each comments}}
+				{{> comment}}
+			{{/each}} only thing thats left is to define what replies is so we need to create a helper for comment  -->
+</template>

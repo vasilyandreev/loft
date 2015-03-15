@@ -19,9 +19,9 @@ header {
 	padding: 5px;
 }
 
-.placeholder {
+/*.placeholder {
 	color: #bbb;
-}
+}*/
 
 @media (max-width: 600px) {
 	li {
@@ -37,4 +37,11 @@ header {
 a { 
 	text-decoration: none;
 	color: #000000;
+	outline-style: none;
+	
 }
+
+button {
+	outline-style: none;
+}
+

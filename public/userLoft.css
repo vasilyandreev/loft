@@ -1,0 +1,273 @@
+.userAboutMe {
+	position: relative;
+	/*text-align: center;*/
+	top: 7.5%;
+	display: inline-block;
+/*	text-align: center;*/
+	/*left: 40%;*/
+	/*padding-bottom: 10em;*/
+	left: 25%;
+	width: 50%;
+	right: 25%;
+	height: 90%;
+
+
+}
+
+.yourLoft {
+	font-size: 1.5em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	/*top: 10%;
+	left: 40%;*/
+	text-align: center;
+
+}
+
+/*#listening-to-link {
+	display: inline;
+	margin-right: 1em ;
+}
+
+#reading {
+	display: inline;
+	
+}
+
+#thinking-about {
+	display: inline;
+}
+
+#reading-link{
+	margin-right: 1em ;
+}
+
+#listening-to{
+	margin-right: 1em ;
+}*/
+
+#more-profile-info {
+ /*margin-right: 1em;*/
+ 	position: relative;
+	/*top: 100%;*/
+	 
+	top: 30%;
+	left: 30%;
+
+	/*right: 25%;*/
+}
+
+#more-profile-info a {
+	margin-right: 4em;
+ 	outline: none;
+ 	display: inline;
+}
+
+#about-me-xyz {
+	position: relative;
+	font-size: 1.7em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align: center;
+	
+	/*list-style:none;*/
+	list-style-type: none;
+	margin-bottom: 2em;
+}
+
+#loftOwnerName {
+	font-size: 3em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	/*top: 10%;
+	left: 40%;*/
+	text-align: center;
+	margin-bottom: 1em;
+	list-style-type: none;
+}
+
+.aboutMe {
+	font-size: 1.5em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	top: 30%;
+}
+
+.aboutMeList {
+	/*list-style-type: none;*/
+}
+
+.question {
+	text-decoration: underline;
+	font-size: 1.5em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	/*top: 10%;
+	left: 40%;*/
+	text-align: center;
+	margin-top: 1em;
+	list-style-type: none;
+	/*display: none;*/
+
+}
+
+.answer {
+	/*position: relative;
+	width: 50%;
+	left: 25%;
+	right: 25%;*/
+	font-size: 1.5em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	/*top: 10%;
+	left: 40%;*/
+	text-align: center;
+	margin-top: 2em;
+	list-style-type: none;
+	/*display: none;*/
+	
+
+
+}
+
+
+.b-posts-profile {
+	position: relative;
+	top: 60%;
+	float: right;
+	width: 66%;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+}
+
+
+#shared-followers{
+	margin-top: 3em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align: left;
+
+}
+
+#profile-follow-link p {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 3em;
+	/*border-style: solid;*/
+	border-radius: .25em;
+	padding: .25em;
+}
+
+#profile-follow-link:{
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 3em;
+}
+
+.profile-follow-user{
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-size: .9em;
+	display: inline-block;
+	border-style: solid;
+	border-width: thin;
+	width: 9em;
+	padding: .2em .5em;
+	border-radius: .5em;
+	text-align: center;
+	/*margin-right: 2em;*/
+	margin-top: 1.15em;
+	float: right;
+	margin-right: 3em;
+	outline: none;
+
+	/*vertical-align: baseline;*/
+}
+
+.profile-request-sent {
+	font-family: 'Open Sans';
+	background-color: rgb(125,125,125);
+	color: rgb(255,255,255);
+	font-style: normal;
+	font-weight: 400;
+	font-size: .95em;
+	display: inline-block;
+	border-style: solid;
+	border-width: thin;
+	width: 7em;
+	padding: .2em .5em;
+	border-radius: .5em;
+	text-align: center;
+	margin-right: 2em;
+	margin-top: 1.15em;
+	float: right;
+	/*vertical-align: baseline;*/
+}
+
+
+#profile-navigation-header {
+	display: block;
+	position: relative;
+	/*left: 40%;*/
+	float: right;
+	top: 0%;
+	padding-right: 5em;
+	width: 25em;
+}
+
+
+.profile-message-input-textarea {
+	position: relative;
+	/*left: 40%;*/
+	/*top: 100%;*/
+	width: 100%;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	background-image: linear-gradient(rgb(138,224,255) .1em, transparent .1em);
+	background-position: 0em -0.1em;
+	background-size: 100% 1.5em;
+	background-attachment: local;
+	border: none;
+	outline: 0;
+	line-height: 150%;
+	/*width: 15em;*/
+	height: 1.5em;
+	resize: none;
+	overflow: hidden;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: .9em;
+	display: none;
+}
+
+#profile-message-text-area{
+	top: 90%;
+}
+
+.profile-send-request-link{
+	display: none;
+	font-size: .8em;
+	float: right;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+}
+
+#loft-logo-link{
+	outline: none;
+}

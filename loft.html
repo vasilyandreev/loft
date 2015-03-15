@@ -3,19 +3,184 @@
 <!-- Absolute elements -->
 <!-- Rectangle used to darken the whole screen when composing a post. -->
 
-<div id="darken"></div>
+
 <div id="vertical-line"></div>
+
+
+<div id="darken"></div>
 <div id="post-popup" class="post-popup-div">
+
 	<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?"></textarea>
 	<div class="post-popup-footer">
-		Posts left for this week: {{postsLeft}}
+		<div class = "posts-left"> Posts left for this week: {{postsLeft}} </div>
 		<a id="submit-post" class="standard-link" href="#">SUBMIT</a>
+		<a id="submit-next" class="standard-link" href="#">NEXT</a>
+		<a id="submit-prev" class="standard-link" href="#">PREV</a>
+		<a id="submit-next-2" class="standard-link" href="#"> NEXT </a>
+		<a id="submit-prev-2" class="standard-link" href="#"> PREV </a>
+	</div>
+	<div class = "post-public-question">
+		<div class = "public-question">
+			Do you want your post to be public?
+			<div class = "public-question-sub">
+				Your post will appear in Loft Public Posts, and in the Loft of all of your followers.
+			</div>
+		</div>
+		<div class = "public-yes-and-no">
+			<a id="public-yes" class="standard-link" href="#"> YES </a>
+			<a id="public-no" class="standard-link" href="#"> NO </a>
+		</div>
+		<div class = "invite-question">
+			Can your followers invite friends?
+			<div class = "invite-question-sub">
+				This will allow your friends to invite three people they think will enjoy your post to see this post.
+			</div>
+		</div>
+		<div class = "invite-yes-and-no">
+			<a id="invite-yes" class="standard-link" href="#"> YES </a>
+			<a id="invite-no" class="standard-link" href="#"> NO </a>
+		</div>
+		<div class = "invite-question">
+			Can all your followers see this post?
+			<div class = "invite-question-sub">
+				This will allow your accepted followers (current and future) to see this post.
+			</div>
+		</div>
+		<div class = "invite-yes-and-no">
+			<a id="all-followers-yes" class="standard-link" href="#"> YES </a>
+			<a id="all-followers-no" class="standard-link" href="#"> NO </a>
+		</div>
+	</div>
+	<div class = "post-privacy">
+		<div class= "invited">
+			INVITED
+			<ul>
+				{{#each invitedFollowers}}
+					{{> follower}}
+				{{/each}}
+			</ul>
+		</div>	
+		<div id="post-vertical-line"></div>
+		
+		<div class = "post-followers">
+			FOLLOWERS
+			{{#if followersCount}}
+			
+			<div class = "best-friends">
+				<u> Best Friends </u> <br>
+				<ul>
+
+				{{#each bestFriends}}
+					{{> follower}}
+				{{/each}}
+			</ul>
+		</div>
+		<div class = "new-followers">
+				<u> New Followers </u> <br>
+				<ul>
+
+				{{#each newFollowers}}
+					{{> follower}}
+				{{/each}}
+			</ul>
+		</div>
+			<div class = "all-followers-list">
+			<ul>
+				<u> All Followers </u> <br>
+				{{#each userFollowers}}
+					{{> follower}}
+				{{/each}}
+			</ul>
+		</div>
+		{{else}}
+			<div class ="no-followers-to-show">
+				You don't have any followers yet. Consider making a public post or one for your future followers.
+			</div>
+		{{/if}}
+
+		</div>
+
+		<!-- <div class="post-popup-footer">
+			<a id="submit-post" class="standard-link" href="#">SUBMIT</a>
+			<a id="submit-next" class="standard-link" href="#">NEXT</a>
+
+
+		</div> -->
+	</div>
+	<div class = "post-privacy-settings">
+				<div id = "allow-public" class = "allow-public-2"> 
+						<span class = "allow-left-column"> Make Public: <br> This makes your post public. Anyone looking at Loft's public feed can see it and comment.
+						</span>
+						<span class = "allow-public-toggle">
+							 <a id = "allow-public-yes" class="standard-link" href="#">
+							 	<img src="images/check-2x.png"> 
+							 </a> 
+							 <a id = "allow-public-no" class="standard-link" href="#">
+							 	<img src="images/x-2x.png"> 
+							 </a> 
+						 </span>
+				 </div>
+			 <div id = "allow-invites" class="allow-invites-2"> 
+					<span class = "allow-left-column"> Allow Invites: <br> This allows your friends to invite three of their followers to view your post. 
+					</span>
+					<span class = "allow-invites-toggle-xyz"> 
+							 <a  id = "allow-invites-yes" class="standard-link" href="#"> 
+								 <img src="images/check-2x.png"> 
+							 </a>  
+							 <a id = "allow-invites-no"  class="standard-link" href="#">
+							 	<img src="images/x-2x.png"> 
+							 </a> 
+					</span>
+			</div>
+			  <div id = "allow-featured" class="allow-featured-2"> 
+					<span class = "allow-left-column"> Allow Featured: <br> This allows your friends to invite three of their followers to view your post. 
+					</span>
+					<span class = "allow-featured-toggle"> 
+						 <a  id = "allow-featured-yes"  class="standard-link" href="#"> 
+						 	<img src="images/check-2x.png"> 
+						 </a> 
+						 <a id = "allow-featured-no"  class="standard-link" href="#"> 
+						 	<img src="images/x-2x.png"> 
+						 </a> 
+					</span>
+			  </div>
 	</div>
 </div>
 
+
+
+
+
+
 <header>
-	<span id="loft-logo">Loft&nbsp;&nbsp;&nbsp;</span><button id="update-button">{{newUpdates.count}}</button>
-	<span id="loft-logout-span"><a id="loft-logout" class="standard-link" href="#">LOGOUT</a></span>
+	<!-- <span id="loft-logo">Loft&nbsp;&nbsp;&nbsp;</span><button id="update-button"> {{newUpdates.count}}</button> -->
+	<button id="loft-logo">Loft 
+		{{#if showUpdateButton}}
+		<div id="update-button"> {{newUpdates.count}}</div>
+		{{/if}}
+	</button>
+	<span id="loft-logout-span">
+		 <a id="loft-settings" class="standard-link" href="#"> 
+				<img src="images/menu-3x.png">
+				<!-- <img src="images/plus4.png"> -->
+		 </a>
+	 	<li>
+	        <ul class="sub-menu">
+	            <li><a class = "sub-menu-link" id ="sub-menu-link-profile" href="/{{userId}}"> PROFILE </a></li>
+	            <!-- <li><a class = "sub-menu-link" id = "sub-menu-link-settings" href="/profile/edit/{{getId}}"> SETTINGS </a></li> -->
+	            <li><a class = "sub-menu-link" id ="sub-menu-link-invites" href="#"> INVITES </a></li>
+	            <li><a class = "sub-menu-link" id ="loft-logout" href="#"> LOGOUT </a></li>
+	        </ul>
+	    </li>
+	</span>
+	<span id = "navigation-header">
+		<button id="show-loved-posts">
+			<input type="image" src={{imageSource}}>
+		</button>
+		<button id="show-global-posts">
+			<input type="image" src={{globeImageSource}}>
+		</button>
+	</span>
 </header>
 <div class="b-updates">
 	{{#if showUpdates}}
@@ -23,29 +188,73 @@
 	{{/if}}
 </div>
 <div class="b-posts-spacer">&nbsp;</div>
-<div class="b-posts">
-	{{#if selectedPost}}
-		{{#with selectedPost}}
-			{{> post}}
-		{{/with}}
+
+{{#if followersSelected}}
+<div class="followers-section">
+	
+	 	{{>followers}}
+
+	
+	</div>
 	{{else}}
-		<div>
-			{{#if canPost}}
-				<div id="post-prompt" class="post-prompt-div">
-					<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?">{{postDraftText}}</textarea>
-				</div>
-			{{else}}
-				<p>Ran out of posts for this week.</p>
-			{{/if}}
-		</div>
-		<br>
-		{{#each posts}}
-			{{> post}}
-		{{/each}}
-		{{#if noMorePosts}}
-			<span id="no-more-posts"></span>
+<div class="b-posts">
+	<div class ="b-posts-invite-message" id ="b-posts-invite-message-{{getSelectedPostId}}-{{getUpdateId}}">
+		{{#if inviteMessageExists}}
+		{{inviteSenderName}}: {{getInviteMessage}}
 		{{/if}}
-	{{/if}}
+		<div class = "invite-message-go-to-post" id ="invite-message-go-to-post-{{getSelectedPostId}}-{{getUpdateId}}">
+			<!-- <a class = "message-go-to-link" id ="message-go-to-link-{{getSelectedPostId}}-{{getUpdateId}}" href="#"> GO TO POST </a> -->
+		</div>
+	</div>
+	<!-- {{#if followersSelected}}
+	 	{{>followers}}
+	{{else}} -->
+		{{#if selectedPost}}
+			{{#with selectedPost}}
+				{{> post}}
+			{{/with}}
+		{{else}}
+			<div>
+				{{#if canPost}}
+					<div id="post-prompt" class="post-prompt-div">
+						<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?">{{postDraftText}}</textarea>
+					</div>
+				{{/if}}
+			</div>
+			<br>
+			{{#if filtered}}
+				{{#if showingLovedPosts}}
+					{{#if checkLovedPostsCount}}
+						{{#each lovedPosts}}
+						{{>post}}
+						{{/each}}
+					{{else}}
+					<div id = "no-loved-posts">
+						You haven't loved any posts yet. <br> But once you do, you can find them here and you'll never lose a post you loved.
+					</div>
+					{{/if}}
+
+				{{else}}
+					{{#if showingGlobalPosts}}
+						{{#each globalPosts}}
+						{{>post}}
+						{{/each}}
+					{{/if}}
+				{{/if}}
+			{{else}}
+				{{#each posts}}
+					{{> post}}
+				{{/each}}
+			{{/if}}
+			{{#if noMorePosts}}
+				<span id="no-more-posts"></span>
+			{{/if}}
+		{{/if}}
+	<!-- {{/if}} -->
+		<!-- {{/if}} -->
+	<!-- {{/if}} -->
 </div>
+{{/if}}
+
 <div class="b-posts-spacer">&nbsp;</div>
 </template>

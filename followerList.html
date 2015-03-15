@@ -1,0 +1,47 @@
+<template name="followerList">
+		<div class = "follower-list-follower-name clearfix" userId = "{{getId}}">
+			<div class = "follower-list" >
+
+				<div class = "follower-user-name">
+					<a class = "follower-list-name" id = "follower-list-name-{{getId}}" href= "/{{getFirstName}}_{{getLastName}}"> {{name}} </a> <br>
+				<div class = "follower-list-message"> {{message}} </div>
+				</div>
+				<div class = "follower-about-user" userId = "{{getId}}" id ="follower-about-user-{{getId}}">
+					{{#with getUserIdContext}}
+					<div class = "follow-about-user">
+						<div id = "follower-list-aboutMe-question-{{getId}}" class = "follower-list-aboutMe-question"> About {{name}}: </div>
+						<div id = "follower-list-aboutMe-answer-{{getId}}" class = "follower-list-aboutMe-answer"> {{getAboutMe}}  </div>
+						<div id = "follower-list-listening-question-{{getId}}" class = "follower-list-question"> What are you listening to? </div>
+						<div id = "follower-list-listening-answer-{{getId}}" class = "follower-list-answer"> {{getListeningTo}}  </div>
+						<div id = "follower-list-reading-question-{{getId}}" class = "follower-list-question"> What are you reading? </div>
+						<div id = "follower-list-reading-answer-{{getId}}" class = "follower-list-answer"> {{getReading}}  </div>
+						<div id = "follower-list-thinking-question-{{getId}}" class = "follower-list-question"> What have you been thinking about? </div>
+						<div id = "follower-list-thinking-answer-{{getId}}" class = "follower-list-answer"> {{getThinking}}  </div>
+						<div id = "follower-list-working-question-{{getId}}" class = "follower-list-question"> What have you been working on? </div>
+						<div id = "follower-list-working-answer-{{getId}}" class = "follower-list-answer"> {{getWorking}}  </div>
+					</div>	
+					<div class = "follow-about-user-icons" id ="follow-about-user-icons-{{getId}}">
+						<a id="follower-list-about-me-link-{{getId}}" class = "follower-list-about-me-link" userId = "{{getId}}" href="#"> 
+							<img src="/images/person-2x.png">
+						</a> 
+						<a id="follower-list-listening-to-link-{{getId}}"  class = "follower-list-listening-to-link"  userId = "{{getId}}" href="#"> 
+							<img src="/images/headphones-2x.png">
+						</a> 
+						<a id="follower-list-reading-link-{{getId}}"  class = "follower-list-reading-link"   userId = "{{getId}}" href="#"> 
+							<img src="/images/book-2x.png">
+						</a> 
+						<a id="follower-list-thinking-link-{{getId}}" class = "follower-list-thinking-link"  userId = "{{getId}}" href="#"> 
+							<img src="/images/question-mark-2x.png">
+						</a> 
+						<a id="follower-list-working-link-{{getId}}" class = "follower-list-working-link"  userId = "{{getId}}"  href="#"> 
+							<img src="/images/brush-2x.png">
+						</a> 
+					</div>		
+					{{/with}}
+				</div>
+				
+
+			</div> 
+		</div>
+	
+</template>

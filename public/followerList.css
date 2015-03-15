@@ -1,0 +1,182 @@
+/*.follow-user {
+	position: relative;
+	display: inline-block;
+	left: 50%;
+	background-color: rgb(255,255,255);
+ 	border: none;
+}*/
+
+
+.accept-link {
+/*	height: 10%;*/
+	/*display: inline-block;*/
+	/*display: table-cell;*/
+	float: right;
+	/*width: 50%;*/
+	/*max-width: 50%;*/
+	/*float: right;*/
+	
+	/*position: relative;*/
+	/*padding-top: 5em;*/
+	/*left: 15%;*/
+	/*left: 30%;*/
+	 /*vertical-align: top;*/
+	 /*vertical-align: 50%;*/
+	 display: inline-block;
+	border-style: solid;
+	width: 8em;
+	padding: .5em;
+	border-radius: .5em;
+	text-align: center;
+	left: 25%;
+	right: 25%;
+	max-width: 50%;
+	margin-right: 3em;
+/*	background-color: rgb(150,150,150)*/
+	
+}
+
+.maybe-later-link {
+/*	height: 10%;*/
+	/*display: inline-block;*/
+	/*display: table-cell;*/
+	float: right;
+	/*width: 50%;*/
+	/*max-width: 50%;*/
+	/*float: right;*/
+	
+	/*position: relative;*/
+	/*padding-top: 5em;*/
+	/*left: 15%;*/
+	/*left: 30%;*/
+	 /*vertical-align: top;*/
+	 /*vertical-align: 50%;*/
+	 display: inline-block;
+	border-style: solid;
+	width: 8em;
+	padding: .5em;
+	border-radius: .5em;
+	text-align: center;
+	left: 25%;
+	right: 25%;
+	max-width: 50%;
+	margin-right: 3em;
+	background-color: rgb(200, 200, 200)
+	
+}
+
+.accept-follower-list {
+	
+	display: inline-block;
+	float: right;
+	background-color: rgb(255,255,255);
+ 	border: none;
+ 	display: inline;
+	
+}
+
+.invite-list {
+	margin-right: 0;
+	width: 100%;
+	text-align: center;
+}
+
+.follower-list{
+		/*position: relative;*/
+	/*display: inline;*/
+	width: 30%;
+	float: left;
+	/*max-width: 30%;*/
+	padding-left: 7em;
+	/*float: left;*/
+	/*display: table-cell;*/
+	clear: both; 
+	font-size: 1.2em;
+	
+}
+
+.follower-user-name {
+	position: relative;
+	display: inline;
+}
+
+
+
+
+/* DISCOVER SECTION */
+
+.follower-list-follower-name{
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	/*position: relative;*/
+	margin-left: 20%;
+	width: 80%;
+	/*table-layout: fixed;*/
+	
+}
+
+
+
+.clearfix {
+  overflow: auto;
+}
+
+
+
+
+
+.follower-user-name{
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+}
+
+
+
+.follow-about-user-icons{
+	margin-top: 3em;
+	margin-bottom: 3em;
+	/*visibility: hidden;*/
+}
+
+.follow-about-user-icons a {
+	margin-right: 1em;
+	outline: none;
+	/*visibility: hidden;*/
+	
+}
+
+
+
+
+
+.follower-list-question {
+	display: none;
+	margin-bottom: 1em;
+}
+
+.follower-list-answer {
+	display: none;
+}
+
+.follower-list-aboutMe-question{
+	display: inherit;
+	margin-bottom: 1em;
+}
+
+.follower-list-aboutMe-answer{
+	display: inherit;
+}
+
+.follower-list-message{
+	padding-top: 1em;
+	padding-bottom: 1em;
+	padding-left: 1em;
+}
+
+
+.send-follower-list-link{
+	float: right;
+	display: none;
+}

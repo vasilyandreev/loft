@@ -17,8 +17,8 @@ if (Meteor.isServer) {
 		updates.insert({
 			type: UPDATE_TYPE.ADMIN,
 			forUserId: user._id,
-			byUserIds: ["zkyqxvFBCLnhRPPoN"],
-			postId: "33688fe10f35ff77c9aba9c7",
+			byUserIds: ["vX7ke7bxg6WuEN9L9"],
+			postId: "C8ihxoTF2TKzhZoTy",
 			createdAt: Date.now(),
 			new: true,
 			read: false,
@@ -26,5 +26,4 @@ if (Meteor.isServer) {
 		user.readQuoteTime = getStartOfToday().getTime();
 		return user;
 	});
-	Kadira.connect('6GRd5Q4TKcvamZH8Q', '51d0b8b3-ea7b-4a53-a5df-a37f4e640428');
 }

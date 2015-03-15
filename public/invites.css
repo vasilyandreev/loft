@@ -1,0 +1,81 @@
+.invites {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+}
+
+.invites-header {
+	position: relative;
+	width: 30%;
+	left: 35%;
+	right: 35%;
+	text-align: center;
+}
+
+.invites-main-header {
+	font-size: 2.5em;
+}
+
+.invites-sub-header{
+	font-size: 1em;
+}
+
+.invite-div {
+	position: relative;
+	width: 75%;
+	left: 25%;
+	
+	display: inline-block;
+	padding-top: 3em;
+
+}
+
+/*#fb-xyz {
+	background-color: black;
+}*/
+
+.invite-input-textarea {
+	margin-right: 3em;
+	text-align: center;
+	display: inline-block;
+	background-image: linear-gradient(rgb(255,255,255) .1em, transparent .1em);
+	background-position: 0em -0.1em;
+	background-size: 100% 1.5em;
+	background-attachment: local;
+	border: none;
+	/* border-top-style: dotted;
+    border-right-style: solid;*/
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+   /* border-left-style: solid;*/
+	outline: 0;
+	line-height: 150%;
+	/*width: 100%;*/
+	height: 1.5em;
+	resize: none;
+	overflow: hidden;
+	/*font-size: 1em;*/
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1.5em;
+}
+
+.invite-div a {
+	display: inline-block;
+	padding-top: .5em;
+	padding-bottom: .5em;
+	border-style: solid;
+	border-width: .1em;
+	padding-left: .3em;
+	padding-right: .3em;
+	outline: none;
+	border-radius: .5em;
+
+}
+
+
+

@@ -1,29 +1,64 @@
 <template name="updates">
-<div class="container">
-	<div id="new-updates-div" class="new-updates">
-		{{#each newUpdates}}
+	<div class="container">
+		<div class= "updates-header"> 
+			<span>
+				<div id = "standard-updates" class = "standard-updates"> <input type="image" src="images/home-2x.png"> 
+					<div id = "standard-update-id" class = "message-update-count" style = "{{#unless getUpdatesCount}} display:none {{/unless}}"> {{getUpdatesCount}} </div>
+				</div>
+
+				<div id = "messages-updates" class = "messages-updates" > <input type="image" src="images/envelope-closed-2x.png"> 
+					 <div id = "message-update-id" class = "message-update-count" style= "{{#unless getMessageCount}} display:none {{/unless}}">{{getMessageCount}}</div> 
+				</div> 
+				<!-- <div id = "xyz">  5 </div> -->
+				<div id = "follower-updates"> <input type="image" src="images/people-2x.png"> 
+					 <div id = "followers-update-id" class = "followers-update-count" style= "{{#unless getFollowerUpdatesCount}} display:none {{/unless}}">{{getFollowerUpdatesCount}}
+					 </div> 
+				</div>
+			</span>
+		</div>
+
+		{{#if home}}
+		<div id="new-updates-div" class="new-updates">
+
+			{{#each newUpdates}}
 			{{> update}}
-		{{/each}}
-		{{#if showLoadMoreNewUpdates}}
+			{{/each}}
+			{{#if showLoadMoreNewUpdates}}
 			<div class="load-more-updates">
 				<a href="#" id="load-new-updates" class="standard-link">LOAD MORE</a>
 			</div>
-		{{/if}}
-	</div>
+			{{/if}}
+		</div>
+		
 
-	{{#if showOldUpdates}}
-	<h1>Old Updates</h1> 
-	{{/if}}
-
-	<div class="old-updates">
-		{{#each oldUpdates}}
+		<div class="old-updates">
+			{{#each oldUpdates}}
 			{{> update}}
-		{{/each}}
-		{{#if showLoadMoreOldUpdates}}
+			{{/each}}
+			{{#if showLoadMoreOldUpdates}}
 			<div class="load-more-updates">
 				<a href="#" id="load-old-updates" class="standard-link">LOAD MORE</a>
 			</div>
+			{{/if}}
+			
+		</div>
 		{{/if}}
+			{{#if messages}}
+			<div id="new-message-updates-div" class="new-messages">
+				{{#each newMessages}}
+				{{> update}}
+				{{/each}}
+				{{#if showLoadMoreNewMessages}}
+			<div class="load-more-message-updates">
+				<a href="#" id="load-new-message-updates" class="standard-link">LOAD MORE</a>
+			</div>
+			{{/if}}
+			</div>
+			<div id="old-message-updates-div" class="old-messages">
+				{{#each oldMessages}}
+				{{> update}}
+				{{/each}}
+			</div>
+			{{/if}}
 	</div>
-</div>
 </template>

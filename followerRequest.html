@@ -1,0 +1,63 @@
+<template name="followerRequest">
+		<div class = "request-follower-name clearfix">
+			<div class = "follower-name">
+
+				<div class = "user-name">
+					<a class = "request-name" id = "request-name-{{getId}}" href= "/{{getFirstName}}_{{getLastName}}"> {{name}} </a> <br>
+				<div class = "request-message"> {{message}} </div>
+				</div>
+				<div class = "follower-about-user">
+					{{#with getUserIdContext}}
+					<div class = "follow-about-user">
+						<div id = "request-aboutMe-question-{{getId}}" class = "request-aboutMe-question"> About {{name}}: </div>
+						<div id = "request-aboutMe-answer-{{getId}}" class = "request-aboutMe-answer"> {{getAboutMe}}  </div>
+						<div id = "request-listening-question-{{getId}}" class = "request-question"> What are you listening to? </div>
+						<div id = "request-listening-answer-{{getId}}" class = "request-answer"> {{getListeningTo}}  </div>
+						<div id = "request-reading-question-{{getId}}" class = "request-question"> What are you reading? </div>
+						<div id = "request-reading-answer-{{getId}}" class = "request-answer"> {{getReading}}  </div>
+						<div id = "request-thinking-question-{{getId}}" class = "request-question"> What have you been thinking about? </div>
+						<div id = "request-thinking-answer-{{getId}}" class = "request-answer"> {{getThinking}}  </div>
+						<div id = "request-working-question-{{getId}}" class = "request-question"> What have you been working on? </div>
+						<div id = "request-working-answer-{{getId}}" class = "request-answer"> {{getWorking}}  </div>
+					</div>	
+					<div class = "follow-about-user-icons">
+						<!-- <a id="request-about-me-link-{{getId}}" class = "request-about-me-link" userId = "{{getId}}" href="#"> 
+							<img src="/images/comment-square-2x.png">
+						</a>  -->
+						<a id="request-about-me-link-{{getId}}" class = "request-about-me-link" userId = "{{getId}}" href="#"> 
+							<img src="/images/person-2x.png">
+						</a> 
+						<a id="request-listening-to-link-{{getId}}"  class = "request-listening-to-link"  userId = "{{getId}}" href="#"> 
+							<img src="/images/headphones-2x.png">
+						</a> 
+						<a id="request-reading-link-{{getId}}"  class = "request-reading-link"   userId = "{{getId}}" href="#"> 
+							<img src="/images/book-2x.png">
+						</a> 
+						<a id="request-thinking-link-{{getId}}" class = "request-thinking-link"  userId = "{{getId}}" href="#"> 
+							<img src="/images/question-mark-2x.png">
+						</a> 
+						<a id="request-working-link-{{getId}}" class = "request-working-link"  userId = "{{getId}}"  href="#"> 
+							<img src="/images/brush-2x.png">
+						</a> 
+					</div>		
+					{{/with}}
+				</div>
+				
+
+			</div> 
+			<div class = "maybe-later-link">
+					<a id="maybe-later-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
+						Maybe later.
+					</a>
+					
+				</div>
+			<div class = "accept-link" id="accept-link-{{getUserId}}">
+					<a id="accept-request-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
+						ACCEPT +  
+					</a>
+					
+				</div>
+				
+		</div>
+	
+</template>

@@ -20,28 +20,36 @@
 	overflow: hidden;
 	padding-left: 2em;
 	text-indent: -2em;
-	margin: 1em 0 1em 2em;
+	margin: 1em 0 1em 4em;
 }
 
 
 
 .postHeader {
-	font-family: 'Open Sans';
+	font-size: 1.1em;
 	font-style: bold;
 	font-weight: 600;
 }
 
 .postContent {
 	font-family: 'Open Sans';
-	font-style: bold;
-	font-weight: 400;
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1.2em;
+	/*font-style: bold;
+	font-weight: 400;*/
 	margin-left: 1em;
+	outline:none;
+	width: 100%;
+	
 }
 
 .commentSection {
 	font-family: 'Open Sans';
 	font-style: normal;
+	font-size: 1.1em;
 	font-weight: 300;
+	 
 }
 
 .postHeader	button {
@@ -49,16 +57,22 @@
  	background-color: rgb(255,255,255);
  	border: none;
  	padding-bottom: 0;
+
 }
 
 .lovedBy {
 	display: inline-block;
 	vertical-align: top;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 500;
+	vertical-align: 11%;
+	font-size: 1.1em;
 }
 
 .new-comment {
 	text-align: right;
-	margin-left: 2em;
+	margin-left: 4em;
 	width: 50%;
 	-webkit-transform-style: preserve-3d;
 	   -moz-transform-style: preserve-3d;
@@ -100,4 +114,324 @@ input:focus{
 	font-family: 'Open Sans';
 	font-style: bold;
 	font-weight: 400;
+}
+
+.message-button {
+	/*display: inline-block;
+	position: relative;
+	left: 80%;*/
+	float: right;
+	display: none;
+}
+.invite-button {
+	/*display: inline-block;
+	position: relative;
+	left: 80%;*/
+	float: right;
+	display: none;
+}
+
+.messageSection {
+	display: none;
+}
+
+.new-message {
+	text-align: right;
+	margin-left: 2em;
+	width: 50%;
+	-webkit-transform-style: preserve-3d;
+	   -moz-transform-style: preserve-3d;
+	        transform-style: preserve-3d;
+}
+
+.message-input-textarea {
+	background-image: linear-gradient(rgb(138,224,255) .1em, transparent .1em);
+	background-position: 0em -0.1em;
+	background-size: 100% 1.5em;
+	background-attachment: local;
+	border: none;
+	outline: 0;
+	line-height: 150%;
+	width: 100%;
+	height: 1.5em;
+	resize: none;
+	overflow: hidden;
+	font-size: 1em;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1.1em;
+}
+
+.message-link {
+	display: none;
+}
+
+.edit-button {
+	/*display: inline-block;
+	position: relative;
+	left: 80%;*/
+	float: right;
+	display: none;
+}
+
+.editable {
+	background-color: rgb(200,100,50);
+}
+
+.save-link {
+	float: right;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	right: 15%;
+	display: none;
+	
+	
+}
+
+.exit {
+	float: right;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	right: 15%;
+	vertical-align: 300%;
+	top: 50%;
+	/*display: none; */
+}
+
+.save{
+	/*display: none;*/
+	vertical-align: 300%;
+	top: 50%;
+}
+
+.postMessagesFrom {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	/*text-align: center;*/
+	list-style-type:none;
+	font-size: 1em;
+	position: relative;
+	text-align: left;
+	/*left: 25%;
+	right: 25%;
+	width: 50%;*/
+}
+
+.postMessagesFrom h1 {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align: left;
+	font-size: 1em;
+	padding-left: 2.5%;
+
+}
+
+.postMessagesFrom li {
+	padding-left: 2.5%;
+}
+
+.conversation {
+	display: none;
+}
+
+.message {
+	padding-left: 2em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	overflow: hidden;
+	padding-left: 2em;
+	text-indent: -2em;
+	margin: 1em 0 1em 2em;
+}
+
+.post-link {
+	border:none;
+	outline: 0;
+}
+.post a {
+	outline: 0;
+}
+
+.your-conversation{
+	padding-left: 2em;
+	text-decoration: underline;
+}
+
+.postFooter {
+	font-size: 1.5em;
+	margin-left: 1.6em;
+}
+
+ .invite-popup-div span li {
+ 	list-style-type: none;
+ }
+
+ .invite-list {
+ 	list-style-type: none;
+ }
+
+ .invite-list-search {
+ 	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+ 	width: 100%;
+ 	border-top-style: none;
+ 	border-left-style: none;
+ 	border-right-style: none;
+ 	border-bottom-width: thick;
+ }
+
+ .invite-name {
+ 	margin-left: 4em;
+ 	margin-top: 2em;
+ 	float: left;
+ 	display: inline-block;
+ 	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	width: 30%;
+ }
+
+/*.name{
+	font-size: 1.15em;
+}*/
+
+.autosuggest-hide-fix .follower-input {
+	display: none;
+}
+
+ /*Div for autocomplete jquery-ui dropdown.*/
+.ui-autocomplete {
+	border: 1px solid gray;
+	background-color: white;
+	z-index: 2000; /*// make sure it's on top of bootstrap modals*/
+}
+
+ /*One of the menu items in the autocomplete jquery-ui dropdown.*/
+.ui-menu-item {
+	font-family: "Open Sans", sans-serif;
+}
+
+.ui-menu-item :hover {
+		background-color: #8888ff;
+}
+
+.ui-menu-item :focus {
+		background-color: #8888ff;
+}
+
+.ui-menu-item :active {
+		background-color: #6666aa;
+}
+
+.ui-menu-item.ui-state-focus {
+		background-color: #8888ff
+}
+
+.invite-user-message {
+	display: inline-block;
+	text-align: right;
+	margin-left: 4em;
+	width: 70%;
+	-webkit-transform-style: preserve-3d;
+	   -moz-transform-style: preserve-3d;
+	        transform-style: preserve-3d;
+}
+
+.invite-users-header{
+	margin-top: 1em;
+}
+
+.invite-message-input-textarea {
+	margin-top: 1em;
+	background-image: linear-gradient(rgb(138,224,255) .1em, transparent .1em);
+	background-position: 0em -0.1em;
+	background-size: 100% 1.5em;
+	background-attachment: local;
+	border: none;
+	outline: 0;
+	line-height: 150%;
+	width: 100%;
+	height: 1.5em;
+	resize: none;
+	overflow: hidden;
+	font-size: 1em;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1.1em;
+}
+
+.selected-invite-name {
+	margin-top: 2em;
+	margin-left: 4em;
+ 	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+ 	max-width: 30%;
+ 	border-width: thin;
+ 	display: none;
+	border-style: solid;
+	padding: .5em;
+	border-radius: .5em;
+	text-align: center;
+	background-color: rgb(230,230,230)
+ 
+}
+
+.selected-invite-name a {
+	float: right;
+	padding-right: 1em;
+}
+
+.invite-name-2{
+	margin-top: 5em;
+}
+
+.invite-name-3 {
+	margin-top: 5em;
+}
+
+.selected-invite-name-2{
+	margin-top: 5em;
+}
+
+.selected-invite-name-3 {
+	margin-top: 5em;
+}
+
+.invite-users-popup-footer {
+	position: absolute;
+	bottom: 1.5em;
+	width: 95%;
+	font-family: 'Open Sans';
+	/*font-style: bold;*/
+	font-weight: 300;
+
+
+}
+
+.invite-users-popup-footer a {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1.3em;
+	float: right;
+}
+
+.heart {
+	display: inline;
+	vertical-align: 10%;
 }

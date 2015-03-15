@@ -1,0 +1,41 @@
+
+
+#create-your-loft {
+	list-style-type: none;
+	font-size: 3em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	/*top: 10%;
+	left: 40%;*/
+	text-align: center;
+}
+
+#discover-edit-this-later{
+	list-style-type: none;
+	font-size: 1.5em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	margin-bottom: 3em;
+	text-align: center;
+	/*top: 30%;*/
+}
+
+.sign-up-discover-footer{
+	float: right;
+	font-size: 2em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	margin-bottom: 1.5em;
+	margin-right: 2em;
+}
+
+.sign-up-discover-footer a {
+	outline: none;
+}
+
+.discover-about-user-icons a {
+	outline: none;
+}

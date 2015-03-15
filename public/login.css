@@ -19,13 +19,15 @@
 	list-style: none;
 	border-bottom: none;
 	text-align: center;
-	margin-right: 3em;
+	/*margin-right: 3em;*/
 }
 
 
 
 #login-form{
-	margin: 0 auto;
+	width: 50%;
+	margin-right: 25%;
+	margin-left: 25%;
 }
 
 #login-email {

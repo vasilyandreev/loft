@@ -1,0 +1,177 @@
+#forgot-password-email {
+	width: 15em;
+	margin: .5em;
+	margin-left: 0em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
+	border: 1px solid #848484; 
+	-webkit-border-radius: 30px; 
+	-moz-border-radius: 30px; 
+	border-radius: 30px; 
+	outline:0; 
+	margin-right: 5em;
+	padding-left: .3em;
+	
+}
+
+.forgotPassword{
+	text-align: center;
+	left: 39.5%;
+	width: 20%;
+	height: 50%;
+	top: 35%;
+	position: absolute;
+	
+	
+}
+
+.forgotPassword ul {
+	list-style: none;
+	
+}
+
+.forgotPassword p {
+	text-align: left;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+
+}
+
+#forgot-button {
+	width: 15em;
+	margin: 1.0em 5em 1.0em 0em;
+	text-align: left;
+	padding-left: 4.5em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	background: #ffffff;
+	background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -ms-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -o-linear-gradient(top, #ffffff, #ffffff);
+	background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+	-webkit-border-radius: 6;
+	-moz-border-radius: 6;
+	border-radius: 6px;
+	color: #000000;
+	font-size: 1.25em;
+	border: solid #000000 2px;
+	text-decoration: none;
+	border: none;
+}
+
+#new-password-button {
+	width: 15em;
+	margin: 1.0em 0em 0em 0em;
+	text-align: center;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	background: #ffffff;
+	background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -ms-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -o-linear-gradient(top, #ffffff, #ffffff);
+	background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+	-webkit-border-radius: 6;
+	-moz-border-radius: 6;
+	border-radius: 6px;
+	color: #000000;
+	font-size: 1.25em;
+	border: solid #000000 2px;
+	text-decoration: none;
+	border: none;
+}
+
+#new-password-password {
+	
+	margin: .5em 0em;
+	margin-left: 0em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
+	border: 1px solid #848484; 
+	-webkit-border-radius: 30px; 
+	-moz-border-radius: 30px; 
+	border-radius: 30px; 
+	outline:0; 
+	padding-left: .3em;
+	font-size: 1.0em;
+}
+
+#new-password p {
+	text-align: center;
+}
+
+#new-password-login-button {
+	width: 15em;
+	margin: 1.0em 0em 0em 0em;
+	text-align: center;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	background: #ffffff;
+	background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -ms-linear-gradient(top, #ffffff, #ffffff);
+	background-image: -o-linear-gradient(top, #ffffff, #ffffff);
+	background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+	-webkit-border-radius: 6;
+	-moz-border-radius: 6;
+	border-radius: 6px;
+	color: #000000;
+	font-size: 1.25em;
+	border: solid #000000 2px;
+	text-decoration: none;
+	border: none;
+}
+
+#new-password-login {
+	
+	margin: .5em 0em;
+	margin-left: 0em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
+	border: 1px solid #848484; 
+	-webkit-border-radius: 30px; 
+	-moz-border-radius: 30px; 
+	border-radius: 30px; 
+	outline:0; 
+	padding-left: .3em;
+	font-size: 1.0em;
+}
+
+#login-new-password p {
+	text-align: center;
+
+}
+
+#new-password-email {
+	margin: .5em 0em;
+	margin-left: 0em;
+	font-family: 'Open Sans';
+	font-style: bold;
+	font-weight: 300;
+	border: 1px solid #848484; 
+	-webkit-border-radius: 30px; 
+	-moz-border-radius: 30px; 
+	border-radius: 30px; 
+	outline:0; 
+	padding-left: .3em;
+}
+
+#email-sent {
+	position: absolute;
+	width: 25em;
+	font-size: 2.5em;
+	left:22%;
+	top: 35%;
+	text-align: center;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+}

@@ -1,5 +1,11 @@
+ul{
+	padding-left: 0px;
+}
+
 #loft-logout-span {
 	float: right;
+	padding-top: 1em;
+	/*margin-right: 1em;*/
 }
 
 .standard-link {
@@ -13,9 +19,10 @@
 	outline: none;
 }
 
-#loft-logout {
-	margin-top: 4em;
-	margin-right: 1em;
+#loft-settings {
+	padding-top: 4em;
+	margin-right: 2em;
+	outline: none;
 }
 
 #loft-logo {
@@ -24,22 +31,66 @@
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
-	vertical-align: middle;
+	vertical-align: top;
+	padding-left: .3em;
+	border-style: none;
+	background: white;
+	outline: 0;
 }
 
+
+header #navigation-header{
+	/*position: relative;
+	left: 81.5%;
+	top: 10%;*/
+	float: right;
+	padding-top: 1em;
+
+}
+
+/*header #navigation-header button{
+	margin-left: 1em;
+	margin-right: 1em;
+	background: white;
+	border-style: none;
+	outline: 0;
+
+}*/
+
+#show-loved-posts{
+	margin-left: 1em;
+	margin-right: 0em;
+	background: white;
+	border-style: none;
+	outline: 0;
+
+}
+
+#show-global-posts{
+	margin-right: .5em;
+	background: white;
+	border-style: none;
+	outline: 0;
+}
+
+
 #update-button {
+	text-align: center; 
 	display: inline-block;
-	font-size: 2em;
+	font-size: .3em;
+	/*font-size: .3em;*/
 	color: #000000;
 	background: white;
-	vertical-align: middle;
+	vertical-align: 150%;
 	text-decoration: none;
 	border-style: solid;
-	border-color: rgb(220, 220, 220);
+	border-color: rgb(0,0,0);
+	border-width: thin;
 	outline: 0;
-	height: 1.7em;
-	width: 1.7em;
-	border-radius:.25em;
+	height: 1.2em;
+	width: 1.2em;
+	border-radius:1.2em;
+	font-family: 'Open Sans';
 }
 
 #update-button:hover {
@@ -54,12 +105,67 @@
 	top: 10%;
 	width: 40%;
 	height: 45%;
+	/*height: 80%;*/
 	z-index: 2;
 	background-color: white;
+	overflow: scroll;
+	overflow-x: hidden;
 	padding: 1em;
 	-webkit-transform-style: preserve-3d;
 	   -moz-transform-style: preserve-3d;
 	        transform-style: preserve-3d;
+
+}
+
+.invite-popup-div {
+	position: fixed;
+	visibility: hidden;
+	left: 40%;
+	top: 10%;
+	width: 20%;
+	overflow: auto;
+	/*height: 45%;*/
+	height: 50%;
+	z-index: 2;
+	background-color: white;
+	text-align: center;
+	/*padding: 1em;*/
+	-webkit-transform-style: preserve-3d;
+	   -moz-transform-style: preserve-3d;
+	        transform-style: preserve-3d;
+}
+
+.invite-users-popup-div {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	position: fixed;
+	visibility: hidden;
+	left: 25%;
+	top: 10%;
+	width: 50%;
+	/*height: 45%;*/
+	height: 70%;
+	z-index: 2;
+	background-color: white;
+	text-align: center;
+	/*padding: 1em;*/
+	-webkit-transform-style: preserve-3d;
+	   -moz-transform-style: preserve-3d;
+	        transform-style: preserve-3d;
+}
+
+.invite-popup-div ul {
+	position: relative;
+	top: 10%;
+	/*margin-left: 2.3em;*/
+	text-align: center;
+	margin-right: 0;
+	padding-left: 0;
+}
+
+.invite-list-header {
+	 text-decoration: underline;
 }
 
 .post-popup-footer {
@@ -119,6 +225,29 @@
 #submit-post {
 	float: right;
 	margin: 0 2em;
+	display: none;
+}
+
+#submit-next{
+	float: right;
+	margin: 0 2em 0 0;
+}
+
+#submit-next-2 {
+	float: right;
+	margin: 0 2em;
+	display: none;
+}
+
+#submit-prev{
+	float: left;
+	margin: 0 2em;
+	display: none;
+}
+#submit-prev-2{
+	float: left;
+	margin: 0 2em;
+	display: none;
 }
 
 #darken {
@@ -134,7 +263,7 @@
 
 .b-posts {
 	float: right;
-	width: 65%;
+	width: 66%;
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 400;
@@ -142,13 +271,14 @@
 
 .b-updates {
 	position: relative;
-	left: -25%;
+	left: -20%;
 	float: left;
-	width: 25%;
-	margin-right: -25%;
+	width: 20%;
+	margin-right: -20%;
 }
 
 .b-posts-spacer {
+	display: inline-block;
 	float: right;
 	width: 17%;
 }
@@ -161,8 +291,15 @@
 }
 
 .selected-update {
-	color: rgb(136,252,140);
+	/*color: rgb(136,252,140);*/
 	margin-right: 0px;
+	border-color: rgb(0,0,0);
+	border-width: thin;
+	border-left-style: none;
+	border-right-style: none;
+	border-top-style: solid;
+	border-bottom-style: solid;
+	outline: none;
 }
 
 .b-update {
@@ -193,11 +330,245 @@
 	display: none;
 	position: fixed;
 	border-style: solid;
-	border-color: rgb(230,230,230);
+	border-color: rgb(130,130,130);
 	border-width: 1px;
-	height: 100%;
+	height: 1000em;
 }
 
-.new-updates {
+/*.new-updates {
 	font-size: 2em;
+}*/
+
+.post-privacy {
+	display: none;
+}
+
+.invited {
+	padding: none;
+	width: 50%;
+	text-align: center;
+	float: left;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1em;
+	/*height: 100%;*/
+	/*border-right-style: solid;*/
+}
+
+.post-followers {
+	width: 50%;
+	text-align: center;
+	float: right;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1em;
+}
+
+
+
+#post-vertical-line {
+	height: 100%;
+	left: 50%;
+	position: absolute;
+	top: -1em;
+	border-style: solid;
+	border-color: rgb(130,130,130);
+	border-width: 1px;
+	width: .1px;
+	padding: 0;
+}
+
+.post-privacy-settings {
+	display: none;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+}
+
+.post-privacy-settings li {
+	list-style: none;
+}
+
+
+.allow-left-column {
+	width: 70%;
+	display: inline-block;
+}
+
+
+
+/* DROP DOWN */
+
+#loft-logout-span li {
+	list-style-type: none;
+
+}
+
+#loft-logout-span  {
+	list-style-type: none;
+	
+}
+
+.sub-menu li{
+	padding-top: .5em;
+	padding-bottom: .5em;
+	/*margin-top: .5em;
+	margin-bottom: .5em;*/
+	z-index: -1;
+	background-color: rgb(255,255,255);
+
+	/*border-style: solid;
+    border-width: thin;*/
+    border-color: rgb(0,0,0);
+    padding-left: .5em;
+    padding-right: .5em;
+    border-top-style: none;
+	border-left-style: none;
+	border-right-style: none;
+	border-bottom-style: solid;
+	 border-width: thin;
+	
+}
+
+.sub-menu{
+	/*margin: 0px 0px;*/
+	/*margin-right: 2em;*/
+	position: absolute;
+	display: none;
+	right: 2em;
+	z-index: 1;
+}
+
+.sub-menu li a {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 1em;
+}
+
+.followers-section {
+	height: 100%;
+	width: 100%;
+}
+
+
+/*
+#loft-logout-span li:after {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: -8px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #444;
+}*/
+.post-public-question {
+	margin-top: 40%;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align: center;
+	display: none;
+	outline: none;
+}
+.public-question {
+	font-size: 1.5em;
+}
+
+.public-question-sub {
+	font-size: .75em;
+}
+
+.invite-question {
+	font-size: 1.5em;
+	padding-top: 3.5em;
+	display: none;
+}
+
+.invite-question-sub {
+	font-size: .75em;
+}
+.invite-yes-and-no{
+	padding-top: 2em;
+	margin-left: 30%;
+	margin-right: 30%;
+	font-size: 2em;
+	display: none;
+}
+
+.public-yes-and-no{
+	padding-top: 2em;
+	margin-left: 30%;
+	margin-right: 30%;
+	font-size: 2em;
+}
+
+.public-yes-and-no a {
+	/*display: inline;*/
+	opacity: .25;
+}
+
+.invite-yes-and-no a {
+	/*display: inline;*/
+	opacity: .25;
+}
+
+#public-yes {
+	float: left;
+	outline: none;
+}
+#public-no{
+	float: right;
+	outline: none;
+}
+
+#invite-yes {
+	float: left;
+	outline: none;
+}
+#invite-no{
+	float: right;
+	outline: none;
+}
+
+#all-followers-yes {
+	float: left;
+	outline: none;
+}
+#all-followers-no{
+	float: right;
+	outline: none;
+}
+
+.posts-left {
+	/*vertical-align: bottom;*/
+	display: inline-block;
+}
+
+.b-posts-invite-message{
+	display: none ;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align: left;
+	font-size: 1.3em;
+	margin-top: 3em;
+	padding-bottom: 1em;
+}
+
+#no-loved-posts{
+	margin-top: 3em;
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	text-align: center;
+	font-size: 1.5em;
+}
+
+.no-followers-to-show{
+	margin-top: 50%;
 }

@@ -15,5 +15,91 @@
 	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 300;
-	font-size: 1.1em;
+	font-size: .9em;
 }
+
+.updates-header{
+	padding-left: 6.0em;
+}
+
+#messages-updates{
+	display: inline-block;
+	padding-right: 1em;
+
+}
+
+#standard-updates{
+	display: inline-block;
+	padding-right: 1em;
+}
+
+#follower-updates{
+	display: inline-block;
+	padding-right: 1em;
+
+}
+
+.messages-updates div {
+	text-align: center; 
+	display: inline-block;
+	font-size: .7em;
+	font-weight: 400;
+	color: rgb(255,255,255);
+	background: red;
+	vertical-align: 110%;
+	position: relative;
+	left: -25%;
+	text-decoration: none;
+	border-style: solid;
+	border-color: rgb(255,0,0);
+	border-width: thin;
+	outline: 0;
+	height: 1.2em;
+	width: 1.2em;
+	border-radius:1.2em;
+	font-family: 'Open Sans';
+}
+
+#follower-updates div {
+	text-align: center; 
+	display: inline-block;
+	font-size: .7em;
+	font-weight: 400;
+	color: rgb(255,255,255);
+	background: red;
+	vertical-align: 110%;
+	position: relative;
+	left: -25%;
+	text-decoration: none;
+	border-style: solid;
+	border-color: rgb(255,0,0);
+	border-width: thin;
+	outline: 0;
+	height: 1.2em;
+	width: 1.2em;
+	border-radius:1.2em;
+	font-family: 'Open Sans';
+}
+
+
+.standard-updates div {
+	text-align: center; 
+	display: inline-block;
+	font-size: .7em;
+	font-weight: 400;
+	color: rgb(255,255,255);
+	background-color: rgb(255,73,86);
+	vertical-align: 110%;
+	position: relative;
+	left: -25%;
+	text-decoration: none;
+	border-style: solid;
+	border-color: rgb(255,0,0);
+	border-width: thin;
+	outline: 0;
+	height: 1.2em;
+	width: 1.2em;
+	border-radius:1.2em;
+	font-family: 'Open Sans';
+}
+

@@ -1,0 +1,136 @@
+<template name="follower">
+	<!-- <div id="{{_id}}" class="follower ">  -->
+		{{#if followingSection}}
+		<!-- <div class = "follower-name">
+			
+			<div class = "user-name">
+				{{name}}: <br>
+				{{message}}
+			</div>
+			<div class = "follower-about-user">
+				{{#with getUserIdContext}}
+				<div class = "follow-about-user">
+				<div id = "discover-aboutMe-question-{{getId}}" class = "discover-aboutMe-question"> About {{name}}: </div>
+						<div id = "discover-aboutMe-answer-{{getId}}" class = "discover-aboutMe-answer"> {{getAboutMe}}  </div>
+						<div id = "discover-listening-question-{{getId}}" class = "discover-question"> What are you listening to? </div>
+						<div id = "discover-listening-answer-{{getId}}" class = "discover-answer"> {{getListeningTo}}  </div>
+						<div id = "discover-reading-question-{{getId}}" class = "discover-question"> What are you reading? </div>
+						<div id = "discover-reading-answer-{{getId}}" class = "discover-answer"> {{getReading}}  </div>
+						<div id = "discover-thinking-question-{{getId}}" class = "discover-question"> What have you been thinking about? </div>
+						<div id = "discover-thinking-answer-{{getId}}" class = "discover-answer"> {{getThinking}}  </div>
+						<div id = "discover-working-question-{{getId}}" class = "discover-question"> What have you been working on? </div>
+						<div id = "discover-working-answer-{{getId}}" class = "discover-answer"> {{getWorking}}  </div>
+				</div>	
+				<div class = "follow-about-user-icons">
+						<a id="discover-about-me-link-{{getId}}" class = "discover-about-me-link" userId = "{{getId}}" href="#"> 
+						<img src="/images/person-2x.png">
+				 		</a> 
+						<a id="discover-listening-to-link-{{getId}}"  class = "discover-listening-to-link"  userId = "{{getId}}" href="#"> 
+						<img src="/images/headphones-2x.png">
+				 		</a> 
+						<a id="discover-reading-link-{{getId}}"  class = "discover-reading-link"   userId = "{{getId}}" href="#"> 
+						<img src="/images/book-2x.png">
+				 		</a> 
+						<a id="discover-thinking-link-{{getId}}" class = "discover-thinking-link"  userId = "{{getId}}" href="#"> 
+						<img src="/images/question-mark-2x.png">
+				 		</a> 
+				 		<a id="discover-working-link-{{getId}}" class = "discover-working-link"  userId = "{{getId}}"  href="#"> 
+						<img src="/images/brush-2x.png">
+				 		</a> 
+					</div>		
+					{{/with}}
+				</div>
+				</div> 
+			<div class = "accept-link">
+				<a id="accept-request-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
+					ACCEPT + 
+			 	</a> 
+			</div> -->
+
+			
+		<!-- </span> -->
+		
+		<!-- <div class = "accept-link"> -->
+			
+		
+				<!-- ACCEPT {{name}} -->
+				<!-- <input type="image" id="follow-user-{{_id}}" src="/images/Icon-Small-40.png"> -->
+		<!-- </div> -->
+		{{/if}}
+		{{#if discoverSection}}
+		{{#if requestSent}}
+		<div class = "discover-follower-name clearfix" id = "{{_id}}">
+				<div class = "discover-user-name">
+					<div class = "discover-name">
+						<a class = "name" id = "discover-name-{{_id}}" href= "/{{firstName}}_{{lastName}}"> {{name}} </a>
+					</div><br> 
+					{{#with getUserIdContext}}
+					<div class = "discover-about-user">
+						<div id = "discover-aboutMe-question-{{getId}}" class = "discover-aboutMe-question"> {{name}} </div>
+						<div id = "discover-aboutMe-answer-{{getId}}" class = "discover-aboutMe-answer" style = "{{ifAboutMeExists}}"> {{getAboutMe}}  </div>
+						
+						<div id = "discover-listening-question-{{getId}}" class = "discover-question" hidden> What are you listening to? </div>
+						<div id = "discover-listening-answer-{{getId}}" class = "discover-answer" hidden> {{getListeningTo}}  </div>
+						
+						<div id = "discover-reading-question-{{getId}}" class = "discover-question" hidden> What are you reading? </div>
+						<div id = "discover-reading-answer-{{getId}}" class = "discover-answer" hidden> {{getReading}}  </div>
+						
+						<div id = "discover-thinking-question-{{getId}}" class = "discover-question"  style = "{{#if aboutMe}} display: none {{/if}}"> What have you been thinking about?
+							</div>
+						<div id = "discover-thinking-answer-{{getId}}" class = "discover-answer"  style = "{{#if aboutMe}} display: none {{/if}}"> {{getThinking}}  </div>
+						
+						<div id = "discover-working-question-{{getId}}" class = "discover-question" hidden> What have you been working on? </div>
+						<div id = "discover-working-answer-{{getId}}" class = "discover-answer" hidden> {{getWorking}}  </div>
+						
+					</div>
+					<div class = "discover-about-user-icons" id = "discover-about-user-icons-{{../_id}}">
+						<a id="discover-about-me-link-{{getId}}" class = "discover-about-me-link" userId = "{{getId}}" href="#"> 
+						<img src="/images/person-2x.png">
+				 		</a> 
+						<a id="discover-listening-to-link-{{getId}}"  class = "discover-listening-to-link"  userId = "{{getId}}" href="#"> 
+						<img src="/images/headphones-2x.png">
+				 		</a> 
+						<a id="discover-reading-link-{{getId}}"  class = "discover-reading-link"   userId = "{{getId}}" href="#"> 
+						<img src="/images/book-2x.png">
+				 		</a> 
+						<a id="discover-thinking-link-{{getId}}" class = "discover-thinking-link"  userId = "{{getId}}" href="#"> 
+						<img src="/images/question-mark-2x.png">
+				 		</a> 
+				 		<a id="discover-working-link-{{getId}}" class = "discover-working-link"  userId = "{{getId}}"  href="#"> 
+						<img src="/images/brush-2x.png">
+				 		</a> 
+					</div>
+					{{/with}}
+
+
+
+				
+				</div>
+				<div class = "discover-follow-user">
+					<!-- {{#if requestSent}} -->
+						<a class = "discover-profile-request-sent" id ="discover-profile-request-sent-{{getUserId}}" href="#" style = "display: none">
+							Request Sent
+						</a>
+					<!-- {{else}} -->
+					<a class = "follow-user" id = "follow-user-{{getUserId}}" userId = "{{getUserId}}" href="#">
+						+ {{firstName}} 
+						<!-- <input type="image" id="follow-user-{{_id}}" src="/images/Icon-Small-40.png">  -->
+					</a>
+					<!-- {{/if}} -->
+					<div class ="send-user-follower-request" id = "send-user-follower-request-{{getUserId}}">
+					<textarea  id = "send-user-message-{{getUserId}}"  class="discover-message-input-textarea placeholder" placeholder="Optional: Send {{firstName}} a message. People like getting messages."></textarea>
+					<a class = "send-request-link" id = "send-request-link-{{getUserId}}" userid = "{{getUserId}}" href="#"> SEND REQUEST </a>
+					</div>
+				</div>
+		</div> 
+		{{/if}}
+
+		{{/if}}
+		{{#if privacySection}}
+		<a id="{{userId}}" class="standard-link" href="#">{{listName}}</a> <br>
+		{{/if}}
+		<!-- {{#if inviteList}}
+			<a id="invite" class="invite-list standard-link" href="#">{{listName}}</a>
+		{{/if}}	 -->
+	<!-- </div> -->
+</template>

@@ -1,0 +1,83 @@
+
+<template name = "editProfile">
+	{{#if notOwner}}
+	<div class = "cant-edit"> 
+		Please, login to edit your profile.
+	</div>
+	{{else}}
+	<div class = "exit-edit"> 
+		<a id="edit-profile-exit-link" class="standard-link" href="/{{getFirstName}}_{{getLastName}}"> 
+				X
+		 </a> 
+	</div>
+	<div class = "editCreateAboutMe"> 
+			<ul class ="editAboutmeList">
+			<li id = "edit-create-your-loft">Edit your profile.</li>
+			<li id = "make-it-best"> (make it the best profile in the world) </li>
+			<li id = "edit-user-reading-question"> 
+				<!-- <a id="edit-create-reading-image" class="standard-link" href="#">  -->
+				<img src="/images/book-3x.png">
+		 		<!-- </a>   -->
+		 		 
+		 </li>
+			<!-- <li id = "user-reading-answer">  -->
+			
+			<textarea  id = "edit-user-reading-answer" class="about-input-textarea placeholder" placeholder="What have you been reading?">{{getReading}}</textarea>
+			<!-- </li> -->
+			<li id = "edit-user-listening-question">
+			<!-- <a id="edit-listening-to-link" href="#">  -->
+				<img src="/images/headphones-3x.png">
+		 		<!-- </a>  -->
+		 		 
+		 	</li>
+			<textarea  id = "edit-user-listening-answer" class="about-input-textarea placeholder" placeholder="What have you been listening to?">{{getListening}}</textarea>
+			<li id = "edit-user-thinking-question"> 
+				<!-- <a id="edit-thinking-link" class="standard-link" href="#">  -->
+				<img src="/images/question-mark-3x.png">
+		 		<!-- </a>   -->
+		 		
+		 	</li>
+			<textarea  id = "edit-user-thinking-answer" class="about-input-textarea placeholder" placeholder="What's been on your mind lately?">{{getThinking}}</textarea>
+			<li id = "edit-user-working-question"> 
+				<!-- <a id="edit-working-link" class="standard-link" href="#">  -->
+				<img src="/images/brush-3x.png">
+		 		<!-- </a>  -->
+		 		
+		 	</li>
+
+			<textarea  id = "edit-user-working-answer" class="about-input-textarea placeholder" placeholder="What are you working on?">{{getWorking}}</textarea>
+			<li id = "edit-user-about-me-question"> 
+				<!-- <a id="edit-profile-about-me-link" class="standard-link" href="#">  -->
+				<!-- <img src="images/person-2x.png"> -->
+				<img src="/images/person-3x.png">
+		 		<!-- </a>  -->
+
+			</li>
+			<textarea id = "edit-user-about-me-answer" class="about-input-textarea placeholder" placeholder="What are you about, anyways?">{{getAboutMe}}</textarea>
+		
+			<!-- <li id = "more-profile-info"> 
+				<a id="listening-to-link" href="#"> 
+				<img src="images/headphones-3x.png">
+		 		</a> 
+				<a id="reading-link" class="standard-link" href="#"> 
+				<img src="images/book-3x.png">
+		 		</a> 
+				<a id="thinking-link" class="standard-link" href="#"> 
+				<img src="images/question-mark-3x.png">
+		 		</a> 
+		 		<a id="working-link" class="standard-link" href="#"> 
+				<img src="images/brush-3x.png">
+		 		</a> 
+			 </li>
+
+			<li id = "working-on"> </li> -->
+			<li id="edit-list-profile-next-link">
+				<a id="edit-profile-save-link" class="standard-link" href="#"> 
+				SAVE
+		 		</a> 
+			</li>
+		</ul>
+		</div>
+{{/if}}
+
+</template> 

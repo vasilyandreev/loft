@@ -1,25 +1,179 @@
 <template name="post">
-	<div class="post" id="{{_id}}">
-		<div class = postHeader>
+	<div class="post" id="{{_id}}" post-id="{{_id}}">
+		<div class="postHeader">
 			<p>
-				{{name}}
+				<a class = "name" id = "name-{{_id}}" href= "/{{postOwnerFirstName}}_{{postOwnerLastName}}"> {{name}} </a>
 				<button class="love-button">
-					<div class = "lovedBy">
+					<div class="lovedBy">
 						{{lovedBy.length}}
 					</div>
+					<div class = "heart">
 					<input type="image" src={{imageSource}}>
+					</div>
 				</button>
+				
+				{{#if noMessages}}
+				<button class="message-button" id="message-button-{{_id}}">
+					<div class="open-message" >
+						<input type="image" id="open-message-{{_id}}" src="/images/envelope-closed-2x.png">
+					</div>
+				</button>
+				{{/if}}
+				{{#if owner}}
+				<button class="edit-button" id="edit-button-{{_id}}">
+					<div class="edit">
+						<input type="image" src="images/pencil-2x.png">
+					</div>
+				</button>
+				<div class ="save-link standard-link" id ="save-div-link-{{_id}}">
+					<a class = "save" id="save-link-{{_id}}" href="#"> SAVE &nbsp; |   </a> 
+					<a class="exit" id="exit-link-{{_id}}" href="#"> &nbsp; &nbsp; X </a>
+				</div>	
+				{{else}}
+					{{#if publicPost}}
+					<button class="invite-button" id="invite-button-{{_id}}">
+							<div class="invite-users" >
+								<input type="image" class = "invite-users-input" postId = "{{_id}}" id="invite-users-{{_id}}" src="/images/plus-2x.png">
+							</div>
+						</button>
+					{{else}}
+					{{#if postOwnerFollower}}
+						<button class="invite-button" id="invite-button-{{_id}}">
+							<div class="invite-users" >
+								<input type="image" class = "invite-users-input" postId = "{{_id}}" id="invite-users-{{_id}}" src="/images/plus-2x.png">
+							</div>
+						</button>
+						{{/if}}
+					{{/if}}
+				{{/if}}
+				
 			</p>
 		</div>
+		<div id="invite-users-popup-{{_id}}" class="invite-users-popup-div">
+			<div class = "invite-users-header"> Invite up to three of your followers.  </div>
+			
+			<div class = "invite-name invite-name-1" id = "invite-name-1-{{_id}}" > 
+				<input class = "invite-list-search" id = "invite-list-search-1-{{_id}}" number= "1" placeholder="Invite a homie."> 
+			</div>
+			<div class = "selected-invite-name selected-invite-name-1" id = "selected-invite-name-1-{{_id}}" userId = "">
+				<!-- Penelope Betherford -->
+				<span id = "selected-invite-name-text-1-{{_id}}"></span>
+				<a class ="remove-selected-name"  id ="remove-selected-name-1-{{_id}}" href ="#" number= "1"> X </a> 
+			</div>
+			<div class="invite-user-message"> 
+				<textarea class="invite-message-input-textarea placeholder" id ="invite-message-input-1-{{_id}}" placeholder="Add a message saying why this post made you think of them."></textarea>
+			</div>
+			
+			<div class = "invite-name invite-name-2" id = "invite-name-2-{{_id}}"> 
+				<input class = "invite-list-search" id = "invite-list-search-2-{{_id}}" number = "2" placeholder="Invite a homie."> </div>
+			<div class = "selected-invite-name selected-invite-name-2" id = "selected-invite-name-2-{{_id}}" userId = "">
+				<span id = "selected-invite-name-text-2-{{_id}}"></span>
+				<a class ="remove-selected-name"   id ="remove-selected-name-2-{{_id}}" href ="#" number= "2"> X </a> 
+			</div>
+			<div class="invite-user-message"> 
+				<textarea class="invite-message-input-textarea placeholder" id ="invite-message-input-2-{{_id}}" placeholder="Add a message saying why this post made you think of them."></textarea>
+			</div>
+			
+			<div class = "invite-name invite-name-3" id = "invite-name-3-{{_id}}"> 
+				<input class = "invite-list-search"  id = "invite-list-search-3-{{_id}}" number = "3" placeholder="Invite a homie."> 
+			</div>
+			<div class = "selected-invite-name selected-invite-name-3" id = "selected-invite-name-3-{{_id}}" userId = "">
+				<span id = "selected-invite-name-text-3-{{_id}}"></span>
+				<a class ="remove-selected-name" id ="remove-selected-name-3-{{_id}}" href ="#"  number= "3"> X </a> 
+			</div>
+			<div class="invite-user-message"> 
+				<textarea class="invite-message-input-textarea placeholder" id ="invite-message-input-3-{{_id}}" placeholder="Add a message saying why this post made you think of them."></textarea>
+			</div>
 
-		<div class = postContent> <p>{{#autolink}}{{{safeText}}}{{/autolink}}</p> </div>
-		
-		<div class = commentSection>
-			{{#if showLoadMoreComments}}
+				<div class = "invite-users-popup-footer" id ="invite-users-popup-footer-{{_id}}" >
+					<a class ="invite-users-link" id ="invite-users-link-{{_id}}" href="#"> INVITE </a> 
+				</div>
+			</div>
+			
+			<div id="invite-popup-{{_id}}" class="invite-popup-div">
+				<span class = "invite-list-header"> INVITE LIST </span>
+				{{#if showingPopup}}
+				{{#each invitedFollowers}}
+				<ul> <a class="invite-list standard-link" href="/{{getFirstName}}_{{getLastName}}">{{followerName}}</a> </ul>
+				{{/each}}
+				{{/if}}
+			</div>
+			
+			<div class = "postContent" id="postContent-{{_id}}"> <p>{{#autolink}}{{{safeText}}}{{/autolink}}</p> </div>
+			<div class = "postFooter" id ="postFooter-{{_id}}"> 
+				<a class ="commentCount standard-link" id = "commentCount-{{_id}}" href= "#"> 
+					{{commentCount}} <img src="images/comment-square-2x.png">   &nbsp; &nbsp;  
+				</a>
+				{{#if globalPosts}}
+				{{else}}
+					{{#if publicPost}}
+					<!-- <a class ="invitedCount standard-link" id = "invitedCount-{{_id}}" href= "#"> 
+					<img src="images/globe-2x.png">
+					</a>  -->
+					{{else}}
+				<a class ="invitedCount standard-link" id = "invitedCount-{{_id}}" href= "#"> 
+					{{invitedCount}} <img src="images/people-2x.png">
+				</a> 
+					{{/if}}
+				{{/if}}
+			</div>
+
+
+			<!-- {{#if showComments}} -->
+			<div class = "commentSection" id="commentSection-{{_id}}">
+				{{#if showLoadMoreComments}}
 				<a class="load-more-comments standard-link" href="#">LOAD ALL COMMENTS</a>
-			{{/if}}
-			{{#each comments}}
+				{{/if}}
+				{{#each comments}}
 				{{#autolink}}{{> comment}}{{/autolink}}
+				{{/each}}
+				<div class="new-comment"> 
+					<textarea class="comment-input-textarea placeholder" id ="comment-input-{{_id}}" placeholder="What do you think?">{{getCommentDraftText}}</textarea>
+					<a class="comment-link standard-link" href="#">COMMENT</a>
+				</div>
+
+			</div>
+			<!-- {{/if}} -->
+			<div class = "messageSection" id="messageSection-{{_id}}">
+				{{#if owner}}
+				<div class = "postMessagesFrom" id="postMessagesFrom-{{_id}}">
+					<h1> YOUR CONVERSATIONS: </h1>
+					<li>
+						{{#each messager}}
+						<a href="#" class="messenger-link" id="messenger-{{this.name}}">{{getName}}: {{count}} 	
+							New Messages</a>
+							<br>
+							<div class = "conversation" id="conversation-{{this.name}}">
+								{{#if showLoadMoreOwnerMessages ../_id}}
+								<br>
+								<a class="load-more-messages standard-link" href="#">LOAD ALL MESSAGES</a>
+								{{/if}}
+								{{#each messages ../_id}}
+								{{#autolink}}{{> message}}{{/autolink}}
+								{{/each}}
+								<!-- {{#with uniquePost}} -->
+								<div class="new-message"> 
+									<div class="messages-id" postId = "{{../_id}}" id="messages-{{targetUserId}}" target-user-id="{{targetUserId}}"> </div>
+
+									<textarea class="message-input-textarea placeholder" target-user-id="{{targetUserId}}" id = "message-input-{{targetUserId}}"  placeholder="Send {{ownerFirstName ../_id}} a message.">{{getOwnerDraftText ../_id}}</textarea>
+
+									<a class="message-link standard-link" href="#">SEND</a>
+								</div>
+								<!-- {{/with}} -->
+							</div>
+							{{/each}}
+						</li>
+					</div>
+					{{else}}
+					{{#if showLoadMoreMessages }}
+					<br>
+					<a class="load-more-messages standard-link" href="#">LOAD ALL MESSAGES</a>
+					{{/if}}
+			<!-- {{#if yourConversation}}
+			<div class = "your-conversation"> Your conversation with {{conversationWith}}: </div>
+			{{/if}} -->
+			{{#each nonOwnerMessages}}
+			{{#autolink}}{{> message}}{{/autolink}}
 				<!-- {{#if showCommentInput}}
 				<div class="new-comment"> 
 				<textarea class="comment-input-textarea placeholder" placeholder="What do you think?"></textarea>
@@ -27,10 +181,12 @@
 			</div>
 			{{/if}} -->
 			{{/each}}
-			<div class="new-comment"> 
-				<textarea class="comment-input-textarea placeholder" placeholder="What do you think?"></textarea>
-				<a class="comment-link standard-link" href="#">COMMENT</a>
+			<div class="new-message"> 
+				<div class="messages-id" id ="messages-{{currentUser}}" target-user-id="{{currentUser}}"> </div>
+				<textarea class="message-input-textarea placeholder"   id = "message-input-{{_id}}" placeholder="Send {{firstName}} a message.">{{getMessageDraftText}}</textarea>
+				<a class="message-link standard-link" href="#">SEND</a>
 			</div>
+			{{/if}}
 		</div>
 	</div>
 </template>

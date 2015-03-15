@@ -1,0 +1,25 @@
+<template name="inviteSearch">
+	<div id="{{_id}}" class="inviteSearch"> 
+		<div class="invite-users-search"> 
+				{{> esAutosuggest index="followers" placeholder="Find a follower" renderSuggestion=suggestion reactive=false   class="follower-input"}}
+
+    			<!-- <ul>
+			        {{#esEach index="followers"}}
+			            <li> Name of the user: {{followerName}} </li>
+			        {{/esEach}}
+			    </ul> -->
+
+			    <!-- {{> esLoadMoreButton index="followers"}} -->
+
+			    {{#ifEsHasNoResults index="followers"}}
+			        <div class="no-results">No results found!</div>
+			    {{/ifEsHasNoResults}}
+
+			    {{#ifEsIsSearching index="followers"}}
+			            <div>Loading...</div>
+			    {{/ifEsIsSearching}}
+			    {{findValue}}
+			</div>
+
+		</div>
+</template>
