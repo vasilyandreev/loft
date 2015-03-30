@@ -271,3 +271,52 @@
 #loft-logo-link{
 	outline: none;
 }
+
+
+@media only screen and (max-width: 767px) {
+	#more-profile-info{
+		left: auto;
+	}
+	.userAboutMe{
+		left: 5%;
+		width: 90%;
+	}
+	.question{
+		font-size: 1.25em;
+	}
+	#loftOwnerName{
+		font-size: 2em;
+	}
+	.b-posts-profile{
+		float: none;
+		width: 80%;
+		font-size: 1em;
+		max-width: 100%;
+	}
+	#profile-navigation-header{
+		margin-right: 0em;
+		top: 35%;
+		width: 80%;
+		left: 10%;
+		right: 10%;
+		padding-right: 0em;
+
+		
+		float: none;
+	}
+	.profile-follow-user{
+		padding-top: .7em;
+		padding-bottom: .7em;
+		float: none;
+		width: 100%;
+		font-size: 1em;
+	} 
+	.profile-request-sent{
+		padding-top: .7em;
+		padding-bottom: .7em;
+		float: none;
+		width: 100%;
+		font-size: 1em;
+	}
+
+}

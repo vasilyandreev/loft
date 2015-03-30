@@ -248,3 +248,15 @@
 	font-weight: 300;
 	padding-bottom: 1em;
 }
+
+@media only screen and (max-width: 767px) {
+	.editCreateAboutMe{
+		width: 90%;
+		left: 5%;
+		right: 5%;
+	}
+	.exit-edit{
+		left: 90%;
+	}
+}
+

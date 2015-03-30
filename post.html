@@ -5,7 +5,9 @@
 				<a class = "name" id = "name-{{_id}}" href= "/{{postOwnerFirstName}}_{{postOwnerLastName}}"> {{name}} </a>
 				<button class="love-button">
 					<div class="lovedBy">
+						{{#if lovedByLength}}
 						{{lovedBy.length}}
+						{{/if}}
 					</div>
 					<div class = "heart">
 					<input type="image" src={{imageSource}}>

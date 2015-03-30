@@ -171,3 +171,11 @@
 	text-align: center;
 	outline: none;
 }
+
+
+@media only screen and (max-width: 767px) {
+	.invite {
+	width: 90%;
+	left: 5%;
+}
+}

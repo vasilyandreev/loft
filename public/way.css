@@ -46,3 +46,19 @@
 	border-width: 0 0 0;
 	border-style: solid;
 }
+
+@media only screen and (max-width: 767px) {
+	.way-body{
+		width: 90%;
+		left: 5%;
+		top: 5%;
+	}
+	.way-body h1 {
+		font-size: 1em;
+	}
+	#way-button{
+		height: inherit;
+	}
+
+
+}

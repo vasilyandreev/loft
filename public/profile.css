@@ -255,3 +255,18 @@
 	width: 100%;
 	text-align: center;
 }
+
+
+@media only screen and (max-width: 767px) {
+	.createAboutMe{
+		width: 90%;
+		left: 5%;
+	}
+	#create-your-loft{
+		font-size: 2em
+	}
+	#edit-this-later {
+		font-size: 1em
+	}
+
+}

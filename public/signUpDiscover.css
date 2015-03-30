@@ -39,3 +39,48 @@
 .discover-about-user-icons a {
 	outline: none;
 }
+
+@media only screen and (max-width: 767px) {
+	#create-your-loft{
+		font-size: 2em;
+	} 
+	#discover-edit-this-later{
+		font-size: 1em;
+	}
+	.discover-user-name{
+		padding: inherit;
+	}
+	.discover-follower-name{
+		width: 90%;
+		padding-left: 5%;
+		margin-left: 0px;
+		margin-right: 0px;
+		padding-right: 5%;
+		border-top-style: solid;
+		border-bottom-style: solid;
+		border-top-width: thin;
+		border-bottom-width: thin;
+		padding-top: 1em;
+
+	}
+	.discover-about-user-icons{
+		display: none;
+	}
+	.discover-follow-user{
+		/*width: inherit;*/
+		padding-right: none;
+		width: 50%;
+		/*margin-top: 10%*/
+		vertical-align: middle;
+	}
+	.sign-up-discover-footer{
+		margin-bottom: inherit; 
+		margin-right: 1.5em;
+	}
+	/*.discover-profile-request-sent{
+		width: 7em;
+		left: 0%;
+		right: 0%;
+	}*/
+
+}

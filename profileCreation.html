@@ -2,7 +2,11 @@
 	<div class = "createAboutMe"> 
 			<ul class ="aboutmeList">
 			<li id = "create-your-loft">Create your Loft.</li>
+			{{#if finishingProfileCreation}}
+			<li id = "edit-this-later"> Finish filling out your Loft profile so people know what you're about. <br> (you can edit it later) </li>
+			{{else}}
 			<li id = "edit-this-later"> Fill out your Loft profile so people know what you're about. <br> (you can edit it later) </li>
+			{{/if}}
 			<li id = "user-reading-question"> 
 				<!-- <a id="create-reading-image" class="standard-link" href="#">  -->
 				<img src="images/book-3x.png">
@@ -11,7 +15,7 @@
 		 </li>
 			<!-- <li id = "user-reading-answer">  -->
 			
-			<textarea  id = "user-reading-answer" class="about-input-textarea placeholder" placeholder="What’s the last thing you read and thought was awesome?"></textarea>
+			<textarea  id = "user-reading-answer" class="about-input-textarea placeholder" placeholder="What’s the last thing you read and thought was awesome?">{{getProfileReadingDraftText}}</textarea>
 			<!-- </li> -->
 			<li id = "user-listening-question">
 			<!-- <a id="listening-to-link" href="#">  -->
@@ -19,14 +23,14 @@
 		 		<!-- </a>  -->
 		 		 
 		 	</li>
-			<textarea  id = "user-listening-answer" class="about-input-textarea placeholder" placeholder="Who have you been listening to and why are they the best musician in the world?"></textarea>
+			<textarea  id = "user-listening-answer" class="about-input-textarea placeholder" placeholder="Who have you been listening to and why are they the best musician in the world?">{{getProfileListeningDraftText}}</textarea>
 			<li id = "user-thinking-question"> 
 				<!-- <a id="thinking-link" class="standard-link" href="#">  -->
 				<img src="images/question-mark-3x.png">
 		 		<!-- </a>   -->
 		 		
 		 	</li>
-			<textarea  id = "user-thinking-answer" class="about-input-textarea placeholder" placeholder="What’s been on your mind lately?"></textarea>
+			<textarea  id = "user-thinking-answer" class="about-input-textarea placeholder" placeholder="What’s been on your mind lately?">{{getProfileThinkingDraftText}}</textarea>
 			<li id = "user-working-question"> 
 				<!-- <a id="working-link" class="standard-link" href="#">  -->
 				<img src="images/brush-3x.png">
@@ -34,14 +38,14 @@
 		 		
 		 	</li>
 
-			<textarea  id = "user-working-answer" class="about-input-textarea placeholder" placeholder="What’s something cool you’ve been working on?"></textarea>
+			<textarea  id = "user-working-answer" class="about-input-textarea placeholder" placeholder="What’s something cool you’ve been working on?">{{getProfileWorkingDraftText}}</textarea>
 			<li id = "user-about-me-question"> 
 				<!-- <a id="profile-about-me-link" class="standard-link" href="#">  -->
 				<img src="images/person-3x.png">
 		 		<!-- </a>  -->
 
 			</li>
-			<textarea id = "user-about-me-answer" class="about-input-textarea placeholder" placeholder="What else should people know about you?"></textarea>
+			<textarea id = "user-about-me-answer" class="about-input-textarea placeholder" placeholder="What else should people know about you?">{{getProfileAboutMeDraftText}}</textarea>
 		
 			<!-- <li id = "more-profile-info"> 
 				<a id="listening-to-link" href="#"> 

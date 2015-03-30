@@ -5,11 +5,58 @@
 		<form id="login-form" action="action">
 			<div>
 			<ul>
-				<li><input type="email" id="login-email" placeholder="email"/></li>
-				<li><input type="password" id="login-password" placeholder="password"/></li>
-				<li> <input type ="button" id="forgot-password" value = "Forgot password?"/>  </li>
+				{{#if mobile}}
+				<li> Email <br>
+					<input type="email" id="login-email"/>
+				</li>
+				<li> Password <br>
+ 					<input type="password" id="login-password"/>
+ 				</li>
+ 				{{else}}
+				<li> 
+					<input type="email" id="login-email" placeholder="email"/>
+				</li>
+				
+				<li> 
+ 					<input type="password" id="login-password" placeholder="password"/>
+ 				</li>
+ 				{{/if}}
+				<li> 
+					<input type ="button" id="forgot-password" value = "Forgot password?"/>  </li>
 				<input type="submit" id="login-button" value="Sign in" />
 			</ul>
+
+			<!-- <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+				</fb:login-button>
+
+				<div id="status">
+				</div>
+				<div
+  class="fb-like"
+  data-share="true"
+  data-width="450"
+  data-show-faces="true">
+</div> --> <!-- <div class="navbar-inner">
+            <a href="/" class="brand">Facebook</a>
+            <ul class="nav pull-right">
+                <li>
+                    {{> loginButtons}}
+                </li>
+            </ul>
+        </div> 
+         {{#if currentUser}}
+	        {{currentUser.services.facebook.name}} -
+	        {{currentUser.services.facebook.gender}}
+	        <button id="logout">Logout</button>
+	    {{else}}
+	        <button id="facebook-login" class="btn btn-default"> Login with Facebook</button>
+	    {{/if}} -->
+	   <!--  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button> -->
+<!-- <div class="fb-login-button" data-max-rows="1" data-size="small" data-show-faces="false" data-auto-logout-link="false">
+
+</div> -->
+
 			</div>
 		</form> 
 		<p>{{loginError}}</p>

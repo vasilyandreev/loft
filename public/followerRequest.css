@@ -187,3 +187,29 @@
 	float: right;
 	display: none;
 }
+
+@media only screen and (max-width: 767px) {
+
+	.maybe-later-link{
+		left: 0px;
+		right: 0px;
+		float: left;
+	}
+	.accept-link{
+		left: 0px;
+		right: 0px;
+		float: right;
+	}
+	.follower-name{
+		width: 100%;
+		padding-left: 0em;	
+	}
+	.request-follower-name{
+		width: 90%;
+		padding-left: 5%;
+		padding-right: 5%;
+		margin-right: 0px;
+		margin-left: 0px;
+
+	}
+}

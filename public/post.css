@@ -435,3 +435,48 @@ input:focus{
 	display: inline;
 	vertical-align: 10%;
 }
+
+@media only screen and (max-width: 767px) {
+	.postContent{
+		margin-right: 1em;
+		font-size: 1em;
+		word-wrap: break-word;
+
+	}
+	.commentSection{
+		display: none;
+		font-size: 1.25em;
+	}
+	.comment {
+		font-size: .85em;
+		margin-left: 2.5em;
+
+	}
+	.new-comment{
+		width: 75%;
+		margin-left: 2.5em;
+		font-size: .8em;
+	}
+	.comment-input-textarea{
+		font-size: 1em;
+	}
+	.comment-link{
+		font-size: .75em
+	}
+	.post p {
+
+	}
+	.message-input-textarea{
+		font-size: 1em;
+	}
+	.new-message{
+		width: 80%;
+	}
+	.edit-button {
+	/*display: inline-block;
+	position: relative;
+	left: 80%;*/
+	float: right;
+	display: inherit;
+	}
+	}

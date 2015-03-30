@@ -2,12 +2,26 @@
 	<div class="quote">
 		<div id="quote-header">
 			<p> Welcome home, {{firstName}}. </p>
-		</div>
-		<div id="quote-body">
-			<p>{{{quoteText}}}</p>
-			<div id="quote-enter">
-				<button id="quote-button"> Enter </button>
+			<div id = "quote-sub-header">
+				<div id = "quote-sub-header-1"> Take moment to start the day right and reflect.  </div> <br> <br>
+				Write down how you're feeling, something you want to do today, or something you're excited about.  
+				This is just for you unless you want to share it.
+
 			</div>
 		</div>
+		<div id="quote-body">
+			<!-- <p>{{{quoteText}}}</p> -->
+			<div class="post-draft-area"> 
+					<textarea class="post-draft-textarea placeholder" id ="post-draft-{{_id}}" placeholder=""></textarea>
+					<a class="save-draft-link standard-link" id = "save-draft-original" href="#"> SAVE DRAFT</a>
+					<a class="save-draft-link standard-link" id = "save-draft-sucess" href="#"> SAVED</a>
+				</div>
+			
+		</div>
+		<div id="quote-enter">
+				<button id="quote-button"> ENTER </button>
+			</div>
 	</div>
 </template>
+
+

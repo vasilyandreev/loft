@@ -107,6 +107,7 @@
 				
 				</div>
 				<div class = "discover-follow-user">
+						<!-- {{#with getUserIdContext}} -->
 					<!-- {{#if requestSent}} -->
 						<a class = "discover-profile-request-sent" id ="discover-profile-request-sent-{{getUserId}}" href="#" style = "display: none">
 							Request Sent
@@ -121,6 +122,7 @@
 					<textarea  id = "send-user-message-{{getUserId}}"  class="discover-message-input-textarea placeholder" placeholder="Optional: Send {{firstName}} a message. People like getting messages."></textarea>
 					<a class = "send-request-link" id = "send-request-link-{{getUserId}}" userid = "{{getUserId}}" href="#"> SEND REQUEST </a>
 					</div>
+					<!-- {{/with}} -->
 				</div>
 		</div> 
 		{{/if}}

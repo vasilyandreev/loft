@@ -197,3 +197,19 @@
 	/*display: none;*/
 
 }
+
+@media only screen and (max-width: 767px) {
+	.discover-follow-user {
+
+		/*width: inherit;*/
+		padding-right: inherit;
+		width: 50%;
+		vertical-align: middle;
+	}
+	.discover-profile-request-sent{
+		width: 7em;
+		left: 0%;
+		right: 0%;
+		max-width: none;
+	}
+}

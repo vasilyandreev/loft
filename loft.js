@@ -16,7 +16,8 @@ comments = new Mongo.Collection("comments");
 invites = new Mongo.Collection("invites");
 quotes = new Mongo.Collection("quotes");
 messages = new Mongo.Collection("messages");
-commentDrafts = new Mongo.Collection("commentDrafts")
+commentDrafts = new Mongo.Collection("commentDrafts");
+profileDrafts = new Mongo.Collection("profileDrafts");
 followers = new Mongo.Collection("followers")
 usersInfo = new Mongo.Collection("usersInfo")
 loftAlphaUsers = new Mongo.Collection("loftAlphaUsers")
@@ -419,6 +420,60 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 		post._id = posts.insert(post);
 		return post;
 	},
+	addAdminPost: function (text){
+		
+		console.log("in addPost")		
+		if (Meteor.isClient) return null;
+		if (!Meteor.userId()) {
+			throw new Meteor.Error("Not logged in.");
+		}
+		if (!Meteor.userId()) {
+			throw new Meteor.Error("Can't make any more posts this week.");
+		}
+
+
+
+		
+
+		//	Adding all current followers to see the post 
+		
+			// var invitedUsers = followers.find({ownerId: Meteor.userId()}).fetch()
+			
+			// var invitedIds = findInvitedIds(invitedUsers, length)
+			var users = Meteor.users.find({}).fetch()
+			// var email = users.emails[0].address
+			var length = users.length
+			// console.log("email" + email)
+			console.log(users)
+			var invitedIds = []
+			for (var i = 0; i < length; i++) {
+				console.log("CONSOLE LOGGING USER")
+				console.log(users[i])
+				invitedIds.push(users[i]._id) 
+			}
+		
+			var post = {
+			userId: Meteor.userId(),
+			text: text,
+			createdAt: Date.now(),
+			lovedBy: [],  // list of userIds who have loved this post
+			// Immediately add the post owner to commenters, so they get a notification
+			// when someone comments on their post.
+			commenters: [Meteor.userId()],  // list of userIds who have commented on this post
+			messagesFrom:[],
+			invited: invitedIds,
+			canInvite: true,
+			isPublic: true,
+			allowAllFollowers: true
+		};
+		
+
+		
+
+		post._id = posts.insert(post);
+		return post;
+	},
+
 	addToWaitList: function (email, firstName, lastName, why){
 		waitList.insert({
 			email: email,
@@ -538,7 +593,12 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 		if(codeObject.redeemed){
 			throw new Meteor.Error("Your code has already been used.");
 		}
-		invites.update(codeObject._id, {$set: {"redeemed": true}});
+		// FIX THIS 
+		if(code === "YCOMB"){
+				invites.update(codeObject._id, {$set: {"redeemed": false }});
+		} else {
+		invites.update(codeObject._id, {$set: {"redeemed": true }});
+		}
 		return codeObject;
 	},
 	// Return the number of all updates.
@@ -561,6 +621,10 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 		{type: "message"}
 		],
 	}).count(); 
+	},
+	createAccountWithFacebook: function (options){
+		if (Meteor.isClient) return;
+		Meteor.users.insert(options)
 	},
 	editPost: function (postId, newText){
 		console.log("GOT TO EDIT POST");
@@ -585,6 +649,16 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 		return result
 		// var user2 = Meteor.users.findOne({"emails[0].address": email})
 		// console.log("user1" + user2)
+	},
+	finishProfileCreation: function (){
+			if (Meteor.isClient) return;
+		var usersInfoObject = usersInfo.findOne({userId: Meteor.userId()})
+		console.log("USERS INFO OBJECT" + usersInfoObject)
+			if(usersInfoObject === undefined) {
+				throw new Meteor.Error("No userInfo ")
+			} else {
+				return true
+			}
 	},
 	followUserRequest: function (userId, messageText){
 		if (Meteor.isClient) return;
@@ -666,6 +740,11 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 	loadInvites: function () {
 		if (Meteor.isClient) return null;
 		var result = invites.find({}).fetch()
+		return result
+	},
+	loadProfileDrafts: function (){
+		if (Meteor.isClient) return null;
+		var result = profileDrafts.find({userId: Meteor.userId()}).fetch()
 		return result
 	},
 
@@ -759,7 +838,7 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 		if (update.forUserId != Meteor.userId()) {
 			throw new Meteor.Error("Not your update to change.");
 		}
-		updates.update(updateId, {$set: {read: true}});
+		updates.update(updateId, {$set: {read: true, new: false}});
 	},
 	markMessagesRead: function (post, targetId){
 		if (Meteor.isClient) return;
@@ -793,14 +872,11 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 	},
 	getUserId: function (first, last) {
 		if (Meteor.isClient) return null;
-		console.log("inside get user id successful")
 			var user = Meteor.users.findOne({$and: [
 				{"profile.lastName": last},
 				{"profile.firstName": first},
 			]
 		})
-			console.log("user id"  + user)
-			console.log("user id"  +  user._id)
 			var result = user._id
 			return result
 
@@ -815,8 +891,6 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 	 	if (!Meteor.userId()) return "";
 
 	 	var post = postId
-	 	console.log(post)
-	 	console.log(Meteor.userId())
 
 
 	 	
@@ -863,9 +937,31 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 		return result;
 	},
 	// Returns posts.
-	loadPosts: function(startTime, limit) {
+	loadPosts: function(startTime, limit, section) {
 		if (Meteor.isClient) return null;
-		var result = posts.find({createdAt: {$lt: startTime}}, {sort: {createdAt: -1}, limit: limit}).fetch();
+		if(section === "home"){
+			var result = posts.find({$and: [ 
+				{createdAt: {$lt: startTime}},
+				{$or: [
+				 	{invited: {$in: [Meteor.userId()]}},
+				 	{userId: Meteor.userId()},
+				 	{"_id": "C8ihxoTF2TKzhZoTy"},
+				 ]}]},
+		 		 {sort: {createdAt: -1}, limit: limit }).fetch();
+		}
+		if (section === "global"){
+			var result = posts.find({$and: [
+				{createdAt: {$lt: startTime}},
+				{$or:[
+					{isPublic: true}, 
+					{allowFeatured: true}
+				]}]},  
+				{sort: {createdAt: -1}, limit: limit }).fetch()
+		}
+		if (section === "loved"){
+			var result = posts.find({lovedBy: {$in: [Meteor.userId()]}}, {sort: {createdAt: -1}}).fetch();
+		}
+		// var result = posts.find({createdAt: {$lt: startTime}}, {sort: {createdAt: -1}, limit: limit}).fetch();
 		return result;
 	},
 	loadLoftAlphaUsers: function() {
@@ -1087,9 +1183,56 @@ function insertMessageUpdate(postUserId, postId, targetId) {
       	"-- Your Friends at Loft"
     });
 	},
+	sendAdminEmail: function(){
+		if (Meteor.isClient) return null;	
+		if (!Meteor.userId()) return "";
+		var users = Meteor.users.find({}).fetch()
+		// var email = users.emails[0].address
+		var length = users.length
+		// console.log("email" + email)
+		console.log(users)
+		var emailList = []
+		for (var i = 0; i < length; i++) {
+			console.log("CONSOLE LOGGING USER")
+			console.log(users[i])
+			if(users[i].emails[0] === undefined){
+				console.log("undefined")
+			} else {
+				emailList.push(users[i].emails[0].address) 
+				Email.send({
+		      	to: users[i].emails[0].address,
+		      	// to: "vasily.andreev13@gmail.com",
+		      	from: "vasily@tryloft.com",
+		      	subject: "Take Loft to Go & An Easier Way To Post",
+		      	text: "Hello, you lovely person." +  "\n" +  "\n" + 
+	      		"Today, I'm happy to announce a a significantly improved mobile experience." +  "\n" +   "\n" +
+	      		"What this means is when you're on the train, walking around, bored in bed at night, you can take Loft with you." +  "\n" +
+	      		"What this means is that as soon as inspiration strikes you for a post, you can post it right away without losing the beauty of that moment." +  "\n" +
+	      		"What this means is you can show your friends Loft on the phone and tell them how great it is." +  "\n" +
+	      		"This is a first step towards creating a seamless mobile experience, with a Loft mobile app on the horizon." +  "\n" + "\n" +
+	      		"Second, sometimes you want to share something, and get involved in the conversation, but don't know what to share." +  "\n" +  
+	      		"Now, Loft can help bring out the genius inside with thoughtful prompts meant to inspire creativity." +  "\n" + 
+	      		"This is part of an overarching vision to bring out the genius in 7 billion people as written about here: http://bit.ly/1FiDqaP" +  "\n" + "\n" +
+
+		      	"Check out these changes: www.tryloft.com , and let me know what you think." + "\n" +  "\n" +
+		      	"<3" + "\n" +
+		      	"vasily"
+		    });
+			}
+		}
+		
+		// emailList.push(Meteor.userId())
+		console.log("email list" + emailList)
+		console.log("CONSOLE LOGGING EMAIL LIST 1")
+		console.log(emailList[0])
+		console.log(emailList[1])
+		
+	},
 	// Set the text of the post draft.
 	setPostDraftText: function(text) {
+		if (Meteor.isClient) return null;	
 		if (!Meteor.userId()) return "";
+		console.log("set post draft text called")
 		Meteor.users.update(Meteor.userId(), {$set: {postDraftText: text}});
 	},
 	setCommentDraftText: function (text, postId) {
@@ -1156,13 +1299,49 @@ function insertMessageUpdate(postUserId, postId, targetId) {
 		}
 	return result 
 	},
+	saveProfileDraftText: function (readingText, listeningText, thinkingText, workingText, aboutMeText){
+		if (Meteor.isClient) return null;	
+		console.log("getting to save profile draft")
+		var draftObject = profileDrafts.findOne({userId: Meteor.userId()})
+		if(draftObject){
+			console.log("getting to save profile draft IF")
+		profileDrafts.upsert({userId: Meteor.userId()}, {$set: {
+				userId: Meteor.userId(),
+				readingTextDraft: readingText,
+				listeningTextDraft: listeningText,
+				thinkingTextDraft: thinkingText,
+				workingTextDraft: workingText,
+				aboutMeTextDraft: aboutMeText,
+			}})
+		} else {
+			console.log("getting to save profile draft else")
+			profileDrafts.insert({
+			userId: Meteor.userId(),
+			readingTextDraft: readingText,
+			listeningTextDraft: listeningText,
+			thinkingTextDraft: thinkingText,
+			workingTextDraft: workingText,
+			aboutMeTextDraft: aboutMeText,
+		});
+		}
+
+		// profileDrafts.insert({
+		// 	userId: Meteor.userId(),
+		// 	readingTextDraft: readingText,
+		// 	listeningTextDraft: listeningText,
+		// 	thinkingTextDraft: thinkingText,
+		// 	workingTextDraft: workingText,
+		// 	aboutMeTextDraft: aboutMeText,
+		// })
+	},
 	// Return true iff we should show the quote to this user.
 	shouldShowQuote: function() {
 		if (!Meteor.userId()) return false;
-		if (Meteor.call("getTodaysQuote").length <= 0) return false;
+		 if (Meteor.call("getTodaysQuote").length <= 0) return false;
 		var readQuoteTime = Meteor.user().readQuoteTime;
 		if (readQuoteTime === undefined) return true;
 		return readQuoteTime < getStartOfToday().getTime();
+		// return true
 	},
 	updateLoftAlphaLogin: function (id){
 		var user = loftAlphaUsers.findOne({"userId": Meteor.userId()})

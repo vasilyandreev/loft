@@ -180,3 +180,36 @@
 	float: right;
 	display: none;
 }
+
+@media only screen and (max-width: 767px) {
+
+	.maybe-later-link{
+		width: 60%;
+		padding: .8em;
+		border-radius: .5em;
+		max-width: 100%;
+
+	}
+	.accept-link{
+		width: 60%;
+		padding: .8em;
+		border-radius: .5em;
+		max-width: 100%;
+		margin-bottom: 3em;
+	}
+	.follow-about-user-icons{
+		margin-left: 0%;
+	}
+	.follower-list{
+		width: 90%;
+		padding-left: 0px;
+	}
+	.follower-list-follower-name {
+		margin-left: 0px;
+		padding-left: 20%;
+		/*border-top-style: solid;
+		border-bottom-style: solid;
+		border-top-width: thin;
+		border-bottom-width: thin;*/
+	}
+}

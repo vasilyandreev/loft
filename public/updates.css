@@ -102,4 +102,54 @@
 	border-radius:1.2em;
 	font-family: 'Open Sans';
 }
+.updates-back-header{
+	display: none;
+}
 
+@media only screen and (max-width: 767px) {
+	.updates-header{
+		width: 60%;
+		padding-left: 20%;
+		padding-right: 20%;
+		padding-top: 5%;
+	}
+	#new-updates-div{
+		padding-top: 5%;
+	}
+	.b-update{
+		font-size: 1.3em;
+	}
+	#standard-updates{
+		padding-right: 0px;
+		width: 33%
+	}
+	#messages-updates{
+		padding-right: 0px;
+		width: 33%;
+		/*left: 40%;*/
+	}
+	#follower-updates{
+		/*float: right;*/
+	}
+	.updates-back-header{
+		display: inherit;
+		height: 3em;
+		padding-top: 5%;
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 300;
+		border-bottom-style: solid;
+		border-bottom-width: thin;
+	}
+	.updates-back-header-button{
+		height: 100%;
+		width: 33%;
+		font-size: 1.5em;
+		padding-left: 1em;
+	}
+	.updates-back-header-button input{
+		vertical-align: middle;
+		padding-right: .5em;
+	}
+
+}

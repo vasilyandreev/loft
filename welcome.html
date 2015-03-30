@@ -1,11 +1,22 @@
 <template name="welcome">
+	
 	<div id="welcome-header">
+	<!-- 	<div id="fb-root"></div>
+<div class="fb-login-button" data-max-rows="1" data-size="small" data-show-faces="false" data-auto-logout-link="false">
+
+</div>
+<div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="true" scope = "public_profile, email, user_friends"></div> -->
+
 		<ul>
-			<div class="log-in"><button id="login"> LOGIN </button> </div>
+			 
+			
 		</ul>
 	</div>
+	<!-- <div class="log-in"> --><button id="login"> LOGIN </button> <!-- </div>  -->
 	<div id="body-text">
+
 		<h1> Loft </h1>
+
 	<div class  = "main-body-text">	
 		<p>
 			
@@ -42,20 +53,20 @@ So come on already, join us in the Loft.
 				</div>
 			<div class = "welcome-email-sign-up">
 				<div class = "welcome-sign-up-div" id ="welcome-sign-up-email-div"> 
-						<div class = "welcome-sign-up-header"> Enter your Loft e-mail  </div>
-					 <textarea class = "welcome-sign-up" id = "welcome-enter-email" placeholder=""></textarea> 
+						<div class = "welcome-sign-up-header"> Enter your E-mail  </div>
+					 <textarea class = "welcome-sign-up" id = "welcome-enter-email" ></textarea> 
 				</div>
 				<div class = "welcome-sign-up-div"  id ="welcome-sign-up-first-name-div"> 
 					<div class = "welcome-sign-up-header"> First Name </div>
-					<textarea class = "welcome-sign-up" id = "welcome-enter-first-name" placeholder=""></textarea>
+					<textarea class = "welcome-sign-up" id = "welcome-enter-first-name" ></textarea>
 				</div>
 				<div class = "welcome-sign-up-div" id ="welcome-sign-up-last-name-div"> 
 					<div class = "welcome-sign-up-header">  Last Name  </div>
-					<textarea class = "welcome-sign-up" id = "welcome-enter-last-name" placeholder=""></textarea> 
+					<textarea class = "welcome-sign-up" id = "welcome-enter-last-name" ></textarea> 
 				</div>
 				<div class = "welcome-sign-up-div"  id ="welcome-sign-up-why-div"> 
 					<div class = "welcome-sign-up-header"> Share a thought, story, something you love, or something you made.  </div>
-					 <textarea class = "welcome-sign-up" id = "welcome-enter-why" placeholder=""></textarea> 
+					 <textarea class = "welcome-sign-up" id = "welcome-enter-why"></textarea> 
 				</div>
 				<div class = "welcome-sign-up-div"  id ="welcome-sign-up-thanks-div"> 
 					<div class = "welcome-sign-up-header-thanks"> Thank you. <i>We'll send you an email with your invite code shortly.</i> <br> In the mean time, share the good word of Loft:  </div>
@@ -97,13 +108,29 @@ So come on already, join us in the Loft.
 		<div class="register">
 			<!-- <h1> Loft</h1> -->
 			<form id="register-form">
-				<ul>
+				<!-- <ul>
 					<li><label> First name: </label><span><input type="text" id="account-first-name" value="{{prefillFirstName}}" placeholder="" /></span></li>
 					<li><label><span> Last name: </span><input type="text" id="account-last-name" value="{{prefillLastName}}" placeholder="" /></label></li>
 					<li><label><span> E-mail: &nbsp; &nbsp; &nbsp; &nbsp; </span><input type="email" id="account-email" placeholder=""/></label></li>
 					<li><label><span> Password: &nbsp; </span><input type="password" id="account-password" placeholder=""/></label></li>
 					<label> <input type="submit" id="create-account" value="Enter"/></label>
-				</ul> 
+				</ul>  -->
+				<div class = "first-name"> 
+					First name: <input type="text" id="account-first-name" value="{{prefillFirstName}}" placeholder=""/> 
+				</div>
+				<div class = "last-name"> 
+					Last name: <input type="text" id="account-last-name" value="{{prefillLastName}}" placeholder=""/> 
+				</div>
+				<div class = "e-mail">
+					E-mail: &nbsp; &nbsp; &nbsp; &nbsp; <input type="email" id="account-email" placeholder=""/>
+				</div>
+				<div class = "password">
+					Password: &nbsp; <input type="password" id="account-password" placeholder=""/>
+				</div>
+				<div class ="enter">
+					<input type="submit" id="create-account" value="Enter"/>
+				</div>
+
 			</form>
 			<p>{{registerError}}</p>
 		</div>
@@ -116,7 +143,7 @@ So come on already, join us in the Loft.
 		<div class="invite">
 			<form id ="invite-form">
 				<ul>
-					<li><label> Please enter your invite code: <br><br> </label><span><input type="text" id="invite-code" placeholder=""/>
+					<li><label> {{ycombinatortext}} <br><br> </label><span><input type="text" id="invite-code" value = "{{ycombinator}}"/>
 					<script type="text/javascript">
 						document.getElementById('invite-code').focus()
 					</script></span></li>
@@ -133,4 +160,7 @@ So come on already, join us in the Loft.
 
 	{{/if}}
 </div>
+
+
+
 </template>

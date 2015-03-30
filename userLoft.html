@@ -39,6 +39,7 @@
 	</span>
 {{#if owner}}
 	{{#if following}}
+	{{#if notMobile}}
 	<div id = "profile-navigation-header">
 			
 						{{#if requestSent}}
@@ -46,9 +47,11 @@
 						Request Sent
 					</a>
 					{{else}}
+					
 					<a class = "profile-follow-user" id = "profile-follow-user-{{getOwnerId}}" userid = "{{getOwnerId}}" href="#">
 						Follow {{getFirstName}} &nbsp;   + 
 					</a>
+					
 					<div id = "profile-message-text-area">
 					<textarea  id = "profile-send-user-message-{{getOwnerId}}"  class="profile-message-input-textarea placeholder" placeholder="Optional: Send {{firstName}} a message. People like getting messages."></textarea>
 					<a class = "profile-send-request-link" id = "profile-send-request-link-{{getOwnerId}}" userid = "{{getOwnerId}}" href="#"> SEND REQUEST </a>
@@ -57,6 +60,7 @@
 
 		
 		</div>	 
+		{{/if}}
 		{{/if}}
 {{/if}}
 	
@@ -114,6 +118,26 @@
 			<!--  <div id = "shared-followers">
 			 	SHARED FOLLOWERS: 10
 			 	</div> -->
+			 	{{#if mobile}}
+		<div id = "profile-navigation-header">
+			
+						{{#if requestSent}}
+						<a class = "profile-request-sent" href="#">
+						Request Sent
+					</a>
+					{{else}}
+					<a class = "profile-follow-user" id = "profile-follow-user-{{getOwnerId}}" userid = "{{getOwnerId}}" href="#">
+						Follow {{getFirstName}} &nbsp;   + 
+					</a>
+					<div id = "profile-message-text-area">
+					<textarea  id = "profile-send-user-message-{{getOwnerId}}"  class="profile-message-input-textarea placeholder" placeholder="Optional: Send {{firstName}} a message. People like getting messages."></textarea>
+					<a class = "profile-send-request-link" id = "profile-send-request-link-{{getOwnerId}}" userid = "{{getOwnerId}}" href="#"> SEND REQUEST </a>
+					</div>
+					{{/if}}
+
+		
+		</div>	 
+		{{/if}}
 
 
 </div>

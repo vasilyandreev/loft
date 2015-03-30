@@ -117,3 +117,32 @@
 	font-style: normal;
 	font-weight: 300;
 }
+
+
+@media only screen and (max-width: 767px) {
+	.followers-navigation{
+		text-align: center;
+		padding-top: 5%;
+		width: 90%;
+		left: 5%;
+		right:5%;
+	}
+	.follower-list-follower-name{
+		margin-right: 0px;
+		width: 90%;
+		left: 5%;
+		right: 5%;
+	}
+	.requests-header{
+		padding-left: 30%;
+		padding-right: 0px;
+
+	}
+	.current-followers-header{
+		padding-left: 0px;
+		padding-right: 0px;
+		text-align: center;
+
+	}
+	
+}

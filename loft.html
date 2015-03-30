@@ -8,7 +8,10 @@
 
 
 <div id="darken"></div>
+{{#if admin}}<a id="admin-send-email" class="standard-link" href="#">SEND EMAIL</a> {{/if}}
+<!-- <a id="admin-create-post" class="standard-link" href="#">CREATE POST</a> -->
 <div id="post-popup" class="post-popup-div">
+
 
 	<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?"></textarea>
 	<div class="post-popup-footer">
@@ -167,6 +170,7 @@
 	 	<li>
 	        <ul class="sub-menu">
 	            <li><a class = "sub-menu-link" id ="sub-menu-link-profile" href="/{{userId}}"> PROFILE </a></li>
+	            <li><a class = "sub-menu-link standard-link" id ="sub-menu-link-edit" href="/profile/edit/{{getId}}"> EDIT </a></li>
 	            <!-- <li><a class = "sub-menu-link" id = "sub-menu-link-settings" href="/profile/edit/{{getId}}"> SETTINGS </a></li> -->
 	            <li><a class = "sub-menu-link" id ="sub-menu-link-invites" href="#"> INVITES </a></li>
 	            <li><a class = "sub-menu-link" id ="loft-logout" href="#"> LOGOUT </a></li>
@@ -217,7 +221,10 @@
 			<div>
 				{{#if canPost}}
 					<div id="post-prompt" class="post-prompt-div">
-						<textarea class="post-input-textarea placeholder" placeholder="What do you want to share?">{{postDraftText}}</textarea>
+						<textarea class="post-input-textarea placeholder" id = "post-input-textarea-before-popup" placeholder="What do you want to share?">{{postDraftText}}</textarea>
+					<div id="prompt-xyz"> 
+						<a class = "generate-prompt" id= "generate-prompt-link" href="#"> I need some inspiration. </a> 
+					</div>
 					</div>
 				{{/if}}
 			</div>

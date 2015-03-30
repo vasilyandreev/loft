@@ -45,6 +45,21 @@
 				
 
 			</div> 
+			{{#if mobile}}
+				<div class = "accept-link" id="accept-link-{{getUserId}}">
+					<a id="accept-request-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
+						ACCEPT +  
+					</a>
+					
+			</div>
+			<div class = "maybe-later-link">
+					<a id="maybe-later-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
+						Maybe later.
+					</a>
+					
+				</div>
+		
+			{{else}}
 			<div class = "maybe-later-link">
 					<a id="maybe-later-{{getUserId}}" userId = "{{getUserId}}" href="#"> 
 						Maybe later.
@@ -56,7 +71,8 @@
 						ACCEPT +  
 					</a>
 					
-				</div>
+			</div>
+			{{/if}}
 				
 		</div>
 	
